@@ -74,6 +74,9 @@ RUN git -C /workspace/pyverilator checkout 307fc5c82db748620836307a2002fdc9fe170
 RUN git clone --branch feature/synth_rpt https://github.com/maltanar/PYNQ-HelloWorld.git /workspace/PYNQ-HelloWorld
 RUN git -C /workspace/PYNQ-HelloWorld checkout db7e418767ce2a8e08fe732ddb3aa56ee79b7560
 
+# FINN
+RUN git clone --branch dev https://github.com/Xilinx/finn.git /workspace/finn
+
 # Note that we expect the cloned finn directory on the host to be
 # mounted on /workspace/finn -- see run-docker.sh for an example
 # of how to do this.
@@ -85,25 +88,11 @@ ENV PYTHONPATH "${PYTHONPATH}:/workspace/brevitas"
 ENV PYTHONPATH "${PYTHONPATH}:/workspace/pyverilator"
 ENV PYNQSHELL_PATH "/workspace/PYNQ-HelloWorld/boards"
 
-ARG GID
-ARG GNAME
-ARG UNAME
-ARG UID
-ARG PASSWD
 ARG JUPYTER_PORT
 ARG NETRON_PORT
 
-RUN groupadd -g $GID $GNAME
-RUN useradd -M -u $UID $UNAME -g $GNAME
-RUN usermod -aG sudo $UNAME
-RUN echo "$UNAME:$PASSWD" | chpasswd
-RUN echo "root:$PASSWD" | chpasswd
-RUN ln -s /workspace /home/$UNAME
-RUN chown -R $UNAME:$GNAME /home/$UNAME
-USER $UNAME
-
-RUN echo "source \$VIVADO_PATH/settings64.sh" >> /home/$UNAME/.bashrc
+RUN echo "source \$VIVADO_PATH/settings64.sh" >> /root/.bashrc
 RUN echo "PS1='\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h:\[\033[1;35m\]\w\[\033[1;31m\]\$\[\033[0m\] '" >>  /home/$UNAME/.bashrc
 EXPOSE $JUPYTER_PORT
 EXPOSE $NETRON_PORT
-WORKDIR /home/$UNAME/finn
+WORKDIR /workspace/finn

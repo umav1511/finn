@@ -27,15 +27,15 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-if [ -z "$VIVADO_PATH" ];then
-        echo "For correct implementation please set an environment variable VIVADO_PATH that contains the path to your vivado installation directory"
+if [ -z "$VIVADO_PATH_WIN" ];then
+        echo "For correct implementation please set an environment variable VIVADO_PATH_WIN that contains the path to your vivado installation directory"
         exit 1
 fi
 
 if [ -z "$PYNQ_IP" ];then
         echo "Please set the PYNQ_IP env.var. to enable PYNQ deployment tests."
 fi
-
+VIVADO_PATH=$VIVADO_PATH_LIN
 DOCKER_GID=$(id -g)
 DOCKER_GNAME=$(id -gn)
 DOCKER_UNAME=$(id -un)
@@ -64,14 +64,10 @@ DOCKER_INST_NAME=$(echo "$DOCKER_INST_NAME" | tr '[:upper:]' '[:lower:]')
 SCRIPT=$(readlink -f "$0")
 # Absolute path this script is in, thus /home/user/bin
 SCRIPTPATH=$(dirname "$SCRIPT")
-
-BUILD_LOCAL=/tmp/$DOCKER_INST_NAME
+FINN_PATH_LIN="/workspace/finn"
+BUILD_LOCAL=$FINN_PATH_LIN/build
 VIVADO_HLS_LOCAL=$VIVADO_PATH
 VIVADO_IP_CACHE=$BUILD_LOCAL/vivado_ip_cache
-
-# ensure build dir exists locally
-mkdir -p $BUILD_LOCAL
-mkdir -p $VIVADO_IP_CACHE
 
 echo "Instance is named as $DOCKER_INST_NAME"
 echo "Mounting $BUILD_LOCAL into $BUILD_LOCAL"
@@ -107,12 +103,10 @@ docker run -t --rm --name $DOCKER_INST_NAME -it \
 --hostname $DOCKER_INST_NAME \
 -e "XILINX_VIVADO=$VIVADO_PATH" \
 -e "SHELL=/bin/bash" \
--v $SCRIPTPATH:/workspace/finn \
--v $BUILD_LOCAL:$BUILD_LOCAL \
--v $VIVADO_PATH:$VIVADO_PATH \
+-v $VIVADO_PATH_WIN:$VIVADO_PATH_LIN \
 -e VIVADO_PATH=$VIVADO_PATH \
 -e FINN_INST_NAME=$DOCKER_INST_NAME \
--e FINN_ROOT="/workspace/finn" \
+-e FINN_ROOT=$FINN_PATH_LIN \
 -e VIVADO_IP_CACHE="$VIVADO_IP_CACHE" \
 -e PYNQ_BOARD=$PYNQ_BOARD \
 -e PYNQ_IP=$PYNQ_IP \
