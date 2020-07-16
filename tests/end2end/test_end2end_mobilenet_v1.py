@@ -212,7 +212,7 @@ def test_end2end_mobilenet_convert_to_hls_layers():
     model = model.transform(to_hls.InferVVAU())
     model = model.transform(to_hls.InferQuantizedStreamingFCLayer(mem_mode))
     model = model.transform(to_hls.InferChannelwiseLinearLayer())
-    # model = model.transform(to_hls.InferLabelSelectLayer())
+    model = model.transform(to_hls.InferLabelSelectLayer())
     model = model.transform(InferShapes())
     model = model.transform(GiveUniqueNodeNames())
     model = model.transform(GiveReadableTensorNames())
