@@ -52,8 +52,7 @@ class TLastMarker(HLSCustomOp):
             "StreamWidth": ("i", True, 0),
             # width of individual element in stream, in bits
             "ElemWidth": ("i", True, 0),
-            # Protocol: external or internal
-            # Vitis docs recommend using qdma_axis for external, ap_axiu for internal
+            # Protocol
             "Protocol": ("s", False, "external"),
         }
         my_attrs.update(super().get_nodeattr_types())
