@@ -1218,6 +1218,7 @@ class InferLabelSelectLayer(Transformation):
                     PE=pe,
                     K=k,
                     inputDataType=idt.name,
+                    numInputVectors=fc_in_shape[:-1],
                 )
                 graph.node.insert(node_ind, new_node)
                 # remove old node
