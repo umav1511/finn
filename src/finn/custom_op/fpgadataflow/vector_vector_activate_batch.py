@@ -475,3 +475,24 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
         self.code_gen_dict["$PRAGMAS$"].append(
             ("#pragma HLS ARRAY_PARTITION variable=weights.m_weights " "complete dim=1")
         )
+        if self.calc_tmem() != 0:
+            # TODO find a better way of checking for no pregenerated thresholds
+            self.code_gen_dict["$PRAGMAS$"].append(
+                (
+                    "#pragma HLS ARRAY_PARTITION variable=threshs.m_thresholds "
+                    "complete dim=1"
+                )
+            )
+            self.code_gen_dict["$PRAGMAS$"].append(
+                (
+                    "#pragma HLS ARRAY_PARTITION variable=threshs.m_thresholds "
+                    "complete dim=3"
+                )
+            )
+            if self.calc_tmem() <= 128:
+                self.code_gen_dict["$PRAGMAS$"].append(
+                    (
+                        "#pragma HLS RESOURCE variable=threshs.m_thresholds "
+                        "core =ROM_nP_LUTRAM "
+                    )
+                )
