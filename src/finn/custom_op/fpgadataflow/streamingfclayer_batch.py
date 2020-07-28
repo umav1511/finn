@@ -1005,6 +1005,13 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     "complete dim=3"
                 )
             )
+            if self.calc_tmem() <= 128:
+                self.code_gen_dict["$PRAGMAS$"].append(
+                    (
+                        "#pragma HLS RESOURCE variable=threshs.m_thresholds "
+                        "core =ROM_nP_LUTRAM "
+                    )
+                )
 
     def code_generation_ipgen(self, model, fpgapart, clk):
         # generate code for all mem_mode of MVAU/FCLayer unit
