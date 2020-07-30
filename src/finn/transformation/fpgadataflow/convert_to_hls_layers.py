@@ -1218,6 +1218,7 @@ class InferLabelSelectLayer(Transformation):
                     PE=pe,
                     K=k,
                     inputDataType=idt.name,
+                    numInputVectors=fc_in_shape[:-1],
                 )
                 graph.node.insert(node_ind, new_node)
                 # remove old node
@@ -1301,7 +1302,7 @@ class InferGlobalAccPoolLayer(Transformation):
                 )
                 model.graph.value_info.append(mul_value)
                 model.set_initializer(mul_value.name, np.array(1 / (vecs[1] * vecs[2])))
-                new_mul = helper.make_node("Mul", [pool_out, mul_value.name], [result],)
+                new_mul = helper.make_node("Mul", [pool_out, mul_value.name], [result])
                 graph.node.insert(insert_point, new_pool)
                 graph.node.insert(insert_point + 1, new_mul)
                 node_ind += 1
