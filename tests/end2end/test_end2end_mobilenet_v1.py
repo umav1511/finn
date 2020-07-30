@@ -81,15 +81,22 @@ from finn.transformation.fpgadataflow.replace_verilog_relpaths import (
     ReplaceVerilogRelPaths,
 )
 from finn.transformation.fpgadataflow.annotate_resources import AnnotateResources
+from finn.transformation.fpgadataflow.vitis_build import VitisBuild
 
 from finn.core.onnx_exec import execute_onnx
 from finn.util.basic import pynq_part_map
+from finn.util.basic import alveo_part_map, alveo_default_platform
 
 build_dir = "/tmp/" + os.environ["FINN_INST_NAME"]
 test_pynq_board = os.getenv("PYNQ_BOARD", default="Pynq-Z1")
 test_fpga_part = pynq_part_map[test_pynq_board]
 target_clk_ns = 10
 mem_mode = "decoupled"
+
+board = "U250"
+period_ns = 5
+platform = alveo_default_platform[board]
+fpga_part = alveo_part_map[board]
 
 
 def test_end2end_mobilenet_export():
@@ -212,7 +219,7 @@ def test_end2end_mobilenet_convert_to_hls_layers():
     model = model.transform(to_hls.InferVVAU())
     model = model.transform(to_hls.InferQuantizedStreamingFCLayer(mem_mode))
     model = model.transform(to_hls.InferChannelwiseLinearLayer())
-    # model = model.transform(to_hls.InferLabelSelectLayer())
+    model = model.transform(to_hls.InferLabelSelectLayer())
     model = model.transform(InferShapes())
     model = model.transform(GiveUniqueNodeNames())
     model = model.transform(GiveReadableTensorNames())
@@ -224,28 +231,30 @@ def test_end2end_mobilenet_folding():
         build_dir + "/end2end_mobilenet_hls_layers.onnx"
     )
     fc_layers = model.get_nodes_by_op_type("StreamingFCLayer_Batch")
-    # each tuple is (PE, SIMD) for a layer
+    # each tuple is (PE, SIMD, in_fifo_depth, ram_style) for a layer
     folding = [
-        (32, 3),
-        (16, 16),
-        (16, 16),
-        (32, 16),
-        (16, 16),
-        (32, 16),
-        (16, 16),
-        (32, 16),
-        (32, 16),
-        (32, 16),
-        (32, 16),
-        (32, 16),
-        (16, 16),
-        (32, 16),
-        (4, 4),
+        (32, 3, 32, "auto"),
+        (16, 16, 32, "auto"),
+        (16, 16, 32, "auto"),
+        (32, 16, 32, "auto"),
+        (16, 16, 32, "auto"),
+        (32, 16, 32, "auto"),
+        (16, 16, 32, "auto"),
+        (32, 16, 32, "auto"),
+        (32, 16, 32, "auto"),
+        (32, 16, 32, "auto"),
+        (32, 16, 32, "auto"),
+        (32, 16, 32, "auto"),
+        (16, 16, 32, "auto"),
+        (32, 16, 32, "auto"),
+        (4, 4, 32, "auto"),
     ]
-    for fcl, (pe, simd) in zip(fc_layers, folding):
+    for fcl, (pe, simd, ififodepth, ramstyle) in zip(fc_layers, folding):
         fcl_inst = getCustomOp(fcl)
         fcl_inst.set_nodeattr("PE", pe)
         fcl_inst.set_nodeattr("SIMD", simd)
+        fcl_inst.set_nodeattr("inFIFODepth", ififodepth)
+        fcl_inst.set_nodeattr("ram_style", ramstyle)
 
     vvau_layers = model.get_nodes_by_op_type("Vector_Vector_Activate_Batch")
     # each value is PE for a layer
@@ -293,6 +302,20 @@ def test_end2end_mobilenet_create_dataflow_partition():
     dataflow_model = load_test_checkpoint_or_skip(dataflow_model_filename)
     dataflow_model = dataflow_model.transform(RemoveUnusedTensors())
     dataflow_model.save(build_dir + "/end2end_mobilenet_dataflow_model.onnx")
+
+
+def test_end2end_mobilenet_vitis_build():
+    model = load_test_checkpoint_or_skip(
+        build_dir + "/end2end_mobilenet_dataflow_model.onnx"
+    )
+    start = time.time()
+    model = model.transform(VitisBuild(fpga_part, period_ns, platform))
+    end = time.time()
+    elapsed_time = end - start
+    f = open(build_dir + "/end2end_mobilenet_vitis_time.txt", "w+")
+    f.write("Execution time in seconds: " + str(elapsed_time))
+    f.close()
+    model.save(build_dir + "/end2end_mobilenet_vitis_build.onnx")
 
 
 @pytest.mark.slow
