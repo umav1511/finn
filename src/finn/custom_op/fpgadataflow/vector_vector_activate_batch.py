@@ -230,7 +230,7 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
         else:
             f_weights.write(
                 "const BinaryWeights<1,{},{}> weights = ".format(
-                    self.get_nodeattr("PE"), self.calc_wmem(),
+                    self.get_nodeattr("PE"), self.calc_wmem()
                 )
             )
         f_weights.write(weight_hls_code)
@@ -489,10 +489,3 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
                     "complete dim=3"
                 )
             )
-            if self.calc_tmem() <= 128:
-                self.code_gen_dict["$PRAGMAS$"].append(
-                    (
-                        "#pragma HLS RESOURCE variable=threshs.m_thresholds "
-                        "core =ROM_nP_LUTRAM "
-                    )
-                )
