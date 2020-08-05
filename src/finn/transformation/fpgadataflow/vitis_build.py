@@ -233,7 +233,7 @@ class VitisLink(Transformation):
             f.write(
                 "v++ -t hw --platform %s --link %s"
                 " --kernel_frequency %d --config config.txt"
-                "--optimize 2 --save-temps -R2\n"
+                " --optimize 2 --save-temps -R2\n"
                 % (self.platform, " ".join(object_files), self.f_mhz)
             )
             f.write("cd {}\n".format(working_dir))
