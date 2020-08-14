@@ -86,6 +86,7 @@ from finn.transformation.fpgadataflow.vitis_build import VitisBuild
 from finn.core.onnx_exec import execute_onnx
 from finn.util.basic import pynq_part_map
 from finn.util.basic import alveo_part_map, alveo_default_platform
+from finn.util.fpgadataflow import is_fpgadataflow_node
 
 build_dir = "/tmp/" + os.environ["FINN_INST_NAME"]
 test_pynq_board = os.getenv("PYNQ_BOARD", default="Pynq-Z1")
@@ -230,24 +231,30 @@ def test_end2end_mobilenet_folding():
     model = load_test_checkpoint_or_skip(
         build_dir + "/end2end_mobilenet_hls_layers.onnx"
     )
+    for n in model.graph.node:
+        if is_fpgadataflow_node(n):
+            inst = getCustomOp(n)
+            inst.set_nodeattr("inFIFODepth", 1024)
+            if n.op_type == "ConvolutionInputGenerator":
+                inst.set_nodeattr("ram_style", "block")
     fc_layers = model.get_nodes_by_op_type("StreamingFCLayer_Batch")
     # each tuple is (PE, SIMD, in_fifo_depth, ram_style) for a layer
     folding = [
-        (32, 3, 32, "auto"),
-        (16, 16, 32, "auto"),
-        (16, 16, 32, "auto"),
-        (32, 16, 32, "auto"),
-        (16, 16, 32, "auto"),
-        (32, 16, 32, "auto"),
-        (16, 16, 32, "auto"),
-        (32, 16, 32, "auto"),
-        (32, 16, 32, "auto"),
-        (32, 16, 32, "auto"),
-        (32, 16, 32, "auto"),
-        (32, 16, 32, "auto"),
-        (16, 16, 32, "auto"),
-        (32, 16, 32, "auto"),
-        (4, 4, 32, "auto"),
+        (32, 3, 1024, "block"),
+        (16, 16, 1024, "block"),
+        (16, 16, 1024, "block"),
+        (32, 16, 1024, "block"),
+        (16, 16, 1024, "block"),
+        (32, 16, 1024, "block"),
+        (16, 16, 1024, "block"),
+        (32, 16, 1024, "block"),
+        (32, 16, 1024, "block"),
+        (32, 16, 1024, "block"),
+        (32, 16, 1024, "block"),
+        (32, 16, 1024, "block"),
+        (16, 16, 1024, "block"),
+        (32, 16, 1024, "block"),
+        (4, 4, 1024, "block"),
     ]
     for fcl, (pe, simd, ififodepth, ramstyle) in zip(fc_layers, folding):
         fcl_inst = getCustomOp(fcl)
