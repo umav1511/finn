@@ -53,6 +53,7 @@ from finn.transformation.general import GiveReadableTensorNames, GiveUniqueNodeN
 from finn.transformation.infer_data_layouts import InferDataLayouts
 from shutil import copy
 from finn.transformation.fpgadataflow.make_pynq_driver import MakePYNQDriver
+from finn.transformation import NodeLocalTransformation
 
 from . import templates
 
@@ -267,6 +268,39 @@ class MakeZYNQProject(Transformation):
         return (model, False)
 
 
+class BuildPartitions(NodeLocalTransformation):
+    """Best-effort attempt at building StreamingDataflowPartitions."""
+
+    def __init__(self, platform, period_ns, num_workers=None):
+        super().__init__(num_workers=num_workers)
+        self.fpga_part = pynq_part_map[platform]
+        self.period_ns = period_ns
+        self.platform = platform
+
+    def applyNodeLocal(self, node):
+        if node.op_type == "StreamingDataflowPartition":
+            sdp_node = node
+            prefix = sdp_node.name + "_"
+            sdp_node = getCustomOp(sdp_node)
+            dataflow_model_filename = sdp_node.get_nodeattr("model")
+            kernel_model = ModelWrapper(dataflow_model_filename)
+            kernel_model = kernel_model.transform(InsertFIFO())
+            kernel_model = kernel_model.transform(GiveUniqueNodeNames(prefix))
+            kernel_model.save(dataflow_model_filename)
+            kernel_model = kernel_model.transform(
+                PrepareIP(self.fpga_part, self.period_ns)
+            )
+            kernel_model = kernel_model.transform(HLSSynthIP())
+            kernel_model = kernel_model.transform(ReplaceVerilogRelPaths())
+            kernel_model = kernel_model.transform(
+                CreateStitchedIP(
+                    self.fpga_part, self.period_ns, sdp_node.onnx_node.name, True
+                )
+            )
+            kernel_model.save(dataflow_model_filename)
+        return (node, False)
+
+
 class ZynqBuild(Transformation):
     """Best-effort attempt at building the accelerator for Zynq."""
 
@@ -292,27 +326,8 @@ class ZynqBuild(Transformation):
             model = model.transform(trn)
             model = model.transform(GiveUniqueNodeNames())
             model = model.transform(GiveReadableTensorNames())
-        # Build each kernel individually
-        sdp_nodes = model.get_nodes_by_op_type("StreamingDataflowPartition")
-        for sdp_node in sdp_nodes:
-            prefix = sdp_node.name + "_"
-            sdp_node = getCustomOp(sdp_node)
-            dataflow_model_filename = sdp_node.get_nodeattr("model")
-            kernel_model = ModelWrapper(dataflow_model_filename)
-            kernel_model = kernel_model.transform(InsertFIFO())
-            kernel_model = kernel_model.transform(GiveUniqueNodeNames(prefix))
-            kernel_model.save(dataflow_model_filename)
-            kernel_model = kernel_model.transform(
-                PrepareIP(self.fpga_part, self.period_ns)
-            )
-            kernel_model = kernel_model.transform(HLSSynthIP())
-            kernel_model = kernel_model.transform(ReplaceVerilogRelPaths())
-            kernel_model = kernel_model.transform(
-                CreateStitchedIP(
-                    self.fpga_part, self.period_ns, sdp_node.onnx_node.name, True
-                )
-            )
-            kernel_model.save(dataflow_model_filename)
+        # Build each kernel (partition)
+        model = model.transform(BuildPartitions(self.platform, self.period_ns))
         # Assemble design from IPs
         model = model.transform(
             MakeZYNQProject(self.platform, enable_debug=self.enable_debug)
