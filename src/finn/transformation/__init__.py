@@ -50,6 +50,7 @@ Guide to writing FINN transformations
 from abc import ABC, abstractmethod
 from finn.util.basic import get_num_default_workers
 import multiprocessing as mp
+import fiber
 
 
 class Transformation(ABC):
@@ -100,8 +101,8 @@ class NodeLocalTransformation(Transformation):
             old_nodes.append(model.graph.node.pop())
 
         # Execute transformation in parallel
-        with mp.Pool(self._num_workers) as p:
-            new_nodes_and_bool = p.map(self.applyNodeLocal, old_nodes, chunksize=1)
+        p = fiber.Pool(processes=self._num_workers)
+        new_nodes_and_bool = p.map(self.applyNodeLocal, old_nodes, chunksize=1)
 
         # extract nodes and check if the transformation needs to run again
         # Note: .pop() had initially reversed the node order
