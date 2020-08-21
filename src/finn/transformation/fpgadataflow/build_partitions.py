@@ -39,7 +39,7 @@ from finn.transformation.fpgadataflow.replace_verilog_relpaths import (
 from finn.transformation.fpgadataflow.create_stitched_ip import CreateStitchedIP
 from finn.util.basic import pynq_part_map
 from finn.transformation.fpgadataflow.insert_tlastmarker import InsertTLastMarker
-from finn.transformation.fpgadataflow.vitis_build import CreateVitisXO
+import finn.transformation.fpgadataflow.vitis_build as vb
 
 
 class BuildPartitions(NodeLocalTransformation):
@@ -81,7 +81,7 @@ class BuildPartitions(NodeLocalTransformation):
             )
             if self.vitis_xo:
                 kernel_model = kernel_model.transform(
-                    CreateVitisXO(sdp_node.onnx_node.name)
+                    vb.CreateVitisXO(sdp_node.onnx_node.name)
                 )
             kernel_model.save(dataflow_model_filename)
         return (node, False)

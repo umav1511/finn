@@ -43,7 +43,7 @@ from finn.transformation.fpgadataflow.make_pynq_driver import MakePYNQDriver
 from finn.transformation.general import GiveReadableTensorNames, GiveUniqueNodeNames
 from finn.util.basic import make_build_dir
 from finn.transformation.infer_data_layouts import InferDataLayouts
-from finn.transformation.fpgadataflow.build_partitions import BuildPartitions
+import finn.transformation.fpgadataflow.build_partitions as bp
 
 
 def _check_vitis_envvars():
@@ -283,7 +283,7 @@ class VitisBuild(Transformation):
             model = model.transform(GiveReadableTensorNames())
         # Build each kernel (partition)
         model = model.transform(
-            BuildPartitions(
+            bp.BuildPartitions(
                 self.platform, self.period_ns, tlastmarker=True, vitis_xo=True
             )
         )
