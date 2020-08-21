@@ -40,7 +40,6 @@ from finn.transformation.fpgadataflow.replace_verilog_relpaths import (
     ReplaceVerilogRelPaths,
 )
 from finn.transformation.fpgadataflow.create_stitched_ip import CreateStitchedIP
-from finn.util.basic import pynq_part_map
 from finn.transformation.fpgadataflow.insert_tlastmarker import InsertTLastMarker
 
 
@@ -152,10 +151,16 @@ class BuildPartitions(NodeLocalTransformation):
     """Best-effort attempt at building StreamingDataflowPartitions."""
 
     def __init__(
-        self, platform, period_ns, vitis_xo=False, tlastmarker=False, num_workers=None
+        self,
+        fpga_part,
+        platform,
+        period_ns,
+        vitis_xo=False,
+        tlastmarker=False,
+        num_workers=None,
     ):
         super().__init__(num_workers=num_workers)
-        self.fpga_part = pynq_part_map[platform]
+        self.fpga_part = fpga_part
         self.period_ns = period_ns
         self.platform = platform
         self.vitis_xo = vitis_xo

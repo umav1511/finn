@@ -287,7 +287,9 @@ class ZynqBuild(Transformation):
             model = model.transform(GiveUniqueNodeNames())
             model = model.transform(GiveReadableTensorNames())
         # Build each kernel (partition)
-        model = model.transform(BuildPartitions(self.platform, self.period_ns))
+        model = model.transform(
+            BuildPartitions(self.fpga_part, self.platform, self.period_ns)
+        )
         # Assemble design from IPs
         model = model.transform(
             MakeZYNQProject(self.platform, enable_debug=self.enable_debug)

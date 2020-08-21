@@ -190,7 +190,11 @@ class VitisBuild(Transformation):
         # Build each kernel (partition)
         model = model.transform(
             BuildPartitions(
-                self.platform, self.period_ns, tlastmarker=True, vitis_xo=True
+                self.fpga_part,
+                self.platform,
+                self.period_ns,
+                tlastmarker=True,
+                vitis_xo=True,
             )
         )
         # Assemble design from kernels
