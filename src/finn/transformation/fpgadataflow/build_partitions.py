@@ -38,16 +38,22 @@ from finn.transformation.fpgadataflow.replace_verilog_relpaths import (
 )
 from finn.transformation.fpgadataflow.create_stitched_ip import CreateStitchedIP
 from finn.util.basic import pynq_part_map
+from finn.transformation.fpgadataflow.insert_tlastmarker import InsertTLastMarker
+from finn.transformation.fpgadataflow.vitis_build import CreateVitisXO
 
 
 class BuildPartitions(NodeLocalTransformation):
     """Best-effort attempt at building StreamingDataflowPartitions."""
 
-    def __init__(self, platform, period_ns, num_workers=None):
+    def __init__(
+        self, platform, period_ns, vitis_xo=False, tlastmarker=False, num_workers=None
+    ):
         super().__init__(num_workers=num_workers)
         self.fpga_part = pynq_part_map[platform]
         self.period_ns = period_ns
         self.platform = platform
+        self.vitis_xo = vitis_xo
+        self.tlastmarker = tlastmarker
 
     def applyNodeLocal(self, node):
         if node.op_type == "StreamingDataflowPartition":
@@ -57,6 +63,10 @@ class BuildPartitions(NodeLocalTransformation):
             dataflow_model_filename = sdp_node.get_nodeattr("model")
             kernel_model = ModelWrapper(dataflow_model_filename)
             kernel_model = kernel_model.transform(InsertFIFO())
+            if self.tlastmarker:
+                kernel_model = kernel_model.transform(
+                    InsertTLastMarker(both=True, external=False, dynamic=False)
+                )
             kernel_model = kernel_model.transform(GiveUniqueNodeNames(prefix))
             kernel_model.save(dataflow_model_filename)
             kernel_model = kernel_model.transform(
@@ -69,5 +79,9 @@ class BuildPartitions(NodeLocalTransformation):
                     self.fpga_part, self.period_ns, sdp_node.onnx_node.name, True
                 )
             )
+            if self.vitis_xo:
+                kernel_model = kernel_model.transform(
+                    CreateVitisXO(sdp_node.onnx_node.name)
+                )
             kernel_model.save(dataflow_model_filename)
         return (node, False)

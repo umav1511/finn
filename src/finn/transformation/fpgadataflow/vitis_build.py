@@ -37,20 +37,13 @@ from finn.transformation.fpgadataflow.create_dataflow_partition import (
     CreateDataflowPartition,
 )
 from finn.transformation.fpgadataflow.insert_dwc import InsertDWC
-from finn.transformation.fpgadataflow.insert_fifo import InsertFIFO
-from finn.transformation.fpgadataflow.insert_tlastmarker import InsertTLastMarker
 from finn.transformation.fpgadataflow.insert_iodma import InsertIODMA
-from finn.transformation.fpgadataflow.prepare_ip import PrepareIP
-from finn.transformation.fpgadataflow.hlssynth_ip import HLSSynthIP
-from finn.transformation.fpgadataflow.replace_verilog_relpaths import (
-    ReplaceVerilogRelPaths,
-)
-from finn.transformation.fpgadataflow.create_stitched_ip import CreateStitchedIP
 from finn.transformation.fpgadataflow.floorplan import Floorplan
 from finn.transformation.fpgadataflow.make_pynq_driver import MakePYNQDriver
 from finn.transformation.general import GiveReadableTensorNames, GiveUniqueNodeNames
 from finn.util.basic import make_build_dir
 from finn.transformation.infer_data_layouts import InferDataLayouts
+from finn.transformation.fpgadataflow.build_partitions import BuildPartitions
 
 
 def _check_vitis_envvars():
@@ -288,32 +281,12 @@ class VitisBuild(Transformation):
             model = model.transform(trn)
             model = model.transform(GiveUniqueNodeNames())
             model = model.transform(GiveReadableTensorNames())
-        # Build each kernel individually
-        sdp_nodes = model.get_nodes_by_op_type("StreamingDataflowPartition")
-        for sdp_node in sdp_nodes:
-            sdp_node = getCustomOp(sdp_node)
-            dataflow_model_filename = sdp_node.get_nodeattr("model")
-            kernel_model = ModelWrapper(dataflow_model_filename)
-            kernel_model = kernel_model.transform(InsertFIFO())
-            kernel_model = kernel_model.transform(
-                InsertTLastMarker(both=True, external=False, dynamic=False)
+        # Build each kernel (partition)
+        model = model.transform(
+            BuildPartitions(
+                self.platform, self.period_ns, tlastmarker=True, vitis_xo=True
             )
-            kernel_model = kernel_model.transform(GiveUniqueNodeNames())
-            kernel_model.save(dataflow_model_filename)
-            kernel_model = kernel_model.transform(
-                PrepareIP(self.fpga_part, self.period_ns)
-            )
-            kernel_model = kernel_model.transform(HLSSynthIP())
-            kernel_model = kernel_model.transform(ReplaceVerilogRelPaths())
-            kernel_model = kernel_model.transform(
-                CreateStitchedIP(
-                    self.fpga_part, self.period_ns, sdp_node.onnx_node.name, True
-                )
-            )
-            kernel_model = kernel_model.transform(
-                CreateVitisXO(sdp_node.onnx_node.name)
-            )
-            kernel_model.save(dataflow_model_filename)
+        )
         # Assemble design from kernels
         model = model.transform(VitisLink(self.platform, round(1000 / self.period_ns)))
         # set platform attribute for correct remote execution
