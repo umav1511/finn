@@ -40,20 +40,13 @@ from finn.transformation.fpgadataflow.create_dataflow_partition import (
     CreateDataflowPartition,
 )
 from finn.transformation.fpgadataflow.insert_dwc import InsertDWC
-from finn.transformation.fpgadataflow.insert_fifo import InsertFIFO
 from finn.transformation.fpgadataflow.insert_iodma import InsertIODMA
-from finn.transformation.fpgadataflow.prepare_ip import PrepareIP
-from finn.transformation.fpgadataflow.hlssynth_ip import HLSSynthIP
-from finn.transformation.fpgadataflow.replace_verilog_relpaths import (
-    ReplaceVerilogRelPaths,
-)
-from finn.transformation.fpgadataflow.create_stitched_ip import CreateStitchedIP
+from finn.transformation.fpgadataflow.build_partitions import BuildPartitions
 from finn.transformation.fpgadataflow.floorplan import Floorplan
 from finn.transformation.general import GiveReadableTensorNames, GiveUniqueNodeNames
 from finn.transformation.infer_data_layouts import InferDataLayouts
 from shutil import copy
 from finn.transformation.fpgadataflow.make_pynq_driver import MakePYNQDriver
-from finn.transformation import NodeLocalTransformation
 
 from . import templates
 
@@ -266,39 +259,6 @@ class MakeZYNQProject(Transformation):
         synth_report_filename = vivado_pynq_proj_dir + "/synth_report.xml"
         model.set_metadata_prop("vivado_synth_rpt", synth_report_filename)
         return (model, False)
-
-
-class BuildPartitions(NodeLocalTransformation):
-    """Best-effort attempt at building StreamingDataflowPartitions."""
-
-    def __init__(self, platform, period_ns, num_workers=None):
-        super().__init__(num_workers=num_workers)
-        self.fpga_part = pynq_part_map[platform]
-        self.period_ns = period_ns
-        self.platform = platform
-
-    def applyNodeLocal(self, node):
-        if node.op_type == "StreamingDataflowPartition":
-            sdp_node = node
-            prefix = sdp_node.name + "_"
-            sdp_node = getCustomOp(sdp_node)
-            dataflow_model_filename = sdp_node.get_nodeattr("model")
-            kernel_model = ModelWrapper(dataflow_model_filename)
-            kernel_model = kernel_model.transform(InsertFIFO())
-            kernel_model = kernel_model.transform(GiveUniqueNodeNames(prefix))
-            kernel_model.save(dataflow_model_filename)
-            kernel_model = kernel_model.transform(
-                PrepareIP(self.fpga_part, self.period_ns)
-            )
-            kernel_model = kernel_model.transform(HLSSynthIP())
-            kernel_model = kernel_model.transform(ReplaceVerilogRelPaths())
-            kernel_model = kernel_model.transform(
-                CreateStitchedIP(
-                    self.fpga_part, self.period_ns, sdp_node.onnx_node.name, True
-                )
-            )
-            kernel_model.save(dataflow_model_filename)
-        return (node, False)
 
 
 class ZynqBuild(Transformation):
