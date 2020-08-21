@@ -26,7 +26,10 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import os
+import subprocess
 from finn.custom_op.registry import getCustomOp
+from finn.transformation import Transformation
 from finn.transformation import NodeLocalTransformation
 from finn.core.modelwrapper import ModelWrapper
 from finn.transformation.fpgadataflow.insert_fifo import InsertFIFO
@@ -39,7 +42,110 @@ from finn.transformation.fpgadataflow.replace_verilog_relpaths import (
 from finn.transformation.fpgadataflow.create_stitched_ip import CreateStitchedIP
 from finn.util.basic import pynq_part_map
 from finn.transformation.fpgadataflow.insert_tlastmarker import InsertTLastMarker
-import finn.transformation.fpgadataflow.vitis_build as vb
+
+
+def _check_vitis_envvars():
+    assert "VITIS_PATH" in os.environ, "VITIS_PATH must be set for Vitis"
+    assert (
+        "PLATFORM_REPO_PATHS" in os.environ
+    ), "PLATFORM_REPO_PATHS must be set for Vitis"
+    assert (
+        "XILINX_XRT" in os.environ
+    ), "XILINX_XRT must be set for Vitis, ensure the XRT env is sourced"
+
+
+class CreateVitisXO(Transformation):
+    """Create a Vitis object file from a stitched FINN ip.
+
+    Outcome if successful: sets the vitis_xo attribute in the ONNX
+    ModelProto's metadata_props field with the name of the object file as value.
+    The object file can be found under the ip subdirectory.
+    """
+
+    def __init__(self, ip_name="finn_design"):
+        super().__init__()
+        self.ip_name = ip_name
+
+    def apply(self, model):
+        _check_vitis_envvars()
+        vivado_proj_dir = model.get_metadata_prop("vivado_stitch_proj")
+        stitched_ip_dir = vivado_proj_dir + "/ip"
+        args_string = []
+        m_axis_idx = 0
+        s_axis_idx = 0
+        # NOTE: this assumes the graph is Vitis-compatible: max one axi lite interface
+        # developed from instructions in UG1393 (v2019.2) and package_xo documentation
+        # package_xo is responsible for generating the kernel xml
+        for node in model.graph.node:
+            node_inst = getCustomOp(node)
+            arg_id = 0
+            if node.op_type == "TLastMarker":
+                stream_width = node_inst.get_nodeattr("StreamWidth")
+                # add a stream input or output port, based on direction
+                if node_inst.get_nodeattr("Direction") == "in":
+                    args_string.append(
+                        "{in:4:%s:s_axis_%d:0x0:0x0:ap_uint&lt;%s>:0}"
+                        % (str(arg_id), s_axis_idx, str(stream_width))
+                    )
+                    s_axis_idx += 1
+                else:
+                    args_string.append(
+                        "{out:4:%s:m_axis_%d:0x0:0x0:ap_uint&lt;%s>:0}"
+                        % (str(arg_id), m_axis_idx, str(stream_width))
+                    )
+                    m_axis_idx += 1
+                arg_id += 1
+                # add a axilite port if dynamic
+                # add a count parameter if dynamic
+                if node_inst.get_nodeattr("DynIters") == 1:
+                    args_string.append(
+                        "{numReps:0:%s:s_axi_control:0x4:0x10:uint:0}" % str(arg_id)
+                    )
+                    arg_id += 1
+            elif node.op_type == "IODMA":
+                port_width = node_inst.get_nodeattr("intfWidth")
+                # add an address parameter
+                # add a count parameter
+                args_string.append(
+                    "{addr:1:%s:m_axi_gmem0:0x8:0x10:ap_uint&lt;%s>*:0}"
+                    % (str(arg_id), str(port_width))
+                )
+                arg_id += 1
+                args_string.append(
+                    "{numReps:0:%s:s_axi_control:0x4:0x1C:uint:0}" % str(arg_id)
+                )
+                arg_id += 1
+
+        # save kernel xml then run package_xo
+        xo_name = self.ip_name + ".xo"
+        xo_path = vivado_proj_dir + "/" + xo_name
+        model.set_metadata_prop("vitis_xo", xo_path)
+
+        # generate the package_xo command in a tcl script
+        package_xo_string = (
+            "package_xo -force -xo_path %s -kernel_name %s -ip_directory %s"
+            % (xo_path, self.ip_name, stitched_ip_dir)
+        )
+        for arg in args_string:
+            package_xo_string += " -kernel_xml_args " + arg
+        with open(vivado_proj_dir + "/gen_xo.tcl", "w") as f:
+            f.write(package_xo_string)
+
+        # create a shell script and call Vivado
+        package_xo_sh = vivado_proj_dir + "/gen_xo.sh"
+        working_dir = os.environ["PWD"]
+        with open(package_xo_sh, "w") as f:
+            f.write("#!/bin/bash \n")
+            f.write("cd {}\n".format(vivado_proj_dir))
+            f.write("vivado -mode batch -source gen_xo.tcl\n")
+            f.write("cd {}\n".format(working_dir))
+        bash_command = ["bash", package_xo_sh]
+        process_compile = subprocess.Popen(bash_command, stdout=subprocess.PIPE)
+        process_compile.communicate()
+        assert os.path.isfile(xo_path), (
+            "Vitis .xo file not created, check logs under %s" % vivado_proj_dir
+        )
+        return (model, False)
 
 
 class BuildPartitions(NodeLocalTransformation):
@@ -81,7 +187,7 @@ class BuildPartitions(NodeLocalTransformation):
             )
             if self.vitis_xo:
                 kernel_model = kernel_model.transform(
-                    vb.CreateVitisXO(sdp_node.onnx_node.name)
+                    CreateVitisXO(sdp_node.onnx_node.name)
                 )
             kernel_model.save(dataflow_model_filename)
         return (node, False)
