@@ -18,19 +18,6 @@ from finn.transformation.general import (
     GiveUniqueParameterTensors,
 )
 from finn.transformation.merge_onnx_models import MergeONNXModels
-from finn.transformation.double_to_single_float import DoubleToSingleFloat
-from finn.transformation.streamline import Streamline
-from finn.transformation.streamline.remove import RemoveIdentityOps
-from finn.transformation.streamline.reorder import (
-    MoveMulPastDWConv,
-    MoveTransposePastScalarMul,
-    MoveFlattenPastAffine,
-    MoveFlattenPastTopK,
-    MoveScalarMulPastMatMul,
-)
-from finn.transformation.streamline.collapse_repeated import CollapseRepeatedMul
-from finn.transformation.change_datalayout import ChangeDataLayoutQuantAvgPool2d
-from finn.transformation.lower_convs_to_matmul import LowerConvsToMatMul
 import finn.transformation.streamline.absorb as absorb
 from finn.transformation.insert_topk import InsertTopK
 import finn.core.onnx_exec as oxe
@@ -101,27 +88,3 @@ def test_brevitas_mobilenet():
     produced_prob = odict["TopK_0_out0"] * a0
     assert (produced.flatten() == expected_top5).all()
     assert np.isclose(produced_prob.flatten(), expected_top5_prob).all()
-    model = model.transform(Streamline())
-    model = model.transform(DoubleToSingleFloat())
-    model = model.transform(MoveMulPastDWConv())
-    model = model.transform(absorb.AbsorbMulIntoMultiThreshold())
-    model = model.transform(ChangeDataLayoutQuantAvgPool2d())
-    model = model.transform(InferDataLayouts())
-    model = model.transform(MoveTransposePastScalarMul())
-    model = model.transform(absorb.AbsorbTransposeIntoFlatten())
-    model = model.transform(MoveFlattenPastAffine())
-    model = model.transform(MoveFlattenPastTopK())
-    model = model.transform(MoveScalarMulPastMatMul())
-    model = model.transform(CollapseRepeatedMul())
-    model = model.transform(RemoveIdentityOps())
-    model = model.transform(LowerConvsToMatMul())
-    model = model.transform(absorb.AbsorbTransposeIntoMultiThreshold())
-    model = model.transform(GiveUniqueNodeNames())
-    model = model.transform(GiveReadableTensorNames())
-    model = model.transform(InferDataTypes())
-    model.save(export_onnx_path + "/quant_mobilenet_v1_4b_streamlined.onnx")
-    odict_streamline = oxe.execute_onnx(model, idict, True)
-    produced_streamline = odict_streamline[model.graph.output[0].name]
-    produced_streamline_prob = odict_streamline["TopK_0_out0"] * a0
-    assert (produced_streamline.flatten() == expected_top5).all()
-    assert np.isclose(produced_streamline_prob.flatten(), expected_top5_prob).all()
