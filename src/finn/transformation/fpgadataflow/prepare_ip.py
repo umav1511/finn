@@ -82,6 +82,7 @@ class PrepareIP(Transformation):
         self.clk = clk
 
     def apply(self, model):
+
         for node in model.graph.node:
             if is_fpgadataflow_node(node) is True:
                 _codegen_single_node(node, model, self.fpgapart, self.clk)

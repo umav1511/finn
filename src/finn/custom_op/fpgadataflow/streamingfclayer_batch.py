@@ -365,8 +365,23 @@ class StreamingFCLayer_Batch(HLSCustomOp):
         return in_width
 
     def get_outstream_width(self):
+        stdoutput = open("err.txt", "w")
+        print("get_outsream_width")
+        stdoutput.write(
+               "self.get_output_datatype() : {} \n, bitwidth() : {}".format(
+               self.get_output_datatype(),
+               self.get_output_datatype().bitwidth(),
+               )
+        )
+        stdoutput.close()
+        print(self.get_output_datatype())
+        print(self.get_output_datatype().bitwidth())
         o_bits = self.get_output_datatype().bitwidth()
-        out_width = o_bits * self.get_nodeattr("PE")
+        pe = self.get_nodeattr("PE")
+        if self.get_nodeattr("mem_mode") != "const" and self.get_nodeattr("noActivation") == 1:
+            pe = 1
+        print(o_bits)
+        out_width = o_bits * pe
         return out_width
 
     def get_weightstream_width(self):
@@ -1105,6 +1120,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
         self.code_gen_dict["$SAVEASCNPY$"] = []
 
     def blackboxfunction(self):
+        print("blackboxfunction")
         mem_mode = self.get_nodeattr("mem_mode")
         if mem_mode == "const":
             self.code_gen_dict["$BLACKBOXFUNCTION$"] = [
@@ -1206,6 +1222,8 @@ class StreamingFCLayer_Batch(HLSCustomOp):
         if mem_mode == "decoupled":
             node_name = self.onnx_node.name
             runtime_writable = self.get_nodeattr("runtime_writeable_weights") == 1
+            pe = self.get_nodeattr("PE")
+            simd = self.get_nodeattr("SIMD")
             # create a hierarchy for this layer, with the same port names
             clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
             rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
@@ -1223,11 +1241,12 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 "create_bd_intf_pin -mode Slave "
                 "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s" % (node_name, din_name)
             )
-            # instantiate the hls ip
-            cmd.append(
-                "create_bd_cell -type ip -vlnv %s /%s/%s"
-                % (self.get_nodeattr("ip_vlnv"), node_name, node_name)
-            )
+            # instantiate the hls ip "pe" number of times
+            for i in range(pe):
+                cmd.append(
+                    "create_bd_cell -type ip -vlnv %s /%s/%s_%d"
+                    % (self.get_nodeattr("ip_vlnv"), node_name, node_name, i)
+                )
             # instantiate a streamer and connect it to the HLS IP
             strm_vlnv = "xilinx.com:user:memstream:1.0"
             strm_inst = node_name + "_wstrm"
@@ -1257,11 +1276,84 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     strm_inst,
                 )
             )
+
+            # WEIGHTS
+            #instantiate weight broadcaster and set number of masters
+            cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:axis_broadcaster:1.1 %s/axis_broadcaster_weight" % (node_name))
+            cmd.append("set_property -dict [list CONFIG.NUM_MI {%d}] [get_bd_cells %s/axis_broadcaster_weight]" % (pe, node_name))
+
+            # connnect input of broadcast with output of wstrm
             cmd.append(
                 "connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] "
-                "[get_bd_intf_pins %s/%s/weights_V_V]"
-                % (node_name, strm_inst, node_name, node_name)
+                "[get_bd_intf_pins %s/axis_broadcaster_weight/S_AXIS]"
+                % (node_name, strm_inst, node_name)
             )
+
+            # connect output of broadcaster to input of each slice 
+            # instantiate PE number of slices
+
+            for i in range(pe):
+                cmd.append(
+                    "create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 %s/xlslice_%d"
+                    % node_name, i
+                )
+                cmd.append("set_property -dict [list CONFIG.DIN_FROM {%d * (%d + 1) - 1} CONFIG.DOUT_WIDTH {%d * %d}] [get_bd_cells %s/xlslice_%d]" % (simd, i, simd, i, node_name, i))
+
+            # connect output of broadcaster to input of each slice
+            for i in range(pe):
+               if i < 10 :
+                  cmd.append(
+                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_weight/M0%d_AXIS] "
+                       "[get_bd_intf_pins %s/xlslice_%d/Din]"
+                       % (node_name,i, node_name,i)
+                  )
+               else:
+                  cmd.append(
+                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_weight/M%d_AXIS] "
+                       "[get_bd_intf_pins %s/xlslice_%d/Din]"
+                       % (node_name, i,  node_name, i)
+                  )
+
+            #connect output of each slice to weights_V_V of each IP
+            for i in range(pe):
+                 cmd.append(
+                          "connect_bd_intf_net [get_bd_intf_pins %s/xlslice_%d/Dout] "
+                          "[get_bd_intf_pins %s/%s_%d/Weights_V_V]"
+                          % (node_name, i,  node_name, node_name, i)
+                       )           
+
+
+            # INPUTS
+            # instantiate input broadcaster and set number of masters
+            cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:axis_broadcaster:1.1 %s/axis_broadcaster_input" % (node_name))
+            cmd.append("set_property -dict [list CONFIG.NUM_MI {%s}] [get_bd_cells %s/axis_broadcaster]" % (pe, node_name))
+
+            # connect input of block to input of broadcaster
+            cmd.append(
+                "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                "[get_bd_intf_pins %s/axis_broadcaster_input/S_AXIS]"
+                % (node_name, din_name, node_name)
+            )
+
+            # connect output of broadcaster to input of HLS IPs
+            for i in range(pe):
+               if i < 10 :
+                  cmd.append(
+                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/M0%d_AXIS] "
+                       "[get_bd_intf_pins %s/%s_%d/%s]"
+                       % (node_name, i, node_name, node_name, i, din_name)
+                  )
+               else:
+                  cmd.append(
+                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/M%d_AXIS] "
+                       "[get_bd_intf_pins %s/%s_%d/%s]"
+                       % (node_name, i, node_name, node_name, i, din_name)
+                  ) 
+
+            # TODO to remove - connect stream of weights to the weights input of block 
+            # change to connect to input of weight broadcaster
+
+            # streamer reset and clock
             cmd.append(
                 "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
                 % (node_name, rst_name, node_name, strm_inst)
@@ -1270,19 +1362,25 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aclk]"
                 % (node_name, clk_name, node_name, strm_inst)
             )
-            cmd.append(
-                "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
-                % (node_name, rst_name, node_name, node_name, rst_name)
-            )
-            cmd.append(
-                "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
-                % (node_name, clk_name, node_name, node_name, clk_name)
-            )
+
+            #  TODO : hls ip reset and clock - add these connections to all the instantiated IPs 
+            for i in range(pe):
+               cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
+                   % (node_name, rst_name, node_name, node_name, i, rst_name)
+               )
+               cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
+                   % (node_name, clk_name, node_name, node_name, i, clk_name)
+               )
+
+            # TODO Input of outer block is connected directly as input to the HLS IP, modify it to connect to input broadcaster
             cmd.append(
                 "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
                 "[get_bd_intf_pins %s/%s/%s]"
                 % (node_name, din_name, node_name, node_name, din_name)
             )
+            #TODO same for outer
             cmd.append(
                 "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
                 "[get_bd_intf_pins %s/%s/%s]"

@@ -437,8 +437,8 @@ class TestEnd2End:
         model = model.transform(GiveUniqueNodeNames())
         model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
         model.save(get_checkpoint_name(topology, wbits, abits, "prepare_ip_" + kind))    
-        model = model.transform(HLSSynthIP())
-        model.save(get_checkpoint_name(topology, wbits, abits, "ipgen_" + kind))
+        #model = model.transform(HLSSynthIP())
+        #model.save(get_checkpoint_name(topology, wbits, abits, "ipgen_" + kind))
 
     @pytest.mark.slow
     @pytest.mark.vivado

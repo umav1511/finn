@@ -1,0 +1,2 @@
+self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8
