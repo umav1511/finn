@@ -117,6 +117,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
         mh = self.get_nodeattr("MH")
         pe = self.get_nodeattr("PE")
         simd = self.get_nodeattr("SIMD")
+
         assert mh % pe == 0, "Requirement MH divisable by PE is violated."
         assert mw % simd == 0, "Requirement MW divisable by SIMD is violated."
         wmem = mw * mh // (pe * simd)
@@ -370,7 +371,15 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
     def get_weightstream_width(self):
         """Returns weight stream width. Used only in decoupled mode."""
-        if (
+        if self.get_nodeattr("mem_mode") != "const" and self.get_nodeattr("noActivation") == 1:
+            pe = 1
+            simd = self.get_nodeattr("SIMD")
+            wp = self.get_weight_datatype().bitwidth()
+            w_width = pe * simd * wp
+            return w_width           
+
+
+        elif (
             self.get_nodeattr("mem_mode") == "decoupled"
             or self.get_nodeattr("mem_mode") == "external"
         ):
@@ -669,8 +678,19 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             elif weight_file_mode == "decoupled_verilog_dat":
                 # convert weight values into hexstring
                 weight_width = self.get_weightstream_width()
+                print("weight_widht")
+                print(weight_width)
                 # pad to nearest 4 bits to get hex strings
-                weight_width_padded = roundup_to_integer_multiple(weight_width, 4)
+                
+                if self.get_nodeattr("mem_mode") != "const" and self.get_nodeattr("noActivation") == 1:
+                  pe = self.get_nodeattr("PE")
+                  simd = self.get_nodeattr("SIMD")
+                  wp = self.get_weight_datatype().bitwidth()
+                  weight_width_padded = pe * simd * wp
+                         
+                else:
+                    weight_width_padded = roundup_to_integer_multiple(weight_width, 4)
+                print(weight_width_padded)
                 weight_tensor_pe_flipped = pack_innermost_dim_as_hex_string(
                     weight_tensor_pe_flipped, export_wdt, weight_width_padded, prefix=""
                 )
@@ -913,19 +933,38 @@ class StreamingFCLayer_Batch(HLSCustomOp):
         mem_mode = self.get_nodeattr("mem_mode")
         numInputVectors = list(self.get_nodeattr("numInputVectors"))
         numReps = np.prod(numInputVectors)
-        self.code_gen_dict["$DEFINES$"] = [
-            """#define MW1 {}\n #define MH1 {}\n
-            #define SIMD1 {}\n #define PE1 {}\n #define WMEM1 {}\n
-            #define TMEM1 {}\n #define numReps {}""".format(
-                self.get_nodeattr("MW"),
-                self.get_nodeattr("MH"),
-                self.get_nodeattr("SIMD"),
-                self.get_nodeattr("PE"),
-                self.calc_wmem(),
-                self.calc_tmem(),
-                numReps,
-            )
-        ]
+        if mem_mode == "const" or self.get_nodeattr("noActivation") != 1:
+          self.code_gen_dict["$DEFINES$"] = [
+             """#define MW1 {}\n #define MH1 {}\n
+             #define SIMD1 {}\n #define PE1 {}\n #define WMEM1 {}\n
+             #define TMEM1 {}\n #define numReps {}""".format(
+                 self.get_nodeattr("MW"),
+                 self.get_nodeattr("MH"),
+                 self.get_nodeattr("SIMD"),
+                 self.get_nodeattr("PE"),
+                 self.calc_wmem(),
+                 self.calc_tmem(),
+                 numReps,
+             )
+          ]
+        if mem_mode != "const" and self.get_nodeattr("noActivation") == 1:
+          pe = self.get_nodeattr("PE")
+          mh = self.get_nodeattr("MH")
+          mh = mh // pe
+          pe = 1
+          self.code_gen_dict["$DEFINES$"] = [
+              """#define MW1 {}\n #define MH1 {}\n
+             #define SIMD1 {}\n #define PE1 {}\n #define WMEM1 {}\n
+             #define TMEM1 {}\n #define numReps {}""".format(
+                  self.get_nodeattr("MW"),
+                  mh,
+                  self.get_nodeattr("SIMD"),
+                  1,
+                  self.calc_wmem(),
+                  self.calc_tmem(),
+                  numReps,
+              )
+          ]
         if mem_mode == "decoupled" or mem_mode == "external":
             wdt = self.get_weight_datatype()
             self.code_gen_dict["$DEFINES$"].append(
@@ -1077,6 +1116,8 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     self.get_outstream_width(),
                 )
             ]
+       
+            
         elif mem_mode == "decoupled" or mem_mode == "external":
             self.code_gen_dict["$BLACKBOXFUNCTION$"] = [
                 """void {}(

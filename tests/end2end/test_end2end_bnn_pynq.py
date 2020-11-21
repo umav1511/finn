@@ -362,6 +362,7 @@ class TestEnd2End:
     def test_convert_to_hls_layers(self, topology, wbits, abits):
         prev_chkpt_name = get_checkpoint_name(topology, wbits, abits, "streamline")
         model = load_test_checkpoint_or_skip(prev_chkpt_name)
+        model = model.transform(to_hls.InferThresholdingLayer())
         # needed for bipolar MatMul layers
         model = model.transform(to_hls.InferBinaryStreamingFCLayer(mem_mode))
         # needed for non-bipolar MatMul layers
@@ -369,7 +370,7 @@ class TestEnd2End:
         # TopK to LabelSelect
         model = model.transform(to_hls.InferLabelSelectLayer())
         # input quantization (if any) to standalone thresholding
-        model = model.transform(to_hls.InferThresholdingLayer())
+
         # needed for convolutions
         if "fc" not in topology:
             model = model.transform(to_hls.InferConvInpGen())
@@ -435,6 +436,7 @@ class TestEnd2End:
         test_fpga_part = get_build_env(kind, target_clk_ns)["part"]
         model = model.transform(GiveUniqueNodeNames())
         model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
+        model.save(get_checkpoint_name(topology, wbits, abits, "prepare_ip_" + kind))    
         model = model.transform(HLSSynthIP())
         model.save(get_checkpoint_name(topology, wbits, abits, "ipgen_" + kind))
 
@@ -461,7 +463,7 @@ class TestEnd2End:
     @pytest.mark.parametrize("kind", ["zynq"])
     def test_ipstitch_rtlsim(self, topology, wbits, abits, kind):
         prev_chkpt_name = get_checkpoint_name(
-            topology, wbits, abits, "fifodepth_" + kind
+            topology, wbits, abits, "ipgen_" + kind
         )
         model = load_test_checkpoint_or_skip(prev_chkpt_name)
         test_fpga_part = get_build_env(kind, target_clk_ns)["part"]

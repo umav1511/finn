@@ -197,6 +197,8 @@ class CreateStitchedIP(Transformation):
             set to "fpgadataflow"."""
             node_inst = getCustomOp(node)
             ip_dir_value = node_inst.get_nodeattr("ip_path")
+            print("in assertion part")
+            print(ip_dir_value)
             assert os.path.isdir(ip_dir_value), "IP generation directory doesn't exist."
             ip_dirs += [ip_dir_value]
             self.create_cmds += node_inst.code_generation_ipi()
