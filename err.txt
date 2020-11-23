@@ -1,2 +1,168 @@
-self.get_output_datatype() : DataType.UINT8 
-, bitwidth() : 8
+self.get_output_datatype() : DataType.UINT16 
+, bitwidth() : 16self.get_output_datatype() : DataType.UINT16 
+, bitwidth() : 16self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8self.get_output_datatype() : DataType.UINT16 
+, bitwidth() : 16self.get_output_datatype() : DataType.UINT16 
+, bitwidth() : 16self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8self.get_output_datatype() : DataType.UINT8 
+, bitwidth() : 8self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT16, bitwidth() : 16, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.UINT8, bitwidth() : 8, pe : 1
+self.get_output_datatype() : DataType.BINARY, bitwidth() : 1, pe : 16
+self.get_output_datatype() : DataType.BINARY, bitwidth() : 1, pe : 16
+self.get_output_datatype() : DataType.BINARY, bitwidth() : 1, pe : 8
+self.get_output_datatype() : DataType.BINARY, bitwidth() : 1, pe : 8

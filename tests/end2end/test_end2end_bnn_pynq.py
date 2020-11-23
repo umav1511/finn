@@ -437,8 +437,8 @@ class TestEnd2End:
         model = model.transform(GiveUniqueNodeNames())
         model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
         model.save(get_checkpoint_name(topology, wbits, abits, "prepare_ip_" + kind))    
-        #model = model.transform(HLSSynthIP())
-        #model.save(get_checkpoint_name(topology, wbits, abits, "ipgen_" + kind))
+        model = model.transform(HLSSynthIP())
+        model.save(get_checkpoint_name(topology, wbits, abits, "ipgen_" + kind))
 
     @pytest.mark.slow
     @pytest.mark.vivado
@@ -497,9 +497,13 @@ class TestEnd2End:
         y = execute_parent(parent_chkpt, rtlsim_chkpt, input_tensor_npy)
         model = ModelWrapper(rtlsim_chkpt)
         perf["cycles_rtlsim"] = model.get_metadata_prop("cycles_rtlsim")
+         
+        # already commented dont uncomment
+
         # warnings.warn("Estimated & rtlsim performance: " + str(perf))
         # for (k, v) in perf.items():
         #    update_dashboard_data(topology, wbits, abits, k, v)
+
         update_dashboard_data(
             topology, wbits, abits, "cycles_rtlsim", perf["cycles_rtlsim"]
         )
