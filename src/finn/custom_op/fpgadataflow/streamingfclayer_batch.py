@@ -1304,7 +1304,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     "create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 %s/xlslice_data_%d"
                     % (node_name, i)
                 )
-
+                simd = roundup_to_integer_multiple(simd, 8)
                 ul = (int)(simd * (i + 1) - 1)
                 ll = (int)(simd * i)
                 input_width = (int)(pe * simd)

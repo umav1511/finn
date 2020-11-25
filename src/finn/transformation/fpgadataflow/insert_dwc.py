@@ -53,11 +53,22 @@ class InsertDWC(Transformation):
 
                     consumer = consumers[0]
                     if _suitable_node(consumer) is True:
+                        
                         n0 = getCustomOp(n)
                         n1 = getCustomOp(consumer)
                         n0_out_shape = n0.get_folded_output_shape()
                         n1_in_shape = n1.get_folded_input_shape()
+
+                        #f.write(n1)
+                        #f.write(n0_out_shape)
+                        #f.write(n1_in_shape)
+
+                        print(n0)
+                        print(n1)
+                        print(n0_out_shape)
+                        print(n1_in_shape)
                         if n0_out_shape[-1] != n1_in_shape[-1]:
+                            f = open("type2.txt", "a")
                             graph_modified = True
                             # determine dwc inwidth
                             dwc_in_width = n0.get_outstream_width()
@@ -69,7 +80,11 @@ class InsertDWC(Transformation):
 
                             # determine dtype for dwc
                             dtype = n0.get_output_datatype()
-
+                            f.write("{} {} {}  {}  {}  \n".format(n0, n1, dwc_in_width, dwc_out_width, dwc_shape))
+                            f.close()
+                            if n0.get_nodeattr("mem_mode") != "const" and n0.get_nodeattr("noActivation") == 1:
+                                pe = n0.get_nodeattr("PE")
+                                dwc_in_width = pe * dwc_in_width
                             dwc_output_tensor = oh.make_tensor_value_info(
                                 model.make_new_valueinfo_name(),
                                 TensorProto.FLOAT,

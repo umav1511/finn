@@ -306,8 +306,10 @@ class CreateStitchedIP(Transformation):
             assert num_workers >= 0, "Number of workers must be nonnegative."
             if num_workers == 0:
                 num_workers = mp.cpu_count()
+            tcl.append("clock seconds")
             tcl.append("launch_runs synth_1 -jobs %s" % str(num_workers))
             tcl.append("wait_on_run [get_runs synth_1]")
+            tcl.append("clock seconds")
             tcl.append("open_run synth_1 -name synth_1")
             tcl.append("write_verilog -force -mode synth_stub %s.v" % block_name)
             tcl.append("write_checkpoint %s.dcp" % block_name)
