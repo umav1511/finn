@@ -1305,6 +1305,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     % (node_name, i)
                 )
 
+                simd = roundup_to_integer_multiple(simd, 8)
                 ul = (int)(simd * (i + 1) - 1)
                 ll = (int)(simd * i)
                 input_width = (int)(pe * simd)

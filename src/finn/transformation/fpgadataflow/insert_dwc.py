@@ -63,7 +63,9 @@ class InsertDWC(Transformation):
                             dwc_in_width = n0.get_outstream_width()
                             # determine dwc outwidth
                             dwc_out_width = n1.get_instream_width()
-
+                            if n0.get_nodeattr("mem_mode") != "const" and n0.get_nodeattr("noActivation") == 1:
+                                pe = n0.get_nodeattr("PE")
+                                dwc_in_width = pe * dwc_in_width
                             # determine shape for dwc
                             dwc_shape = n0.get_normal_output_shape()
 
