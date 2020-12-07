@@ -463,8 +463,17 @@ class InferBinaryStreamingFCLayer(Transformation):
                 else:
                     # no activation, matmul only
                     odt = model.get_tensor_datatype(mm_output)
+                    f = open("datatype.txt", "a")
+                    f.write(mm_output)
+
+                    f.write(str(odt))
+                    f.write("\n")
+                    f.close()
+                    print(mm_output)
                     model.set_tensor_shape(mm_input, mm_in_shape)
                     model.set_tensor_shape(mm_output, mm_out_shape)
+                    if self.mem_mode != "const":
+                        fine_grained = True
                     # create and insert new StreamingFCLayer node
                     new_node = helper.make_node(
                         "StreamingFCLayer_Batch",
@@ -484,13 +493,14 @@ class InferBinaryStreamingFCLayer(Transformation):
                         noActivation=1,
                         numInputVectors=list(mm_in_shape[:-1]),
                         mem_mode=self.mem_mode,
+                        fine_grained=fine_grained,
                     )
                     graph.node.insert(node_ind, new_node)
                     # remove old node
                     graph.node.remove(n)
                     graph_modified = True
         if graph_modified:
-            model = model.transform(MinimizeAccumulatorWidth())
+            #model = model.transform(MinimizeAccumulatorWidth())
             model = model.transform(InferShapes())
             model = model.transform(InferDataTypes())
         return (model, graph_modified)
@@ -623,7 +633,7 @@ class InferQuantizedStreamingFCLayer(Transformation):
                         graph.node.remove(n)
                         graph_modified = True
         if graph_modified:
-            model = model.transform(MinimizeAccumulatorWidth())
+            #model = model.transform(MinimizeAccumulatorWidth())
             model = model.transform(InferShapes())
             model = model.transform(InferDataTypes())
         return (model, graph_modified)
@@ -849,6 +859,7 @@ class InferThresholdingLayer(Transformation):
                     numInputVectors=list(thl_in_shape[:-1]),
                     ActVal=actval,
                     mem_mode=self.mem_mode,
+
                 )
                 graph.node.insert(insert_point, new_node)
                 # remove old node

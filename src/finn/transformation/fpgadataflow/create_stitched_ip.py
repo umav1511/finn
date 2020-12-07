@@ -185,6 +185,7 @@ class CreateStitchedIP(Transformation):
         ip_dirs = ["list"]
         # add RTL streamer IP
         ip_dirs.append("/workspace/finn/finn-rtllib/memstream")
+        ip_dirs.append("/workspace/finn/finn-rtllib/axis_split_core")
         # ensure that all nodes are fpgadataflow, and that IPs are generated
         for node in model.graph.node:
             assert is_finn_op(node.domain), "Found non-FINN node"
@@ -422,10 +423,7 @@ class CreateStitchedIP(Transformation):
         tcl.append("close $fp")
         # write the project creator tcl script
         tcl_string = "\n".join(tcl) + "\n"
-        with open(vivado_stitch_proj_dir + "/time.sh", "a") as fo:
-            fo.write("#!/bin/bash\n")
-            fo.write("echo `date` >> date.txt")
-        fo.close() 
+
         with open(vivado_stitch_proj_dir + "/make_project.tcl", "w") as f:
             f.write(tcl_string)
         # create a shell script and call Vivado

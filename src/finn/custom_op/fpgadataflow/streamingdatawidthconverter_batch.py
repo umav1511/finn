@@ -104,9 +104,19 @@ class StreamingDataWidthConverter_Batch(HLSCustomOp):
         ielems = int(iwidth // ibits)
         ichannels = ishape[-1]
         new_shape = []
+        f = open("new_shape.txt", "a")
+      
         for i in ishape[:-1]:
             new_shape.append(i)
         new_shape.append(int(ichannels // ielems))
+        f.write(str(ichannels))
+        f.write("\n")
+        f.write(str(iwidth))
+        f.write("\n")
+        f.write(str(ibits))
+        f.write("\n")
+        f.close()
+        print(ichannels)
         new_shape.append(ielems)
         dummy_t = dummy_t.reshape(new_shape)
         return dummy_t.shape
@@ -131,20 +141,32 @@ class StreamingDataWidthConverter_Batch(HLSCustomOp):
 
         oshape = self.get_normal_output_shape()
         dummy_t = np.random.randn(*oshape)
+        print("folded output")
+        print(oshape)
+        print(dummy_t)
+        
         obits = self.get_output_datatype().bitwidth()
         assert (
             owidth % obits == 0
         ), """DWC output width must be divisible by
         input element bitwidth"""
+
         oelems = int(owidth // obits)
+        print(owidth)
+        print(obits)
+        print(oelems)
         ochannels = oshape[-1]
+        print(ochannels)
         new_shape = []
         for i in oshape[:-1]:
             new_shape.append(i)
+            print(new_shape)
         new_shape.append(int(ochannels // oelems))
+        print(new_shape)
         new_shape.append(oelems)
+        print(new_shape)
         dummy_t = dummy_t.reshape(new_shape)
-
+        print(dummy_t.shape)
         return dummy_t.shape
 
     def get_number_output_values(self):
