@@ -57,13 +57,16 @@ class InsertDWC(Transformation):
                         n1 = getCustomOp(consumer)
                         n0_out_shape = n0.get_folded_output_shape()
                         n1_in_shape = n1.get_folded_input_shape()
+                      
                         if n0_out_shape[-1] != n1_in_shape[-1]:
                             graph_modified = True
                             # determine dwc inwidth
                             dwc_in_width = n0.get_outstream_width()
                             # determine dwc outwidth
                             dwc_out_width = n1.get_instream_width()
-
+                            #if n0.get_nodeattr("mem_mode") != "const" and n0.get_nodeattr("noActivation") == 1:
+                            #    pe = n0.get_nodeattr("PE")
+                            #    dwc_in_width = pe * dwc_in_width
                             # determine shape for dwc
                             dwc_shape = n0.get_normal_output_shape()
 
@@ -76,6 +79,19 @@ class InsertDWC(Transformation):
                                 dwc_shape,
                             )
                             graph.value_info.append(dwc_output_tensor)
+                            f = open("dwc_error.txt", "a")
+                            f.write(str(n0))
+                            f.write("\n")
+                            f.write(str(n1))
+                            f.write("\nout stream width of previous\n")
+                            f.write(str(n0.get_folded_output_shape()))
+                            f.write("\ncorrected outstream width\n")
+                            f.write(str(n1.get_folded_input_shape()))
+                            f.write("\ninstream width of next\n")
+                            f.write(str(n1.get_instream_width()))
+                            f.write("\nshape\n")
+                            f.write(str(" ".join(str(dwc_shape))))
+                            f.write("\n")
 
                             dwc_node = oh.make_node(
                                 "StreamingDataWidthConverter_Batch",
@@ -91,6 +107,8 @@ class InsertDWC(Transformation):
                             # insert dwc
                             graph.node.insert(node_ind + 1, dwc_node)
 
+
+                            f.close()
                             # set dwc output tensor as new input tensor of second node
                             for idx, inp in enumerate(consumer.input):
                                 if inp == n_output:

@@ -305,7 +305,9 @@ class HLSCustomOp(CustomOp):
         builder.set_ipgen_path(code_gen_dir + "/project_{}".format(node.name))
         builder.build(code_gen_dir)
         self.set_nodeattr("ipgen_path", builder.ipgen_path)
+        print(self.get_nodeattr("ipgen_path"))
         self.set_nodeattr("ip_path", builder.ipgen_path + "/sol1/impl/ip")
+        print(self.get_nodeattr("ip_path"))
         vlnv = "xilinx.com:hls:%s:1.0" % node.name
         self.set_nodeattr("ip_vlnv", vlnv)
 
