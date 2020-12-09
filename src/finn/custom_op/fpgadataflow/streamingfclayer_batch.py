@@ -987,6 +987,23 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                   numReps,
               )
           ]
+        elif mem_mode == "decoupled" or mem_mode == "external":
+       # if mem_mode != "const" and self.get_nodeattr("noActivation") == 1:
+          pe = self.get_nodeattr("PE")
+          mh = self.get_nodeattr("MH")
+          self.code_gen_dict["$DEFINES$"] = [
+              """#define MW1 {}\n #define MH1 {}\n
+             #define SIMD1 {}\n #define PE1 {}\n #define WMEM1 {}\n
+             #define TMEM1 {}\n #define numReps {}""".format(
+                  self.get_nodeattr("MW"),
+                  mh,
+                  self.get_nodeattr("SIMD"),
+                  pe,
+                  self.calc_wmem(),
+                  self.calc_tmem(),
+                  numReps,
+              )
+          ]
         if mem_mode == "decoupled" or mem_mode == "external":
             wdt = self.get_weight_datatype()
             self.code_gen_dict["$DEFINES$"].append(
