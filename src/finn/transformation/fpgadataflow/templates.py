@@ -347,8 +347,8 @@ if {$ZYNQ_TYPE == "zynq_us+"} {
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_interconnect_0
 create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 smartconnect_0
 #set number of axilite interfaces, and number of axi master interfaces
-set_property -dict [list CONFIG.NUM_SI $NUM_AXILITE] [get_bd_cells smartconnect_0]
-set_property -dict [list CONFIG.NUM_MI $NUM_AXIMM] [get_bd_cells axi_interconnect_0]
+set_property -dict [list CONFIG.NUM_SI $NUM_AXIMM] [get_bd_cells smartconnect_0]
+set_property -dict [list CONFIG.NUM_MI $NUM_AXILITE] [get_bd_cells axi_interconnect_0]
 
 #create reset controller and connect interconnects to PS
 if {$ZYNQ_TYPE == "zynq_us+"} {
@@ -407,12 +407,13 @@ set_property STEPS.POST_ROUTE_PHYS_OPT_DESIGN.IS_ENABLED true [get_runs impl_1]
 
 # out-of-context synth can't be used for bitstream generation
 # set_property -name {STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS} -value {-mode out_of_context} -objects [get_runs synth_1]
-launch_runs -to_step write_bitstream impl_1 -jobs %d
+launch_runs -to_step write_bitstream impl_1
 wait_on_run [get_runs impl_1]
 
 # generate synthesis report
-open_run synth_1 -name synth_1
+open_run impl_1
 report_utilization -hierarchical -hierarchical_depth 4 -file synth_report.xml -format xml
+close_project
 """
 
 alveo_run_sh_template = """#!/bin/bash

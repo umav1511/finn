@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Xilinx
+# Copyright (c) 2020 Xilinx, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -11,7 +11,7 @@
 #   this list of conditions and the following disclaimer in the documentation
 #   and/or other materials provided with the distribution.
 #
-# * Neither the name of FINN nor the names of its
+# * Neither the name of Xilinx nor the names of its
 #   contributors may be used to endorse or promote products derived from
 #   this software without specific prior written permission.
 #
@@ -26,22 +26,35 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import finn.custom_op.registry as registry
-from finn.util.fpgadataflow import is_fpgadataflow_node
+# This file is intended to serve as an example showing how to set up custom builds
+# using FINN. The custom build can be launched like this:
+# ./run-docker.sh build_custom /path/to/folder
 
 
-def exp_cycles_per_layer(model):
-    """Estimates the number of cycles per sample for dataflow layers in the given model.
-    Ensure that all nodes have unique names (by calling the GiveUniqueNodeNames
-    transformation) prior to calling this analysis pass to ensure all nodes are
-    visible in the results.
+import finn.builder.build_dataflow as build
+import finn.builder.build_dataflow_config as build_cfg
 
-    Returns {node name : cycle estimation}."""
+model_name = "tfc_w1a1"
+platform_name = "Pynq-Z1"
 
-    cycle_dict = {}
-    for node in model.graph.node:
-        if is_fpgadataflow_node(node) is True:
-            inst = registry.getCustomOp(node)
-            cycle_dict[node.name] = int(inst.get_exp_cycles())
-
-    return cycle_dict
+cfg = build.DataflowBuildConfig(
+    output_dir="output_%s_%s" % (model_name, platform_name),
+    target_fps=100000,
+    mvau_wwidth_max=10000,
+    # can specify detailed folding/FIFO/etc config with:
+    # folding_config_file="folding_config.json",
+    synth_clk_period_ns=10.0,
+    board=platform_name,
+    shell_flow_type=build_cfg.ShellFlowType.VIVADO_ZYNQ,
+    generate_outputs=[
+        build_cfg.DataflowOutputType.PYNQ_DRIVER,
+        build_cfg.DataflowOutputType.STITCHED_IP,
+        build_cfg.DataflowOutputType.ESTIMATE_REPORTS,
+        build_cfg.DataflowOutputType.OOC_SYNTH,
+        build_cfg.DataflowOutputType.BITFILE,
+        build_cfg.DataflowOutputType.DEPLOYMENT_PACKAGE,
+    ],
+    save_intermediate_models=True,
+)
+model_file = "model.onnx"
+build.build_dataflow_cfg(model_file, cfg)

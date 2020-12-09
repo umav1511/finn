@@ -27,21 +27,34 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import finn.custom_op.registry as registry
-from finn.util.fpgadataflow import is_fpgadataflow_node
+from finn.util.basic import is_finn_op
 
 
-def exp_cycles_per_layer(model):
-    """Estimates the number of cycles per sample for dataflow layers in the given model.
-    Ensure that all nodes have unique names (by calling the GiveUniqueNodeNames
-    transformation) prior to calling this analysis pass to ensure all nodes are
-    visible in the results.
+def aggregate_dict_keys(res_dict):
+    total_dict = {}
+    for layer in res_dict:
+        layer_res_dict = res_dict[layer]
+        for r_type in layer_res_dict.keys():
+            if "efficiency" in r_type:
+                continue
+            r_amount = layer_res_dict[r_type]
+            r_amount = float(r_amount)
+            if r_type in total_dict.keys():
+                total_dict[r_type] += r_amount
+            else:
+                total_dict[r_type] = r_amount
+    return total_dict
 
-    Returns {node name : cycle estimation}."""
 
-    cycle_dict = {}
+def op_and_param_counts(model):
+    """Return per-node and aggregate op counts per inference."""
+
+    ret_dict = {}
     for node in model.graph.node:
-        if is_fpgadataflow_node(node) is True:
+        if is_finn_op(node.domain):
             inst = registry.getCustomOp(node)
-            cycle_dict[node.name] = int(inst.get_exp_cycles())
-
-    return cycle_dict
+            if hasattr(inst, "get_op_and_param_counts"):
+                node_op_and_param_counts = inst.get_op_and_param_counts()
+                ret_dict[node.name] = node_op_and_param_counts
+    ret_dict["total"] = aggregate_dict_keys(ret_dict)
+    return ret_dict
