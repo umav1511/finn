@@ -1,0 +1,405 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Tue Dec 15 17:51:32 2020" VIVADOVERSION="2020.1">
+
+  <SYSTEMINFO ARCH="zynq" DEVICE="7z007s" NAME="design_1" PACKAGE="clg400" SPEEDGRADE="-1"/>
+
+  <EXTERNALPORTS>
+    <PORT DIR="I" LEFT="7" NAME="s_axis_00_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_00_tdata">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="s_axis_00_tdata"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="s_axis_00_tvalid" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_00_tvalid">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="s_axis_00_tvalid"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="s_axis_00_tready" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_00_tready">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="s_axis_00_tready"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" LEFT="7" NAME="s_axis_01_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_01_tdata">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="s_axis_01_tdata"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="s_axis_01_tvalid" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_01_tvalid">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="s_axis_01_tvalid"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="s_axis_01_tready" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_01_tready">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="s_axis_01_tready"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" LEFT="7" NAME="s_axis_02_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_02_tdata">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="s_axis_02_tdata"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="s_axis_02_tvalid" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_02_tvalid">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="s_axis_02_tvalid"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="s_axis_02_tready" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_02_tready">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="s_axis_02_tready"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" LEFT="7" NAME="s_axis_03_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_03_tdata">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="s_axis_03_tdata"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="s_axis_03_tvalid" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_03_tvalid">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="s_axis_03_tvalid"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="s_axis_03_tready" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_03_tready">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="s_axis_03_tready"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT CLKFREQUENCY="100000000" DIR="I" NAME="aclk" SIGIS="clk" SIGNAME="External_Ports_aclk">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="aclk"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="aresetn" POLARITY="ACTIVE_LOW" SIGIS="rst" SIGNAME="External_Ports_aresetn">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="aresetn"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" LEFT="31" NAME="m_axis_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_m_axis_tdata">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="m_axis_tdata"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="m_axis_tvalid" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_m_axis_tvalid">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="m_axis_tvalid"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="m_axis_tready" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_m_axis_tready">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axis_combiner_v1_1_1_0" PORT="m_axis_tready"/>
+      </CONNECTIONS>
+    </PORT>
+  </EXTERNALPORTS>
+
+  <EXTERNALINTERFACES>
+    <BUSINTERFACE BUSNAME="External_Interface_s_axis_00" NAME="s_axis_00" TYPE="TARGET">
+      <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="1"/>
+      <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+      <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+      <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
+      <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+      <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+      <PARAMETER NAME="PHASE" VALUE="0.000"/>
+      <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_aclk"/>
+      <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
+      <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+      <PORTMAPS>
+        <PORTMAP LOGICAL="TDATA" PHYSICAL="s_axis_00_tdata"/>
+        <PORTMAP LOGICAL="TVALID" PHYSICAL="s_axis_00_tvalid"/>
+        <PORTMAP LOGICAL="TREADY" PHYSICAL="s_axis_00_tready"/>
+      </PORTMAPS>
+    </BUSINTERFACE>
+    <BUSINTERFACE BUSNAME="External_Interface_s_axis_01" NAME="s_axis_01" TYPE="TARGET">
+      <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="1"/>
+      <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+      <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+      <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
+      <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+      <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+      <PARAMETER NAME="PHASE" VALUE="0.000"/>
+      <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_aclk"/>
+      <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
+      <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+      <PORTMAPS>
+        <PORTMAP LOGICAL="TDATA" PHYSICAL="s_axis_01_tdata"/>
+        <PORTMAP LOGICAL="TVALID" PHYSICAL="s_axis_01_tvalid"/>
+        <PORTMAP LOGICAL="TREADY" PHYSICAL="s_axis_01_tready"/>
+      </PORTMAPS>
+    </BUSINTERFACE>
+    <BUSINTERFACE BUSNAME="External_Interface_s_axis_02" NAME="s_axis_02" TYPE="TARGET">
+      <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="1"/>
+      <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+      <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+      <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
+      <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+      <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+      <PARAMETER NAME="PHASE" VALUE="0.000"/>
+      <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_aclk"/>
+      <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
+      <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+      <PORTMAPS>
+        <PORTMAP LOGICAL="TDATA" PHYSICAL="s_axis_02_tdata"/>
+        <PORTMAP LOGICAL="TVALID" PHYSICAL="s_axis_02_tvalid"/>
+        <PORTMAP LOGICAL="TREADY" PHYSICAL="s_axis_02_tready"/>
+      </PORTMAPS>
+    </BUSINTERFACE>
+    <BUSINTERFACE BUSNAME="External_Interface_s_axis_03" NAME="s_axis_03" TYPE="TARGET">
+      <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="1"/>
+      <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+      <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+      <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
+      <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+      <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+      <PARAMETER NAME="PHASE" VALUE="0.000"/>
+      <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_aclk"/>
+      <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
+      <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+      <PORTMAPS>
+        <PORTMAP LOGICAL="TDATA" PHYSICAL="s_axis_03_tdata"/>
+        <PORTMAP LOGICAL="TVALID" PHYSICAL="s_axis_03_tvalid"/>
+        <PORTMAP LOGICAL="TREADY" PHYSICAL="s_axis_03_tready"/>
+      </PORTMAPS>
+    </BUSINTERFACE>
+    <BUSINTERFACE BUSNAME="axis_combiner_v1_1_1_0_m_axis" NAME="m_axis" TYPE="INITIATOR">
+      <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
+      <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+      <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+      <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+      <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
+      <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+      <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+      <PARAMETER NAME="PHASE" VALUE="0.000"/>
+      <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_aclk"/>
+      <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
+      <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+      <PORTMAPS>
+        <PORTMAP LOGICAL="TDATA" PHYSICAL="m_axis_tdata"/>
+        <PORTMAP LOGICAL="TVALID" PHYSICAL="m_axis_tvalid"/>
+        <PORTMAP LOGICAL="TREADY" PHYSICAL="m_axis_tready"/>
+      </PORTMAPS>
+    </BUSINTERFACE>
+  </EXTERNALINTERFACES>
+
+  <MODULES>
+    <MODULE COREREVISION="2" FULLNAME="/axis_combiner_v1_1_1_0" HWVERSION="1.0" INSTANCE="axis_combiner_v1_1_1_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="axis_combiner_v1_1_19_top" VLNV="user.org:user:axis_combiner_v1_1_19_top:1.0">
+      <DOCUMENTS/>
+      <PARAMETERS>
+        <PARAMETER NAME="C_FAMILY" VALUE="zynq"/>
+        <PARAMETER NAME="C_AXIS_TDATA_WIDTH" VALUE="8"/>
+        <PARAMETER NAME="C_AXIS_TID_WIDTH" VALUE="1"/>
+        <PARAMETER NAME="C_AXIS_TDEST_WIDTH" VALUE="1"/>
+        <PARAMETER NAME="C_AXIS_TUSER_WIDTH" VALUE="1"/>
+        <PARAMETER NAME="C_AXIS_SIGNAL_SET" VALUE="0x000000FF"/>
+        <PARAMETER NAME="C_MASTER_PORT_NUM" VALUE="0"/>
+        <PARAMETER NAME="C_NUM_SI_SLOTS" VALUE="4"/>
+        <PARAMETER NAME="Component_Name" VALUE="design_1_axis_combiner_v1_1_1_0_0"/>
+        <PARAMETER NAME="enable_clken" VALUE="false"/>
+        <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
+      </PARAMETERS>
+      <PORTS>
+        <PORT CLKFREQUENCY="100000000" DIR="I" NAME="aclk" SIGIS="clk" SIGNAME="External_Ports_aclk">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="aclk"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="aresetn" POLARITY="ACTIVE_LOW" SIGIS="rst" SIGNAME="External_Ports_aresetn">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="aresetn"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="s_axis_00_tvalid" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_00_tvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="s_axis_00_tvalid"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="s_axis_00_tready" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_00_tready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="s_axis_00_tready"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="7" NAME="s_axis_00_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_00_tdata">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="s_axis_00_tdata"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="s_axis_01_tvalid" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_01_tvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="s_axis_01_tvalid"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="s_axis_01_tready" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_01_tready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="s_axis_01_tready"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="7" NAME="s_axis_01_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_01_tdata">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="s_axis_01_tdata"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="s_axis_02_tvalid" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_02_tvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="s_axis_02_tvalid"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="s_axis_02_tready" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_02_tready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="s_axis_02_tready"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="7" NAME="s_axis_02_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_02_tdata">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="s_axis_02_tdata"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="s_axis_03_tvalid" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_03_tvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="s_axis_03_tvalid"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="s_axis_03_tready" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_03_tready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="s_axis_03_tready"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="7" NAME="s_axis_03_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_s_axis_03_tdata">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="s_axis_03_tdata"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="m_axis_tvalid" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_m_axis_tvalid">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="m_axis_tvalid"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="m_axis_tready" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_m_axis_tready">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="m_axis_tready"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="31" NAME="m_axis_tdata" RIGHT="0" SIGIS="undef" SIGNAME="axis_combiner_v1_1_1_0_m_axis_tdata">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="design_1_imp" PORT="m_axis_tdata"/>
+          </CONNECTIONS>
+        </PORT>
+      </PORTS>
+      <BUSINTERFACES>
+        <BUSINTERFACE BUSNAME="axis_combiner_v1_1_1_0_m_axis" NAME="m_axis" TYPE="INITIATOR" VLNV="xilinx.com:interface:axis:1.0">
+          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="4"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_aclk"/>
+          <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
+          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+          <PORTMAPS>
+            <PORTMAP LOGICAL="TDATA" PHYSICAL="m_axis_tdata"/>
+            <PORTMAP LOGICAL="TVALID" PHYSICAL="m_axis_tvalid"/>
+            <PORTMAP LOGICAL="TREADY" PHYSICAL="m_axis_tready"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+        <BUSINTERFACE BUSNAME="External_Interface_s_axis_00" NAME="s_axis_00" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
+          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="1"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_aclk"/>
+          <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
+          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+          <PORTMAPS>
+            <PORTMAP LOGICAL="TDATA" PHYSICAL="s_axis_00_tdata"/>
+            <PORTMAP LOGICAL="TVALID" PHYSICAL="s_axis_00_tvalid"/>
+            <PORTMAP LOGICAL="TREADY" PHYSICAL="s_axis_00_tready"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+        <BUSINTERFACE BUSNAME="External_Interface_s_axis_01" NAME="s_axis_01" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
+          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="1"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_aclk"/>
+          <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
+          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+          <PORTMAPS>
+            <PORTMAP LOGICAL="TDATA" PHYSICAL="s_axis_01_tdata"/>
+            <PORTMAP LOGICAL="TVALID" PHYSICAL="s_axis_01_tvalid"/>
+            <PORTMAP LOGICAL="TREADY" PHYSICAL="s_axis_01_tready"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+        <BUSINTERFACE BUSNAME="External_Interface_s_axis_02" NAME="s_axis_02" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
+          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="1"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_aclk"/>
+          <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
+          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+          <PORTMAPS>
+            <PORTMAP LOGICAL="TDATA" PHYSICAL="s_axis_02_tdata"/>
+            <PORTMAP LOGICAL="TVALID" PHYSICAL="s_axis_02_tvalid"/>
+            <PORTMAP LOGICAL="TREADY" PHYSICAL="s_axis_02_tready"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+        <BUSINTERFACE BUSNAME="External_Interface_s_axis_03" NAME="s_axis_03" TYPE="TARGET" VLNV="xilinx.com:interface:axis:1.0">
+          <PARAMETER NAME="TDATA_NUM_BYTES" VALUE="1"/>
+          <PARAMETER NAME="TDEST_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TID_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="TUSER_WIDTH" VALUE="0"/>
+          <PARAMETER NAME="HAS_TREADY" VALUE="1"/>
+          <PARAMETER NAME="HAS_TSTRB" VALUE="0"/>
+          <PARAMETER NAME="HAS_TKEEP" VALUE="0"/>
+          <PARAMETER NAME="HAS_TLAST" VALUE="0"/>
+          <PARAMETER NAME="FREQ_HZ" VALUE="100000000"/>
+          <PARAMETER NAME="PHASE" VALUE="0.000"/>
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="design_1_aclk"/>
+          <PARAMETER NAME="LAYERED_METADATA" VALUE="undef"/>
+          <PARAMETER NAME="INSERT_VIP" VALUE="0"/>
+          <PORTMAPS>
+            <PORTMAP LOGICAL="TDATA" PHYSICAL="s_axis_03_tdata"/>
+            <PORTMAP LOGICAL="TVALID" PHYSICAL="s_axis_03_tvalid"/>
+            <PORTMAP LOGICAL="TREADY" PHYSICAL="s_axis_03_tready"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+      </BUSINTERFACES>
+    </MODULE>
+  </MODULES>
+
+</EDKSYSTEM>

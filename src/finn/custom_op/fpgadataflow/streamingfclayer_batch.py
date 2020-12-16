@@ -115,7 +115,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             # weight data from the weight FIFOs.
             "runtime_writeable_weights": ("i", False, 0, {0, 1}),
             
-            # to determine how stitching is done
+            # to determine hls ip block sizes
             "fine_grained" : ("i", False, 0, {0, 1}),
         }
         my_attrs.update(super().get_nodeattr_types())
@@ -763,17 +763,17 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 #print("weight_widht")
                 #print(weight_width)
                 # pad to nearest 4 bits to get hex strings
-                if self.get_nodeattr("fine_grained") == 1:
-                   assert(self.get_nodeattr("mem_mode") != "const"), """mem_mode must be constant for fine grained"""
-                   assert(self.get_nodeattr("noActivation") == 1), """noActivation must be 1 for fine grained"""
+                #if self.get_nodeattr("fine_grained") == 1:
+                #   assert(self.get_nodeattr("mem_mode") != "const"), """mem_mode must be constant for fine grained"""
+                #   assert(self.get_nodeattr("noActivation") == 1), """noActivation must be 1 for fine grained"""
                 #if self.get_nodeattr("mem_mode") != "const" and self.get_nodeattr("noActivation") == 1:
-                   pe = self.get_nodeattr("PE")
-                   simd = self.get_nodeattr("SIMD")
-                   wp = self.get_weight_datatype().bitwidth()
-                   weight_width_padded = pe * simd * wp
+                #   pe = self.get_nodeattr("PE")
+                #   simd = self.get_nodeattr("SIMD")
+                #   wp = self.get_weight_datatype().bitwidth()
+                #   weight_width_padded = pe * simd * wp
                          
-                else:
-                    weight_width_padded = roundup_to_integer_multiple(weight_width, 4)
+                #else:
+                weight_width_padded = roundup_to_integer_multiple(weight_width, 4)
                 print(weight_width_padded)
                 weight_tensor_pe_flipped = pack_innermost_dim_as_hex_string(
                     weight_tensor_pe_flipped, export_wdt, weight_width_padded, prefix=""
@@ -1039,11 +1039,18 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                  numReps,
              )
           ]
-               
         if self.get_nodeattr("fine_grained") == 1:
+           #f = open("gh.txt", "a")
+           #f.write("::::\n")
+           #f.write(str(self.get_nodeattr("fine_grained")))
+           #f.write("\n")
+           #f.close()
+        #print(self.get_nodeattr("fine_grained"))
+        #if mem_mode != "const" and self.get_nodeattr("noActivation") == 1:               
+          #if self.get_nodeattr("fine_grained") == 1:
           assert(self.get_nodeattr("mem_mode") != "const"), """mem_mode must be constant for fine grained"""
           assert(self.get_nodeattr("noActivation") == 1), """noActivation must be 1 for fine grained"""
-       # if mem_mode != "const" and self.get_nodeattr("noActivation") == 1:
+
           pe = self.get_nodeattr("PE")
           mh = self.get_nodeattr("MH")
           mh = mh // pe
@@ -1230,10 +1237,10 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     self.get_outstream_width(),
                 )
             ]
-       
+        #elif mem_mode != "const" and self.get_nodeattr("noActivation") == 1:                      
         elif self.get_nodeattr("fine_grained") == 1: 
-            assert(self.get_nodeattr("mem_mode") != "const"), """mem_mode must be constant for fine grained"""
-            assert(self.get_nodeattr("noActivation") == 1), """noActivation must be 1 for fine grained""" 
+        #    assert(self.get_nodeattr("mem_mode") != "const"), """mem_mode must be constant for fine grained"""
+        #    assert(self.get_nodeattr("noActivation") == 1), """noActivation must be 1 for fine grained""" 
             self.code_gen_dict["$BLACKBOXFUNCTION$"] = [
                 """void {}(
                     hls::stream<ap_uint<{}>> &in0,
@@ -1426,32 +1433,57 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                        )       
                   
             # instantiate combiner block and set input parameters
-            cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:axis_combiner:1.1 %s/axis_combiner_output" % node_name)
-            cmd.append("set_property -dict [list CONFIG.NUM_SI {%d}] [get_bd_cells %s/axis_combiner_output]" % (pe, node_name)) 
+            #cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:axis_combiner:1.1 %s/axis_combiner_output" % node_name)
+            #cmd.append("set_property -dict [list CONFIG.NUM_SI {%d}] [get_bd_cells %s/axis_combiner_output]" % (pe, node_name)) 
 
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_output" % node_name)
+            cmd.append("set_property -dict [list CONFIG.C_NUM_SI_SLOTS {%d}] [get_bd_cells %s/axis_combiner_output]" % (pe, node_name)) 
             # INPUTS
             # instantiate input broadcaster and set number of masters
-            cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:axis_broadcaster:1.1 %s/axis_broadcaster_input" % (node_name))
-            cmd.append("set_property -dict [list CONFIG.NUM_MI {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (pe, node_name))
+            #cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:axis_broadcaster:1.1 %s/axis_broadcaster_input" % (node_name))
+            #cmd.append("set_property -dict [list CONFIG.NUM_MI {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (pe, node_name))
+
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_input" % (node_name))
+            cmd.append("set_property -dict [list CONFIG.C_NUM_MI_SLOTS {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (pe, node_name))
 
             # connect input of block to input of broadcaster
+            #cmd.append(
+            #    "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+            #    "[get_bd_intf_pins %s/axis_broadcaster_input/S_AXIS]"
+            #    % (node_name, din_name, node_name)
+            #)
+
             cmd.append(
                 "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
-                "[get_bd_intf_pins %s/axis_broadcaster_input/S_AXIS]"
+                "[get_bd_intf_pins %s/axis_broadcaster_input/s_axis]"
                 % (node_name, din_name, node_name)
             )
 
             # connect output of broadcaster to input of HLS IPs
+            #for i in range(pe):
+            #   if i < 10 :
+            #      cmd.append(
+            #           "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/M0%d_AXIS] "
+            #           "[get_bd_intf_pins %s/%s_%d/%s]"
+            #           % (node_name, i, node_name, node_name, i, din_name)
+            #      )
+            #   else:
+            #      cmd.append(
+            #           "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/M%d_AXIS] "
+            #           "[get_bd_intf_pins %s/%s_%d/%s]"
+            #           % (node_name, i, node_name, node_name, i, din_name)
+            #      ) 
+
             for i in range(pe):
                if i < 10 :
                   cmd.append(
-                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/M0%d_AXIS] "
+                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/m_axis_0%d] "
                        "[get_bd_intf_pins %s/%s_%d/%s]"
                        % (node_name, i, node_name, node_name, i, din_name)
                   )
                else:
                   cmd.append(
-                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/M%d_AXIS] "
+                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/m_axis_%d] "
                        "[get_bd_intf_pins %s/%s_%d/%s]"
                        % (node_name, i, node_name, node_name, i, din_name)
                   ) 
@@ -1511,14 +1543,23 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             )
 
             # TODO connect output of each HLS IP to the input of combiner
-            for i in range(pe):
-               if i < 10 :
-                    cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/S0%d_AXIS]" % (node_name, node_name, i, node_name, i))
-               else:
-                    cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/S%d_AXIS]" % (node_name, node_name, i, node_name, i))                  
+            #for i in range(pe):
+            #   if i < 10 :
+            #        cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/S0%d_AXIS]" % (node_name, node_name, i, node_name, i))
+            #   else:
+            #        cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/S%d_AXIS]" % (node_name, node_name, i, node_name, i))                  
 
             # connect output of combiner to the output of whole block
-            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output/M_AXIS] [get_bd_intf_pins %s/out_V_V]"  % (node_name, node_name))
+            #cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output/M_AXIS] [get_bd_intf_pins %s/out_V_V]"  % (node_name, node_name))
+
+            for i in range(pe):
+               if i < 10 :
+                    cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/s_axis_0%s]" % (node_name, node_name, i, node_name, i))
+               else:
+                    cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/s_axis_%d]" % (node_name, node_name, i, node_name, i))                  
+
+            # connect output of combiner to the output of whole block
+            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output/m_axis] [get_bd_intf_pins %s/out_V_V]"  % (node_name, node_name))
 
             # TODO Input of outer block is connected directly as input to the HLS IP, modify it to connect to input broadcaster
             #cmd.append(

@@ -519,7 +519,7 @@ class InferBinaryStreamingFCLayer(Transformation):
                     graph.node.remove(n)
                     graph_modified = True
         if graph_modified:
-            #model = model.transform(MinimizeAccumulatorWidth())
+            model = model.transform(MinimizeAccumulatorWidth())
             model = model.transform(InferShapes())
             model = model.transform(InferDataTypes())
         return (model, graph_modified)
@@ -623,6 +623,8 @@ class InferQuantizedStreamingFCLayer(Transformation):
                         graph.node.remove(consumer)
                         graph_modified = True
                     else:
+                        if self.mem_mode != "const":
+                            fine_grained = True
                         # no activation, matmul only
                         odt = model.get_tensor_datatype(mm_output)
                         model.set_tensor_shape(mm_input, mm_in_shape)
@@ -646,6 +648,7 @@ class InferQuantizedStreamingFCLayer(Transformation):
                             noActivation=1,
                             numInputVectors=list(mm_in_shape[:-1]),
                             mem_mode=self.mem_mode,
+                            fine_grained-fine_grained,
                         )
                         graph.node.insert(node_ind, new_node)
                         # remove old node

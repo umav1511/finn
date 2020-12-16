@@ -28,7 +28,7 @@
 
 import os
 import pytest
-
+import time
 import numpy as np
 
 # as of Feb'20 there is a bug that segfaults ONNX shape inference if we
@@ -438,8 +438,14 @@ class TestEnd2End:
         test_fpga_part = get_build_env(kind, target_clk_ns)["part"]
         model = model.transform(GiveUniqueNodeNames())
         model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
-        model.save(get_checkpoint_name(topology, wbits, abits, "prepare_ip_" + kind))    
+        model.save(get_checkpoint_name(topology, wbits, abits, "prepare_ip_" + kind))  
+        #a = time.time()  
         model = model.transform(HLSSynthIP())
+        #b = time.time()
+        #f = open("gh.txt", "a")
+        #f.write(str(b - a))
+        ##f.write("\n")
+        #f.close()
         model.save(get_checkpoint_name(topology, wbits, abits, "ipgen_" + kind))
 
     @pytest.mark.slow
@@ -477,8 +483,10 @@ class TestEnd2End:
         # rtlsim only supports impl_style=rtl for StreamingFIFO, ensure that
         for fifo_layer in model.get_nodes_by_op_type("StreamingFIFO"):
             getCustomOp(fifo_layer).set_nodeattr("impl_style", "rtl")
+        #a = time.time()
         model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
         model = model.transform(HLSSynthIP())
+
         model = model.transform(CreateStitchedIP(test_fpga_part, target_clk_ns))
 
         #model = model.transform(PrepareRTLSim())
@@ -489,10 +497,10 @@ class TestEnd2End:
         #        "rtlsim_trace", "%s_w%da%d.vcd" % (topology, wbits, abits)
         #    )
         #    os.environ["RTLSIM_TRACE_DEPTH"] = "3"
-        rtlsim_chkpt = get_checkpoint_name(
-            topology, wbits, abits, "ipstitch_rtlsim_" + kind
-        )
-        model.save(rtlsim_chkpt)
+        #rtlsim_chkpt = get_checkpoint_name(
+        #    topology, wbits, abits, "ipstitch_rtlsim_" + kind
+        #)
+        #model.save(rtlsim_chkpt)
         #parent_chkpt = get_checkpoint_name(topology, wbits, abits, "dataflow_parent")
         #(input_tensor_npy, output_tensor_npy) = get_golden_io_pair(
         #    topology, wbits, abits, return_topk=1

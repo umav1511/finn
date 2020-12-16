@@ -1,0 +1,8 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../extended_combiner.ip_user_files/bd/design_1/sim/design_1.vhd" \
+"../../../../extended_combiner.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.vhd" \
+"../../../../extended_combiner.srcs/sources_1/new/tb_combiner.vhd" \
+
+# Do not sort compile order
+nosort
