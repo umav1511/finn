@@ -1239,8 +1239,8 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             ]
         #elif mem_mode != "const" and self.get_nodeattr("noActivation") == 1:                      
         elif self.get_nodeattr("fine_grained") == 1: 
-        #    assert(self.get_nodeattr("mem_mode") != "const"), """mem_mode must be constant for fine grained"""
-        #    assert(self.get_nodeattr("noActivation") == 1), """noActivation must be 1 for fine grained""" 
+            assert(self.get_nodeattr("mem_mode") != "const"), """mem_mode must be constant for fine grained"""
+            assert(self.get_nodeattr("noActivation") == 1), """noActivation must be 1 for fine grained""" 
             self.code_gen_dict["$BLACKBOXFUNCTION$"] = [
                 """void {}(
                     hls::stream<ap_uint<{}>> &in0,
@@ -1372,12 +1372,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 "create_bd_intf_pin -mode Slave "
                 "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s" % (node_name, din_name)
             )
-            # instantiate the hls ip "pe" number of times
-            for i in range(pe):
-                cmd.append(
-                    "create_bd_cell -type ip -vlnv %s /%s/%s_%d"
-                    % (self.get_nodeattr("ip_vlnv"), node_name, node_name, i)
-                )
+
             # instantiate a streamer and connect it to the HLS IP
             strm_vlnv = "xilinx.com:user:memstream:1.0"
             strm_inst = node_name + "_wstrm"
@@ -1408,89 +1403,176 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 )
             )
 
-            
-            # WEIGHTS
-            #instantiate and configure the weight splitter
-            cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter" % (node_name))
-            cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter]" % (pe * simd, pe, node_name))
+            if self.get_nodeattr("fine_grained")==True:
+                 assert (self.get_nodeattr("mem_mode")!="const"), "mem_mode must be constant for fine_grained"
+                 assert (self.get_nodeattr("noActivation")==1), "noActivation must be 1 for fine_grained"
+                 # instantiate the hls ip "pe" number of times
+                 for i in range(pe):
+                     cmd.append(
+                        "create_bd_cell -type ip -vlnv %s /%s/%s_%d"
+                        % (self.get_nodeattr("ip_vlnv"), node_name, node_name, i)
+                     )
+                 # WEIGHTS
+                 #instantiate and configure the weight splitter
+                 cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter" % (node_name))
+                 cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter]" % (self.get_weightstream_width_padded(), pe, node_name))
 
 
 
-            #connect output of each slice to weights_V_V of each IP
-            for i in range(pe):
-                 if i < 10:        
-                   cmd.append(
+                 #connect output of each slice to weights_V_V of each IP
+                 for i in range(pe):
+                     if i < 10:        
+                        cmd.append(
                           "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter/m_axis_0%d] "
                           "[get_bd_intf_pins %s/%s_%d/weights_V_V]"
                           % (node_name, i, node_name, node_name, i)
-                       )       
+                          )       
                   
-                 else:
-                   cmd.append(
+                     else:
+                       cmd.append(
                           "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter/m_axis_%d] "
                           "[get_bd_intf_pins %s/%s_%d/weights_V_V]"
                           % (node_name, i,  node_name, node_name, i)
-                       )       
+                          )       
                   
-            # instantiate combiner block and set input parameters
-            #cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:axis_combiner:1.1 %s/axis_combiner_output" % node_name)
-            #cmd.append("set_property -dict [list CONFIG.NUM_SI {%d}] [get_bd_cells %s/axis_combiner_output]" % (pe, node_name)) 
+                 # instantiate combiner block and set input parameters
+                 #cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:axis_combiner:1.1 %s/axis_combiner_output" % node_name)
+                 #cmd.append("set_property -dict [list CONFIG.NUM_SI {%d}] [get_bd_cells %s/axis_combiner_output]" % (pe, node_name)) 
 
-            cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_output" % node_name)
-            cmd.append("set_property -dict [list CONFIG.C_NUM_SI_SLOTS {%d}] [get_bd_cells %s/axis_combiner_output]" % (pe, node_name)) 
-            # INPUTS
-            # instantiate input broadcaster and set number of masters
-            #cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:axis_broadcaster:1.1 %s/axis_broadcaster_input" % (node_name))
-            #cmd.append("set_property -dict [list CONFIG.NUM_MI {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (pe, node_name))
+                 cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_output" % node_name)
+                 cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_AXIS_SIGNAL_SET {0x00000003} CONFIG.C_NUM_SI_SLOTS {%d}] [get_bd_cells %s/axis_combiner_output]" % (self.get_outstream_width() // self.get_nodeattr("PE"), pe, node_name)) 
+                 # INPUTS
+                 # instantiate input broadcaster and set number of masters
+                 #cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:axis_broadcaster:1.1 %s/axis_broadcaster_input" % (node_name))
+                 #cmd.append("set_property -dict [list CONFIG.NUM_MI {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (pe, node_name))
 
-            cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_input" % (node_name))
-            cmd.append("set_property -dict [list CONFIG.C_NUM_MI_SLOTS {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (pe, node_name))
+                 cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_input" % (node_name))
+                 cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_NUM_MI_SLOTS {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (self.get_instream_width(), pe, node_name))
 
-            # connect input of block to input of broadcaster
-            #cmd.append(
-            #    "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
-            #    "[get_bd_intf_pins %s/axis_broadcaster_input/S_AXIS]"
-            #    % (node_name, din_name, node_name)
-            #)
+                 # connect input of block to input of broadcaster
+                 #cmd.append(
+                 #    "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                 #    "[get_bd_intf_pins %s/axis_broadcaster_input/S_AXIS]"
+                 #    % (node_name, din_name, node_name)
+                 #)
 
-            cmd.append(
-                "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
-                "[get_bd_intf_pins %s/axis_broadcaster_input/s_axis]"
-                % (node_name, din_name, node_name)
-            )
+                 cmd.append(
+                     "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                     "[get_bd_intf_pins %s/axis_broadcaster_input/s_axis]"
+                     % (node_name, din_name, node_name)
+                 )
 
-            # connect output of broadcaster to input of HLS IPs
-            #for i in range(pe):
-            #   if i < 10 :
-            #      cmd.append(
-            #           "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/M0%d_AXIS] "
-            #           "[get_bd_intf_pins %s/%s_%d/%s]"
-            #           % (node_name, i, node_name, node_name, i, din_name)
-            #      )
-            #   else:
-            #      cmd.append(
-            #           "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/M%d_AXIS] "
-            #           "[get_bd_intf_pins %s/%s_%d/%s]"
-            #           % (node_name, i, node_name, node_name, i, din_name)
-            #      ) 
+                 # connect output of broadcaster to input of HLS IPs
+                 #for i in range(pe):
+                 #   if i < 10 :
+                 #      cmd.append(
+                 #           "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/M0%d_AXIS] "
+                 #           "[get_bd_intf_pins %s/%s_%d/%s]"
+                 #           % (node_name, i, node_name, node_name, i, din_name)
+                 #      )
+                 #   else:
+                 #      cmd.append(
+                 #           "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/M%d_AXIS] "
+                 #           "[get_bd_intf_pins %s/%s_%d/%s]"
+                 #           % (node_name, i, node_name, node_name, i, din_name)
+                 #      ) 
 
-            for i in range(pe):
-               if i < 10 :
-                  cmd.append(
-                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/m_axis_0%d] "
-                       "[get_bd_intf_pins %s/%s_%d/%s]"
-                       % (node_name, i, node_name, node_name, i, din_name)
-                  )
-               else:
-                  cmd.append(
-                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/m_axis_%d] "
-                       "[get_bd_intf_pins %s/%s_%d/%s]"
-                       % (node_name, i, node_name, node_name, i, din_name)
-                  ) 
+                 for i in range(pe):
+                    if i < 10 :
+                       cmd.append(
+                           "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/m_axis_0%d] "
+                           "[get_bd_intf_pins %s/%s_%d/%s]"
+                           % (node_name, i, node_name, node_name, i, din_name)
+                       ) 
+                    else:
+                      cmd.append(
+                           "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/m_axis_%d] "
+                           "[get_bd_intf_pins %s/%s_%d/%s]"
+                           % (node_name, i, node_name, node_name, i, din_name)
+                      ) 
 
-            # TODO to remove - connect stream of weights to the weights input of block 
-            # change to connect to input of weight broadcaster
-            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] [get_bd_intf_pins %s/axis_splitter/s_axis]" % (node_name, strm_inst, node_name))            
+                 cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] [get_bd_intf_pins %s/axis_splitter/s_axis]" % (node_name, strm_inst, node_name)) 
+
+                 for i in range(pe):
+                    if i < 10 :
+                       cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/s_axis_0%s]" % (node_name, node_name, i, node_name, i))
+                    else:
+                       cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/s_axis_%d]" % (node_name, node_name, i, node_name, i))   
+                 # connect output of combiner to the output of whole block
+                 cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output/m_axis] [get_bd_intf_pins %s/out_V_V]"  % (node_name, node_name))  
+   
+
+                 #  TODO : hls ip reset and clock - add these connections to all the instantiated IPs 
+                 for i in range(pe):
+                    cmd.append(
+                      "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
+                      % (node_name, rst_name, node_name, node_name, i, rst_name)
+                    )
+                    cmd.append(
+                      "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
+                      % (node_name, clk_name, node_name, node_name, i, clk_name)
+                    )
+  
+                 # connect clk and reset - combiner
+                 cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output/aresetn]"
+                   % (node_name, rst_name, node_name)
+                 )
+                 cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output/aclk]"
+                    % (node_name, clk_name, node_name)
+                 ) 
+ 
+                 # connect clk and reset - input broadcaster
+                 cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_broadcaster_input/aresetn]"
+                   % (node_name, rst_name, node_name)
+                 )
+                 cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_broadcaster_input/aclk]"
+                   % (node_name, clk_name, node_name)
+                 ) 
+
+                 # connect clk and reset - weight_splitter
+                 cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aresetn]"
+                   % (node_name, rst_name, node_name)
+                 )
+                 cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aclk]"
+                   % (node_name, clk_name, node_name)
+                 )      
+            
+            else:
+                cmd.append(
+                  "create_bd_cell -type ip -vlnv %s /%s/%s"
+                  % (self.get_nodeattr("ip_vlnv"), node_name, node_name)
+                )
+
+                cmd.append(
+                  "connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] "
+                  "[get_bd_intf_pins %s/%s/weights_V_V]"
+                  % (node_name, strm_inst, node_name, node_name)
+                )
+
+                cmd.append(
+                  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
+                  % (node_name, rst_name, node_name, node_name, rst_name)
+                )
+                cmd.append(
+                  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
+                  % (node_name, clk_name, node_name, node_name, clk_name)
+                )
+                cmd.append(
+                  "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                  "[get_bd_intf_pins %s/%s/%s]"
+                  % (node_name, din_name, node_name, node_name, din_name)
+                )
+                cmd.append(
+                  "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                  "[get_bd_intf_pins %s/%s/%s]"
+                  % (node_name, dout_name, node_name, node_name, dout_name)
+                )
             # streamer reset and clock
             cmd.append(
                 "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
@@ -1501,46 +1583,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 % (node_name, clk_name, node_name, strm_inst)
             )
 
-            #  TODO : hls ip reset and clock - add these connections to all the instantiated IPs 
-            for i in range(pe):
-               cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
-                   % (node_name, rst_name, node_name, node_name, i, rst_name)
-               )
-               cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
-                   % (node_name, clk_name, node_name, node_name, i, clk_name)
-               )
 
-            # connect clk and reset - combiner
-            cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output/aresetn]"
-                   % (node_name, rst_name, node_name)
-            )
-            cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output/aclk]"
-                   % (node_name, clk_name, node_name)
-            )
- 
-            # connect clk and reset - input broadcaster
-            cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_broadcaster_input/aresetn]"
-                   % (node_name, rst_name, node_name)
-            )
-            cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_broadcaster_input/aclk]"
-                   % (node_name, clk_name, node_name)
-            )
-
-            # connect clk and reset - weight_splitter
-            cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aresetn]"
-                   % (node_name, rst_name, node_name)
-            )
-            cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aclk]"
-                   % (node_name, clk_name, node_name)
-            )
 
             # TODO connect output of each HLS IP to the input of combiner
             #for i in range(pe):
@@ -1551,15 +1594,9 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
             # connect output of combiner to the output of whole block
             #cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output/M_AXIS] [get_bd_intf_pins %s/out_V_V]"  % (node_name, node_name))
+               
 
-            for i in range(pe):
-               if i < 10 :
-                    cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/s_axis_0%s]" % (node_name, node_name, i, node_name, i))
-               else:
-                    cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/s_axis_%d]" % (node_name, node_name, i, node_name, i))                  
 
-            # connect output of combiner to the output of whole block
-            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output/m_axis] [get_bd_intf_pins %s/out_V_V]"  % (node_name, node_name))
 
             # TODO Input of outer block is connected directly as input to the HLS IP, modify it to connect to input broadcaster
             #cmd.append(

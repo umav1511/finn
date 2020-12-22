@@ -362,7 +362,7 @@ class TestEnd2End:
     def test_convert_to_hls_layers(self, topology, wbits, abits):
         prev_chkpt_name = get_checkpoint_name(topology, wbits, abits, "streamline")
         model = load_test_checkpoint_or_skip(prev_chkpt_name)
-        model = model.transform(to_hls.InferThresholdingLayer())
+
         # needed for bipolar MatMul layers
         model = model.transform(to_hls.InferBinaryStreamingFCLayer(mem_mode))
         model.save(get_checkpoint_name(topology, wbits, abits, "fc1"))         
@@ -372,7 +372,7 @@ class TestEnd2End:
         # TopK to LabelSelect
         model = model.transform(to_hls.InferLabelSelectLayer())
         # input quantization (if any) to standalone thresholding
-
+        model = model.transform(to_hls.InferThresholdingLayer())
         # needed for convolutions
         if "fc" not in topology:
             model = model.transform(to_hls.InferConvInpGen())

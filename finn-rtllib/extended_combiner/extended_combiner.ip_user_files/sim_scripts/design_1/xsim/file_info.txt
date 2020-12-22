@@ -1,5 +1,0 @@
-axis_infrastructure_v1_1_vl_rfs.v,verilog,xil_defaultlib,../../../bd/design_1/ipshared/25a6/src/axis_infrastructure_v1_1_vl_rfs.v,incdir="$ref_dir/../../../bd/design_1/ipshared/25a6/src"incdir="../../../../extended_combiner.srcs/sources_1/bd/design_1/ipshared/25a6/src"
-combiner_core.v,verilog,xil_defaultlib,../../../bd/design_1/ipshared/25a6/extended_combiner.srcs/sources_1/new/combiner_core.v,incdir="$ref_dir/../../../bd/design_1/ipshared/25a6/src"incdir="../../../../extended_combiner.srcs/sources_1/bd/design_1/ipshared/25a6/src"
-design_1_axis_combiner_v1_1_1_0_0.v,verilog,xil_defaultlib,../../../bd/design_1/ip/design_1_axis_combiner_v1_1_1_0_0/sim/design_1_axis_combiner_v1_1_1_0_0.v,incdir="$ref_dir/../../../bd/design_1/ipshared/25a6/src"incdir="../../../../extended_combiner.srcs/sources_1/bd/design_1/ipshared/25a6/src"
-design_1.vhd,vhdl,xil_defaultlib,../../../bd/design_1/sim/design_1.vhd,incdir="$ref_dir/../../../bd/design_1/ipshared/25a6/src"incdir="../../../../extended_combiner.srcs/sources_1/bd/design_1/ipshared/25a6/src"
-glbl.v,Verilog,xil_defaultlib,glbl.v
