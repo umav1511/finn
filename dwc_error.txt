@@ -9444,3 +9444,4323 @@ instream width of next
 16
 shape
 ( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8e1ca50b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f8e1ca50a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f8e24149be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8e245cb048>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8e0e4d40b8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f8e24149be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f8e25c72dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8e0e4d40b8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8e2483fcf8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f8e25c72dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f8e24149be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8e2483fcf8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8e1ca509e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f8e24149be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba4d2acb00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fba4d2aca58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fba549a5be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba54e27048>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba3ed30080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fba549a5be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fba564cedd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba3ed30080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba5509be10>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fba564cedd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fba549a5be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba5509be10>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba4d2ac9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fba549a5be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9c26660ef0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f9c1e8346d8>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f9c1e834630>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9c26660ef0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9c1e8e1f28>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f9c1e834630>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f9c1e834a90>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9c1e8e1f28>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9c26660ef0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f9c1e834a90>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f9c1e834748>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9c26660ef0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9c1e8e1f28>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f9c1e834748>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb01d2bcb00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fb01d2bca58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fb0249b4be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb024e350b8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb00cd400b8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fb0249b4be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fb0264dddd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb00cd400b8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb022de6550>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fb0264dddd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fb0249b4be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb022de6550>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb01d2bc9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fb0249b4be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd424ca38d0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd41f068780>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd41f068630>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd424ca38d0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd41f116dd8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd41f068630>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd41f068a90>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd41f116dd8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd424ca38d0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd41f068a90>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd41f068668>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd424ca38d0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd41f116dd8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fd41f068668>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9f3afe19e8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f9f3543b8d0>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f9f3543b630>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9f3afe19e8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9f354e7e80>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f9f3543b630>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f9f3543ba90>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9f354e7e80>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9f3afe19e8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f9f3543ba90>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f9f3543b748>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9f3afe19e8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f9f354e7e80>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f9f3543b748>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f32fe195d30>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f32f63086d8>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f32f6308588>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f32fe195d30>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f32f63b5da0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f32f6308588>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f32f63089e8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f32f63b5da0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f32fe195d30>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f32f63089e8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f32f63087f0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f32fe195d30>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f32f63b5da0>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f32f63087f0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f317624fb00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f317624fa58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f317d947be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f317de3fa20>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f3165cd2080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f317d947be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f317f46fdd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f3165cd2080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f317e03c668>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f317f46fdd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f317d947be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f317e03c668>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f317624f9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f317d947be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff77b7afeb8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ff7739237f0>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ff7739235c0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff77b7afeb8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff7739cfc50>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ff7739235c0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ff773923a58>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff7739cfc50>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff77b7afeb8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ff773923a58>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ff7739236a0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff77b7afeb8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff7739cfc50>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7ff7739236a0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa33b57e1d0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fa3336e0898>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fa3336e0550>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa33b57e1d0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa333790be0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fa3336e0550>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fa3336e09e8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa333790be0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa33b57e1d0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fa3336e09e8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fa3336e09b0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa33b57e1d0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa333790be0>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fa3336e09b0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7efc26e4b518>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7efc21273748>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7efc21273550>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7efc26e4b518>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7efc2131fbe0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7efc21273550>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7efc212739e8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7efc2131fbe0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7efc26e4b518>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7efc212739e8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7efc212735f8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7efc26e4b518>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7efc2131fbe0>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7efc212735f8>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff5f90a1e48>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ff5f34d4748>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ff5f34d45c0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff5f90a1e48>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff5f3580c50>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ff5f34d45c0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ff5f34d4a58>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff5f3580c50>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff5f90a1e48>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ff5f34d4a58>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ff5f34d4668>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff5f90a1e48>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ff5f3580c50>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7ff5f34d4668>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe7091a15c0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fe7091a1518>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fe710d7d7f0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe71088fbe0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe7091a15c0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fe710d7d7f0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fe6f8c1b080>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe7123b8dd8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe7091a1470>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fe6f8c1b080>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fe71088fbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe708f58dd8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe7091a15c0>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fe71088fbe0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f276c391b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f276c391a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f2773a88be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f2773f80f98>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f275be14080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f2773a88be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f27755b0dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f275be14080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f2771f0e518>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f27755b0dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f2773a88be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f2771f0e518>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f276c3919e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f2773a88be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd7dc4b6b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd7dc4b6a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd7e3bafbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd7e40a8a58>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd7cbf3b080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd7e3bafbe0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd7e56d8dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd7cbf3b080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd7e1fe1a20>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd7e56d8dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd7e3bafbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd7e1fe1a20>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd7dc4b69e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fd7e3bafbe0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd8b6d89b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd8b6d89a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd8be480be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd8be979a58>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd8a680d080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd8be480be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd8bffa9dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd8a680d080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd8bc880630>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd8bffa9dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fd8be480be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd8bc880630>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fd8b6d899e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fd8be480be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fc630426a90>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fc6304269e8>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fc637b1eb70>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fc6380179b0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fc621ea7fd0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fc637b1eb70>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fc639647dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fc621ea7fd0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fc635e89c50>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fc639647dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fc637b1eb70>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fc635e89c50>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fc630426978>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fc637b1eb70>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f21f1013b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f21f1013a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f21f870bbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f21f8b8d048>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f21e0a97080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f21f870bbe0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f21fa234dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f21e0a97080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f21f8e01ba8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f21fa234dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f21f870bbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f21f8e01ba8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f21f10139e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f21f870bbe0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7c88b23b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7c88b23a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7c9021bbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7c90714a20>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7c785a8080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7c9021bbe0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7c91d44dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7c785a8080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7c908a1f60>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7c91d44dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7c9021bbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7c908a1f60>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7c88b239e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f7c9021bbe0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa0563e8b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fa0563e8a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fa05dadcbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa05dfd5e48>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa045e690b8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fa05dadcbe0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fa05f605dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa045e690b8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa05bf63780>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fa05f605dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fa05dadcbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa05bf63780>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fa0563e89e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fa05dadcbe0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f1a173adb00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f1a173ada58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f1a1eaa7be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f1a1ef29048>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f1a06e320b8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f1a1eaa7be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f1a205d0dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f1a06e320b8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f1a1f188e80>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f1a205d0dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f1a1eaa7be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f1a1f188e80>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f1a173ad9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f1a1eaa7be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faabb9abb00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7faabb9aba58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7faac30a4be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faac359da58>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faaab431080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7faac30a4be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7faac4bcddd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faaab431080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faac379ac18>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7faac4bcddd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7faac30a4be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faac379ac18>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faabb9ab9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7faac30a4be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f227da2fb00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f227da2fa58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f2285129be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f2285621a58>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f226d4b5080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f2285129be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f2286c51dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f226d4b5080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f228581efd0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f2286c51dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f2285129be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f228581efd0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f227da2f9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f2285129be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ffb707f2b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ffb707f2a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ffb77eebbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ffb783e4a58>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ffb60277080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ffb77eebbe0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ffb79a14dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ffb60277080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ffb785e1ac8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ffb79a14dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7ffb77eebbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ffb785e1ac8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7ffb707f29e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7ffb77eebbe0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f2526394b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f2526394a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f252da8ebe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f252df87a20>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f2515e19080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f252da8ebe0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f252f5b7dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f2515e19080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f252be8e278>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f252f5b7dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f252da8ebe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f252be8e278>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f25263949e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f252da8ebe0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec36887b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fec36887a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fec3df7fbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec3e479a20>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec2630c0b8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fec3df7fbe0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fec3faa8dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec2630c0b8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec3e649278>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fec3faa8dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fec3df7fbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec3e649278>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec368879e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fec3df7fbe0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8bead24b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f8bead24a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f8bf241cbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8bf2915a58>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8bda7a9080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f8bf241cbe0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f8bf3f45dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8bda7a9080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8bf0843f28>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f8bf3f45dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f8bf241cbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8bf0843f28>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f8bead249e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f8bf241cbe0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcf4ae4cb00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fcf4ae4ca58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fcf52544be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcf52a3ca58>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcf3a8d0080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fcf52544be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fcf5406cdd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcf3a8d0080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcf5096ac88>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fcf5406cdd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fcf52544be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcf5096ac88>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcf4ae4c9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fcf52544be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f76c1359b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f76c1359a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f76c8a52be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f76c8f4ba20>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f76b0ddf0b8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f76c8a52be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f76ca57bdd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f76b0ddf0b8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f76c6e79908>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f76ca57bdd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f76c8a52be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f76c6e79908>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f76c13599e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f76c8a52be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f49e0300b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f49e0300a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f49e9a0fbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f49e9f07a20>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f49d1d9b080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f49e9a0fbe0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f49eb537dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f49d1d9b080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f49e7e35908>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f49eb537dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f49e9a0fbe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f49e7e35908>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f49e03009e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f49e9a0fbe0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcc30b0ab00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fcc30b0aa58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fcc38204be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcc386fda58>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcc20591080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fcc38204be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fcc39d2ddd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcc20591080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcc365ae630>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fcc39d2ddd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fcc38204be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcc365ae630>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fcc30b0a9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fcc38204be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb0abfceb00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fb0abfcea58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fb0b36c9be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb0b3bc1a20>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb09ba54080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fb0b36c9be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fb0b51f1dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb09ba54080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb0b1aefa90>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fb0b51f1dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fb0b36c9be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb0b1aefa90>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fb0abfce9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fb0b36c9be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe6748feb00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fe6748fea58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fe67bff6be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe67c4770b8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe666383080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fe67bff6be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fe67db1fdd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe666383080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe67a41d860>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fe67db1fdd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fe67bff6be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe67a41d860>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fe6748fe9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fe67bff6be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0e40ac4b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0e40ac4a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0e481bebe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0e48640048>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0e305490b8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0e481bebe0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0e49ce7dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0e305490b8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0e48888b38>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0e49ce7dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0e481bebe0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0e48888b38>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0e40ac49e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f0e481bebe0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faaa2b3ab00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7faaa2b3aa58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7faaaa232be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faaaa72ba20>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faa925bf080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7faaaa232be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7faaabd5bdd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faa925bf080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faaa8664a90>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7faaabd5bdd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7faaaa232be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faaa8664a90>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7faaa2b3a9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7faaaa232be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba2f9eab00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fba2f9eaa58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fba370e2be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba375dba20>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba1f46e080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fba370e2be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fba38c0bdd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba1f46e080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba355145c0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fba38c0bdd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fba370e2be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba355145c0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fba2f9ea9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fba370e2be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f27f921cb00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f27f921ca58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f2800914be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f2800e0df98>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f27e8c9f080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f2800914be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f280243ddd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f27e8c9f080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f27feda9a58>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f280243ddd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f2800914be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f27feda9a58>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f27f921c9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f2800914be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f055f3e3b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f055f3e3a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0568af3be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f05690fa240>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0550e7f080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0568af3be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f056a61cdd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0550e7f080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f05691d4a90>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f056a61cdd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0568af3be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f05691d4a90>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f055f3e39e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f0568af3be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f69edf4fb00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f69edf4fa58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f69f5647be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f69f5b40e48>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f69dd9d4080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f69f5647be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f69f7170dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f69dd9d4080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f69f3adc6a0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f69f7170dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f69f5647be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f69f3adc6a0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f69edf4f9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f69f5647be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f64838a4c18>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f647dcd6860>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f647dcd6748>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f64838a4c18>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f647dd85f60>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f647dcd6748>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f647dcd6ba8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f647dd85f60>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f64838a4c18>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f647dcd6ba8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f647dcd6b00>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f64838a4c18>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f647dd85f60>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f647dcd6b00>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5aa40f84a8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5a9e551748>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5a9e551710>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5aa40f84a8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5a9e601c50>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5a9e551710>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5a9e551ba8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5a9e601c50>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5aa40f84a8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5a9e551ba8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5a9e5519b0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5aa40f84a8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5a9e601c50>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f5a9e5519b0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f396200fb00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f396200fa58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f3969707be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f3969b8a048>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f3951a94080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f3969707be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f396b230dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f3951a94080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f3969dc7b70>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f396b230dd8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f3969707be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f3969dc7b70>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f396200f9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f3969707be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f60fd2430f0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f60f53a7b00>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f60f53a7748>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f60fd2430f0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f60f5458eb8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f60f53a7748>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f60f53a7ba8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f60f5458eb8>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f60fd2430f0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f60f53a7ba8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f60f53a76d8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f60fd2430f0>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f60f5458eb8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f60f53a76d8>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec8a329b00>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fec8a329a58>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fec91a21be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec91f1ba20>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec79dae080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fec91a21be0>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fec9354add8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec79dae080>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec92115e48>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fec9354add8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fec91a21be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec92115e48>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fec8a3299e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fec91a21be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5c68d0e550>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5c630d2780>
+out stream width of previous
+(1, 4, 16)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5c630d2710>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5c68d0e550>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5c63180c50>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5c630d2710>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5c630d2ba8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5c63180c50>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5c68d0e550>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5c630d2ba8>
+out stream width of previous
+(1, 8, 8)
+corrected outstream width
+(1, 64, 1)
+instream width of next
+8
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5c630d2be0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5c68d0e550>
+out stream width of previous
+(1, 64, 1)
+corrected outstream width
+(1, 8, 8)
+instream width of next
+16
+shape
+( 1 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5c63180c50>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f5c630d2be0>
+out stream width of previous
+(1, 1, 10)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+8
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d348c89e8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f5d348c8a20>
+out stream width of previous
+(1, 32, 32, 3, 1)
+corrected outstream width
+(1, 32, 32, 1, 3)
+instream width of next
+24
+shape
+( 1 ,   3 2 ,   3 2 ,   3 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5d3daeadd8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d3bfc1b70>
+out stream width of previous
+(1, 30, 30, 4, 16)
+corrected outstream width
+(1, 30, 30, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d348c8940>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f5d3daeadd8>
+out stream width of previous
+(1, 30, 30, 64, 1)
+corrected outstream width
+(1, 30, 30, 2, 32)
+instream width of next
+32
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5d3daeadd8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d3c71f208>
+out stream width of previous
+(1, 28, 28, 2, 32)
+corrected outstream width
+(1, 28, 28, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d3c4bb9e8>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f5d3daeadd8>
+out stream width of previous
+(1, 28, 28, 64, 1)
+corrected outstream width
+(1, 28, 28, 1, 64)
+instream width of next
+64
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f5d3bfc1b70>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f5d3c4bb9e8>
+out stream width of previous
+(1, 14, 14, 1, 64)
+corrected outstream width
+(1, 14, 14, 2, 32)
+instream width of next
+32
+shape
+( 1 ,   1 4 ,   1 4 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5d3c4bb9e8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d3c71f208>
+out stream width of previous
+(1, 12, 12, 8, 16)
+corrected outstream width
+(1, 12, 12, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d3daeadd8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f5d3c4bb9e8>
+out stream width of previous
+(1, 12, 12, 128, 1)
+corrected outstream width
+(1, 12, 12, 4, 32)
+instream width of next
+32
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5d3c4bb9e8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d3bfc1b70>
+out stream width of previous
+(1, 10, 10, 8, 16)
+corrected outstream width
+(1, 10, 10, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d2434afd0>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f5d3c4bb9e8>
+out stream width of previous
+(1, 10, 10, 128, 1)
+corrected outstream width
+(1, 10, 10, 1, 128)
+instream width of next
+128
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f5d348c8978>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f5d2434afd0>
+out stream width of previous
+(1, 5, 5, 1, 128)
+corrected outstream width
+(1, 5, 5, 4, 32)
+instream width of next
+32
+shape
+( 1 ,   5 ,   5 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5d2434afd0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d3c71f208>
+out stream width of previous
+(1, 3, 3, 64, 4)
+corrected outstream width
+(1, 3, 3, 256, 1)
+instream width of next
+16
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d3c4af898>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f5d2434afd0>
+out stream width of previous
+(1, 3, 3, 256, 1)
+corrected outstream width
+(1, 3, 3, 8, 32)
+instream width of next
+32
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d3c4af898>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5d2434afd0>
+out stream width of previous
+(1, 1, 1, 256, 1)
+corrected outstream width
+(1, 64, 4)
+instream width of next
+4
+shape
+( 1 ,   1 ,   1 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f5d3daeadd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5d348c8940>
+out stream width of previous
+(1, 512, 1)
+corrected outstream width
+(1, 64, 8)
+instream width of next
+8
+shape
+( 1 ,   5 1 2 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f5d3c71f208>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f5d3c4bb9e8>
+out stream width of previous
+(1, 2, 5)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f346992c8d0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f3469c1de48>
+out stream width of previous
+(1, 32, 32, 3, 1)
+corrected outstream width
+(1, 32, 32, 1, 3)
+instream width of next
+24
+shape
+( 1 ,   3 2 ,   3 2 ,   3 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f34719fb828>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f346992ce80>
+out stream width of previous
+(1, 30, 30, 4, 16)
+corrected outstream width
+(1, 30, 30, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f3469c1ddd8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f34719fb828>
+out stream width of previous
+(1, 30, 30, 64, 1)
+corrected outstream width
+(1, 30, 30, 2, 32)
+instream width of next
+32
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f3469c1de48>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f346992ccc0>
+out stream width of previous
+(1, 28, 28, 2, 32)
+corrected outstream width
+(1, 28, 28, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f346992cf28>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f3469c1de48>
+out stream width of previous
+(1, 28, 28, 64, 1)
+corrected outstream width
+(1, 28, 28, 1, 64)
+instream width of next
+64
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f3469c1ddd8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f346992cf28>
+out stream width of previous
+(1, 14, 14, 1, 64)
+corrected outstream width
+(1, 14, 14, 2, 32)
+instream width of next
+32
+shape
+( 1 ,   1 4 ,   1 4 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f346992ce80>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f346992ccc0>
+out stream width of previous
+(1, 12, 12, 8, 16)
+corrected outstream width
+(1, 12, 12, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f3469c1de48>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f346992ce80>
+out stream width of previous
+(1, 12, 12, 128, 1)
+corrected outstream width
+(1, 12, 12, 4, 32)
+instream width of next
+32
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f346992ccc0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f3469c1ddd8>
+out stream width of previous
+(1, 10, 10, 8, 16)
+corrected outstream width
+(1, 10, 10, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f346992cc88>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f346992ccc0>
+out stream width of previous
+(1, 10, 10, 128, 1)
+corrected outstream width
+(1, 10, 10, 1, 128)
+instream width of next
+128
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f3469c1de48>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f346992cc88>
+out stream width of previous
+(1, 5, 5, 1, 128)
+corrected outstream width
+(1, 5, 5, 4, 32)
+instream width of next
+32
+shape
+( 1 ,   5 ,   5 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f346992cdd8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f3469c1ddd8>
+out stream width of previous
+(1, 3, 3, 64, 4)
+corrected outstream width
+(1, 3, 3, 256, 1)
+instream width of next
+16
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f346992c8d0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f346992cdd8>
+out stream width of previous
+(1, 3, 3, 256, 1)
+corrected outstream width
+(1, 3, 3, 8, 32)
+instream width of next
+32
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f346992c7f0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f346992cfd0>
+out stream width of previous
+(1, 1, 1, 256, 1)
+corrected outstream width
+(1, 64, 4)
+instream width of next
+4
+shape
+( 1 ,   1 ,   1 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f346992ce10>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f3469c1ddd8>
+out stream width of previous
+(1, 512, 1)
+corrected outstream width
+(1, 64, 8)
+instream width of next
+8
+shape
+( 1 ,   5 1 2 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f346992ce80>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f34719fb828>
+out stream width of previous
+(1, 2, 5)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0c9e64aa58>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f0c9e64aa90>
+out stream width of previous
+(1, 32, 32, 3, 1)
+corrected outstream width
+(1, 32, 32, 1, 3)
+instream width of next
+24
+shape
+( 1 ,   3 2 ,   3 2 ,   3 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0ca786add8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0ca5d41be0>
+out stream width of previous
+(1, 30, 30, 8, 8)
+corrected outstream width
+(1, 30, 30, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0c9e64a9b0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f0ca786add8>
+out stream width of previous
+(1, 30, 30, 64, 1)
+corrected outstream width
+(1, 30, 30, 4, 16)
+instream width of next
+32
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0ca786add8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0ca41d6358>
+out stream width of previous
+(1, 28, 28, 4, 16)
+corrected outstream width
+(1, 28, 28, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0ca61c4080>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f0ca786add8>
+out stream width of previous
+(1, 28, 28, 64, 1)
+corrected outstream width
+(1, 28, 28, 1, 64)
+instream width of next
+128
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f0ca5d41be0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f0ca61c4080>
+out stream width of previous
+(1, 14, 14, 1, 64)
+corrected outstream width
+(1, 14, 14, 4, 16)
+instream width of next
+32
+shape
+( 1 ,   1 4 ,   1 4 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0ca61c4080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0ca41d6358>
+out stream width of previous
+(1, 12, 12, 16, 8)
+corrected outstream width
+(1, 12, 12, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0ca786add8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f0ca61c4080>
+out stream width of previous
+(1, 12, 12, 128, 1)
+corrected outstream width
+(1, 12, 12, 8, 16)
+instream width of next
+32
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0ca61c4080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0ca5d41be0>
+out stream width of previous
+(1, 10, 10, 16, 8)
+corrected outstream width
+(1, 10, 10, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0c8e0ce080>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f0ca61c4080>
+out stream width of previous
+(1, 10, 10, 128, 1)
+corrected outstream width
+(1, 10, 10, 1, 128)
+instream width of next
+256
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f0c9e64a9e8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f0c8e0ce080>
+out stream width of previous
+(1, 5, 5, 1, 128)
+corrected outstream width
+(1, 5, 5, 16, 8)
+instream width of next
+16
+shape
+( 1 ,   5 ,   5 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0c8e0ce080>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0ca41d6358>
+out stream width of previous
+(1, 3, 3, 64, 4)
+corrected outstream width
+(1, 3, 3, 256, 1)
+instream width of next
+16
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0ca622f7b8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f0c8e0ce080>
+out stream width of previous
+(1, 3, 3, 256, 1)
+corrected outstream width
+(1, 3, 3, 32, 8)
+instream width of next
+16
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0ca622f7b8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0c8e0ce080>
+out stream width of previous
+(1, 1, 1, 256, 1)
+corrected outstream width
+(1, 128, 2)
+instream width of next
+4
+shape
+( 1 ,   1 ,   1 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0ca786add8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0c9e64a9b0>
+out stream width of previous
+(1, 512, 1)
+corrected outstream width
+(1, 256, 2)
+instream width of next
+4
+shape
+( 1 ,   5 1 2 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0c9e64a9e8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f0ca786add8>
+out stream width of previous
+(1, 256, 2)
+corrected outstream width
+(1, 512, 1)
+instream width of next
+16
+shape
+( 1 ,   5 1 2 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f0ca786add8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f0ca61c4080>
+out stream width of previous
+(1, 2, 5)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb053ef0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f47fb344be0>
+out stream width of previous
+(1, 32, 32, 3, 1)
+corrected outstream width
+(1, 32, 32, 1, 3)
+instream width of next
+24
+shape
+( 1 ,   3 2 ,   3 2 ,   3 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f4803131978>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb053f28>
+out stream width of previous
+(1, 30, 30, 8, 8)
+corrected outstream width
+(1, 30, 30, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb344e48>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f4803131978>
+out stream width of previous
+(1, 30, 30, 64, 1)
+corrected outstream width
+(1, 30, 30, 4, 16)
+instream width of next
+32
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f47fb344be0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb053d30>
+out stream width of previous
+(1, 28, 28, 4, 16)
+corrected outstream width
+(1, 28, 28, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb053f98>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f47fb344be0>
+out stream width of previous
+(1, 28, 28, 64, 1)
+corrected outstream width
+(1, 28, 28, 1, 64)
+instream width of next
+128
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f47fb344e48>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f47fb053f98>
+out stream width of previous
+(1, 14, 14, 1, 64)
+corrected outstream width
+(1, 14, 14, 4, 16)
+instream width of next
+32
+shape
+( 1 ,   1 4 ,   1 4 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f47fb053f28>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb053d30>
+out stream width of previous
+(1, 12, 12, 16, 8)
+corrected outstream width
+(1, 12, 12, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb344be0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f47fb053f28>
+out stream width of previous
+(1, 12, 12, 128, 1)
+corrected outstream width
+(1, 12, 12, 8, 16)
+instream width of next
+32
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f47fb053d30>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb344e48>
+out stream width of previous
+(1, 10, 10, 16, 8)
+corrected outstream width
+(1, 10, 10, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb053fd0>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f47fb053d30>
+out stream width of previous
+(1, 10, 10, 128, 1)
+corrected outstream width
+(1, 10, 10, 1, 128)
+instream width of next
+256
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f47fb344be0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f47fb053fd0>
+out stream width of previous
+(1, 5, 5, 1, 128)
+corrected outstream width
+(1, 5, 5, 16, 8)
+instream width of next
+16
+shape
+( 1 ,   5 ,   5 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f47fb053eb8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb344e48>
+out stream width of previous
+(1, 3, 3, 64, 4)
+corrected outstream width
+(1, 3, 3, 256, 1)
+instream width of next
+16
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb053ef0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f47fb053eb8>
+out stream width of previous
+(1, 3, 3, 256, 1)
+corrected outstream width
+(1, 3, 3, 32, 8)
+instream width of next
+16
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb053f60>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f47fb053c88>
+out stream width of previous
+(1, 1, 1, 256, 1)
+corrected outstream width
+(1, 128, 2)
+instream width of next
+4
+shape
+( 1 ,   1 ,   1 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb053b00>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f47fb344e48>
+out stream width of previous
+(1, 512, 1)
+corrected outstream width
+(1, 256, 2)
+instream width of next
+4
+shape
+( 1 ,   5 1 2 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f47fb344be0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f47fb053b00>
+out stream width of previous
+(1, 256, 2)
+corrected outstream width
+(1, 512, 1)
+instream width of next
+16
+shape
+( 1 ,   5 1 2 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f47fb053fd0>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f47fb053f98>
+out stream width of previous
+(1, 2, 5)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae8cd519e8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7fae8cd51a20>
+out stream width of previous
+(1, 32, 32, 3, 1)
+corrected outstream width
+(1, 32, 32, 1, 3)
+instream width of next
+24
+shape
+( 1 ,   3 2 ,   3 2 ,   3 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fae95f72dd8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae94449b70>
+out stream width of previous
+(1, 30, 30, 8, 8)
+corrected outstream width
+(1, 30, 30, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae8cd51940>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7fae95f72dd8>
+out stream width of previous
+(1, 30, 30, 64, 1)
+corrected outstream width
+(1, 30, 30, 4, 16)
+instream width of next
+32
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fae95f72dd8>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae94acee80>
+out stream width of previous
+(1, 28, 28, 4, 16)
+corrected outstream width
+(1, 28, 28, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae949449b0>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7fae95f72dd8>
+out stream width of previous
+(1, 28, 28, 64, 1)
+corrected outstream width
+(1, 28, 28, 1, 64)
+instream width of next
+128
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7fae94449b70>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7fae949449b0>
+out stream width of previous
+(1, 14, 14, 1, 64)
+corrected outstream width
+(1, 14, 14, 4, 16)
+instream width of next
+32
+shape
+( 1 ,   1 4 ,   1 4 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fae949449b0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae94acee80>
+out stream width of previous
+(1, 12, 12, 16, 8)
+corrected outstream width
+(1, 12, 12, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae95f72dd8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7fae949449b0>
+out stream width of previous
+(1, 12, 12, 128, 1)
+corrected outstream width
+(1, 12, 12, 8, 16)
+instream width of next
+32
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fae949449b0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae94449b70>
+out stream width of previous
+(1, 10, 10, 16, 8)
+corrected outstream width
+(1, 10, 10, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae7c850fd0>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7fae949449b0>
+out stream width of previous
+(1, 10, 10, 128, 1)
+corrected outstream width
+(1, 10, 10, 1, 128)
+instream width of next
+256
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7fae8cd51978>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7fae7c850fd0>
+out stream width of previous
+(1, 5, 5, 1, 128)
+corrected outstream width
+(1, 5, 5, 16, 8)
+instream width of next
+16
+shape
+( 1 ,   5 ,   5 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fae7c850fd0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae94acee80>
+out stream width of previous
+(1, 3, 3, 64, 4)
+corrected outstream width
+(1, 3, 3, 256, 1)
+instream width of next
+16
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae949386a0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7fae7c850fd0>
+out stream width of previous
+(1, 3, 3, 256, 1)
+corrected outstream width
+(1, 3, 3, 32, 8)
+instream width of next
+16
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae949386a0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fae7c850fd0>
+out stream width of previous
+(1, 1, 1, 256, 1)
+corrected outstream width
+(1, 128, 2)
+instream width of next
+4
+shape
+( 1 ,   1 ,   1 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae95f72dd8>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fae8cd51940>
+out stream width of previous
+(1, 512, 1)
+corrected outstream width
+(1, 256, 2)
+instream width of next
+4
+shape
+( 1 ,   5 1 2 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fae8cd51978>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7fae95f72dd8>
+out stream width of previous
+(1, 256, 2)
+corrected outstream width
+(1, 512, 1)
+instream width of next
+16
+shape
+( 1 ,   5 1 2 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7fae95f72dd8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7fae949449b0>
+out stream width of previous
+(1, 2, 5)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0da61ac8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f7d0dd52ef0>
+out stream width of previous
+(1, 32, 32, 3, 1)
+corrected outstream width
+(1, 32, 32, 1, 3)
+instream width of next
+24
+shape
+( 1 ,   3 2 ,   3 2 ,   3 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7d13870be0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0da61ef0>
+out stream width of previous
+(1, 30, 30, 8, 8)
+corrected outstream width
+(1, 30, 30, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0dd52dd8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f7d13870be0>
+out stream width of previous
+(1, 30, 30, 64, 1)
+corrected outstream width
+(1, 30, 30, 4, 16)
+instream width of next
+32
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7d0dd52ef0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0da61978>
+out stream width of previous
+(1, 28, 28, 4, 16)
+corrected outstream width
+(1, 28, 28, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0da61ba8>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f7d0dd52ef0>
+out stream width of previous
+(1, 28, 28, 64, 1)
+corrected outstream width
+(1, 28, 28, 1, 64)
+instream width of next
+128
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f7d0dd52dd8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f7d0da61ba8>
+out stream width of previous
+(1, 14, 14, 1, 64)
+corrected outstream width
+(1, 14, 14, 4, 16)
+instream width of next
+32
+shape
+( 1 ,   1 4 ,   1 4 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7d0da61ef0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0da61978>
+out stream width of previous
+(1, 12, 12, 16, 8)
+corrected outstream width
+(1, 12, 12, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0dd52ef0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f7d0da61ef0>
+out stream width of previous
+(1, 12, 12, 128, 1)
+corrected outstream width
+(1, 12, 12, 8, 16)
+instream width of next
+32
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7d0da61978>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0dd52dd8>
+out stream width of previous
+(1, 10, 10, 16, 8)
+corrected outstream width
+(1, 10, 10, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0da61da0>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f7d0da61978>
+out stream width of previous
+(1, 10, 10, 128, 1)
+corrected outstream width
+(1, 10, 10, 1, 128)
+instream width of next
+256
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f7d0dd52ef0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f7d0da61da0>
+out stream width of previous
+(1, 5, 5, 1, 128)
+corrected outstream width
+(1, 5, 5, 16, 8)
+instream width of next
+16
+shape
+( 1 ,   5 ,   5 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7d0da61a58>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0dd52dd8>
+out stream width of previous
+(1, 3, 3, 64, 4)
+corrected outstream width
+(1, 3, 3, 256, 1)
+instream width of next
+16
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0da61ac8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f7d0da61a58>
+out stream width of previous
+(1, 3, 3, 256, 1)
+corrected outstream width
+(1, 3, 3, 32, 8)
+instream width of next
+16
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0da61f60>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7d0da61f98>
+out stream width of previous
+(1, 1, 1, 256, 1)
+corrected outstream width
+(1, 128, 2)
+instream width of next
+4
+shape
+( 1 ,   1 ,   1 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0da61e10>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7d0dd52dd8>
+out stream width of previous
+(1, 512, 1)
+corrected outstream width
+(1, 256, 2)
+instream width of next
+4
+shape
+( 1 ,   5 1 2 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7d0dd52ef0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f7d0da61e10>
+out stream width of previous
+(1, 256, 2)
+corrected outstream width
+(1, 512, 1)
+instream width of next
+16
+shape
+( 1 ,   5 1 2 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f7d0da61da0>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f7d0da61ba8>
+out stream width of previous
+(1, 2, 5)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c0cefd0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f909c3befd0>
+out stream width of previous
+(1, 32, 32, 3, 1)
+corrected outstream width
+(1, 32, 32, 1, 3)
+instream width of next
+24
+shape
+( 1 ,   3 2 ,   3 2 ,   3 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f90a1ee9a58>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c0ce748>
+out stream width of previous
+(1, 30, 30, 8, 8)
+corrected outstream width
+(1, 30, 30, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c3bedd8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f90a1ee9a58>
+out stream width of previous
+(1, 30, 30, 64, 1)
+corrected outstream width
+(1, 30, 30, 4, 16)
+instream width of next
+32
+shape
+( 1 ,   3 0 ,   3 0 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f909c3befd0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c0ce9b0>
+out stream width of previous
+(1, 28, 28, 4, 16)
+corrected outstream width
+(1, 28, 28, 64, 1)
+instream width of next
+16
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c0cef98>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f909c3befd0>
+out stream width of previous
+(1, 28, 28, 64, 1)
+corrected outstream width
+(1, 28, 28, 1, 64)
+instream width of next
+128
+shape
+( 1 ,   2 8 ,   2 8 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f909c3bedd8>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f909c0cef98>
+out stream width of previous
+(1, 14, 14, 1, 64)
+corrected outstream width
+(1, 14, 14, 4, 16)
+instream width of next
+32
+shape
+( 1 ,   1 4 ,   1 4 ,   6 4 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f909c0ce748>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c0ce9b0>
+out stream width of previous
+(1, 12, 12, 16, 8)
+corrected outstream width
+(1, 12, 12, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c3befd0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f909c0ce748>
+out stream width of previous
+(1, 12, 12, 128, 1)
+corrected outstream width
+(1, 12, 12, 8, 16)
+instream width of next
+32
+shape
+( 1 ,   1 2 ,   1 2 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f909c0ce9b0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c3bedd8>
+out stream width of previous
+(1, 10, 10, 16, 8)
+corrected outstream width
+(1, 10, 10, 128, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c0ce9e8>
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f909c0ce9b0>
+out stream width of previous
+(1, 10, 10, 128, 1)
+corrected outstream width
+(1, 10, 10, 1, 128)
+instream width of next
+256
+shape
+( 1 ,   1 0 ,   1 0 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingmaxpool_batch.StreamingMaxPool_Batch object at 0x7f909c3befd0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f909c0ce9e8>
+out stream width of previous
+(1, 5, 5, 1, 128)
+corrected outstream width
+(1, 5, 5, 16, 8)
+instream width of next
+16
+shape
+( 1 ,   5 ,   5 ,   1 2 8 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f909c0ceef0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c3bedd8>
+out stream width of previous
+(1, 3, 3, 64, 4)
+corrected outstream width
+(1, 3, 3, 256, 1)
+instream width of next
+16
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c0cefd0>
+<finn.custom_op.fpgadataflow.convolutioninputgenerator.ConvolutionInputGenerator object at 0x7f909c0ceef0>
+out stream width of previous
+(1, 3, 3, 256, 1)
+corrected outstream width
+(1, 3, 3, 32, 8)
+instream width of next
+16
+shape
+( 1 ,   3 ,   3 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c0cef60>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f909c0ce7b8>
+out stream width of previous
+(1, 1, 1, 256, 1)
+corrected outstream width
+(1, 128, 2)
+instream width of next
+4
+shape
+( 1 ,   1 ,   1 ,   2 5 6 )
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c0ceda0>
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f909c3bedd8>
+out stream width of previous
+(1, 512, 1)
+corrected outstream width
+(1, 256, 2)
+instream width of next
+4
+shape
+( 1 ,   5 1 2 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f909c3befd0>
+<finn.custom_op.fpgadataflow.thresholding_batch.Thresholding_Batch object at 0x7f909c0ceda0>
+out stream width of previous
+(1, 256, 2)
+corrected outstream width
+(1, 512, 1)
+instream width of next
+16
+shape
+( 1 ,   5 1 2 )
+<finn.custom_op.fpgadataflow.streamingfclayer_batch.StreamingFCLayer_Batch object at 0x7f909c0ce9e8>
+<finn.custom_op.fpgadataflow.labelselect_batch.LabelSelect_Batch object at 0x7f909c0cef98>
+out stream width of previous
+(1, 2, 5)
+corrected outstream width
+(1, 10, 1)
+instream width of next
+16
+shape
+( 1 ,   1 0 )

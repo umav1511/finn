@@ -362,7 +362,7 @@ class TestEnd2End:
     def test_convert_to_hls_layers(self, topology, wbits, abits):
         prev_chkpt_name = get_checkpoint_name(topology, wbits, abits, "streamline")
         model = load_test_checkpoint_or_skip(prev_chkpt_name)
-
+        model = model.transform(to_hls.InferThresholdingLayer())
         # needed for bipolar MatMul layers
         model = model.transform(to_hls.InferBinaryStreamingFCLayer(mem_mode))
         model.save(get_checkpoint_name(topology, wbits, abits, "fc1"))         
@@ -372,7 +372,7 @@ class TestEnd2End:
         # TopK to LabelSelect
         model = model.transform(to_hls.InferLabelSelectLayer())
         # input quantization (if any) to standalone thresholding
-        model = model.transform(to_hls.InferThresholdingLayer())
+
         # needed for convolutions
         if "fc" not in topology:
             model = model.transform(to_hls.InferConvInpGen())
@@ -489,25 +489,25 @@ class TestEnd2End:
 
         model = model.transform(CreateStitchedIP(test_fpga_part, target_clk_ns))
 
-        #model = model.transform(PrepareRTLSim())
-        #model.set_metadata_prop("exec_mode", "rtlsim")
-        #os.environ["LIVENESS_THRESHOLD"] = str(int(latency * 1.1))
-        #if rtlsim_trace:
-        #    model.set_metadata_prop(
-        #        "rtlsim_trace", "%s_w%da%d.vcd" % (topology, wbits, abits)
-        #    )
-        #    os.environ["RTLSIM_TRACE_DEPTH"] = "3"
-        #rtlsim_chkpt = get_checkpoint_name(
-        #    topology, wbits, abits, "ipstitch_rtlsim_" + kind
-        #)
-        #model.save(rtlsim_chkpt)
-        #parent_chkpt = get_checkpoint_name(topology, wbits, abits, "dataflow_parent")
-        #(input_tensor_npy, output_tensor_npy) = get_golden_io_pair(
-        #    topology, wbits, abits, return_topk=1
-        #)
-        #y = execute_parent(parent_chkpt, rtlsim_chkpt, input_tensor_npy)
-        #model = ModelWrapper(rtlsim_chkpt)
-        #perf["cycles_rtlsim"] = model.get_metadata_prop("cycles_rtlsim")
+        model = model.transform(PrepareRTLSim())
+        model.set_metadata_prop("exec_mode", "rtlsim")
+        os.environ["LIVENESS_THRESHOLD"] = str(int(latency * 1.1))
+        if rtlsim_trace:
+            model.set_metadata_prop(
+                "rtlsim_trace", "%s_w%da%d.vcd" % (topology, wbits, abits)
+            )
+            os.environ["RTLSIM_TRACE_DEPTH"] = "3"
+        rtlsim_chkpt = get_checkpoint_name(
+            topology, wbits, abits, "ipstitch_rtlsim_" + kind
+        )
+        model.save(rtlsim_chkpt)
+        parent_chkpt = get_checkpoint_name(topology, wbits, abits, "dataflow_parent")
+        (input_tensor_npy, output_tensor_npy) = get_golden_io_pair(
+            topology, wbits, abits, return_topk=1
+        )
+        y = execute_parent(parent_chkpt, rtlsim_chkpt, input_tensor_npy)
+        model = ModelWrapper(rtlsim_chkpt)
+        perf["cycles_rtlsim"] = model.get_metadata_prop("cycles_rtlsim")
          
         # already commented dont uncomment
 
@@ -515,10 +515,10 @@ class TestEnd2End:
         # for (k, v) in perf.items():
         #    update_dashboard_data(topology, wbits, abits, k, v)
 
-        #update_dashboard_data(
-        #    topology, wbits, abits, "cycles_rtlsim", perf["cycles_rtlsim"]
-        #)
-        #assert np.isclose(y, output_tensor_npy).all()
+        update_dashboard_data(
+            topology, wbits, abits, "cycles_rtlsim", perf["cycles_rtlsim"]
+        )
+        assert np.isclose(y, output_tensor_npy).all()
 
     @pytest.mark.slow
     @pytest.mark.vivado

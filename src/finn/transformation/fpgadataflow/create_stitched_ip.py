@@ -205,7 +205,9 @@ class CreateStitchedIP(Transformation):
             print(ip_dir_value)
             assert os.path.isdir(ip_dir_value), "IP generation directory doesn't exist."
             ip_dirs += [ip_dir_value]
+
             self.create_cmds += node_inst.code_generation_ipi()
+            ip_dirs += [node_inst.get_nodeattr("buffer_ipgen_path")]
             my_producer = model.find_producer(node.input[0])
             self.connect_clk_rst(node)
             self.connect_axi(node)

@@ -87,14 +87,6 @@ class InsertFIFO(Transformation):
                                     fld_shape_2 = n1.get_folded_input_shape()
                                 else:
                                     fld_shape_2 = n1.get_folded_input_shape(ind=idx)
-                        f = open("folderror.txt", "a")
-                        f.write(str(n0))
-                        f.write(str(n1))
-                        f.write(str(n0.get_outstream_width()))
-                        f.write(str(n1.get_instream_width()))
-                        f.write(" ".join(str(fld_shape)))
-                        f.write(" ".join(str(fld_shape_2)))
-                        f.close()
                         assert _suitable_folded_shapes(
                             fld_shape, fld_shape_2
                         ), """The

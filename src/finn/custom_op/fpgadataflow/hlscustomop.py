@@ -110,6 +110,7 @@ class HLSCustomOp(CustomOp):
             # input and output FIFO depths
             "inFIFODepth": ("i", False, 2),
             "outFIFODepth": ("i", False, 2),
+            "buffer_ipgen_path": ("s", False, ""),
         }
 
     def get_verilog_top_module_name(self):

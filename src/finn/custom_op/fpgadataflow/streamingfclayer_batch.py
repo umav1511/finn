@@ -30,11 +30,12 @@ import warnings
 import math
 import os
 import numpy as np
-
+import subprocess
 from onnx import TensorProto, helper
 from finn.core.datatype import DataType
 from finn.custom_op.fpgadataflow.hlscustomop import HLSCustomOp
 from finn.util.basic import (
+    make_build_dir,
     interleave_matrix_outer_dim_from_partitions,
     roundup_to_integer_multiple,
     calculate_matvec_accumulator_range,
@@ -414,25 +415,9 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
     def get_outstream_width(self):
 
-        print(self.get_output_datatype())
-        print(self.get_output_datatype().bitwidth())
         o_bits = self.get_output_datatype().bitwidth()
         pe = self.get_nodeattr("PE")
-        #if self.get_nodeattr("fine_grained") == 1:
-        #     assert(self.get_nodeattr("mem_mode") != "const"), """mem_mode must be constant for fine grained"""
-        #     assert(self.get_nodeattr("noActivation") == 1), """noActivation must be 1 for fine grained"""
-        #     pe = 1
-        #stdoutput = open("err.txt", "a")
-        #print("get_outsream_width")
-        #stdoutput.write(
-        #       "self.get_output_datatype() : {}, bitwidth() : {}, pe : {}\n".format(
-        #       self.get_output_datatype(),
-        #       self.get_output_datatype().bitwidth(),
-        #       pe
-        #       )
-        #)
-        #stdoutput.close()
-        #print(o_bits)
+
         out_width = o_bits * pe
         return out_width
 
@@ -481,8 +466,6 @@ class StreamingFCLayer_Batch(HLSCustomOp):
         nf = mh // pe
         vecs = list(self.get_nodeattr("numInputVectors"))
         folded_output_shape = tuple(vecs + [nf, pe])
-        print("fc layer batch")
-        print(mh, pe, nf, vecs,folded_output_shape)
         return folded_output_shape
 
     def get_normal_input_shape(self):
@@ -760,21 +743,8 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             elif weight_file_mode == "decoupled_verilog_dat":
                 # convert weight values into hexstring
                 weight_width = self.get_weightstream_width()
-                #print("weight_widht")
-                #print(weight_width)
-                # pad to nearest 4 bits to get hex strings
-                #if self.get_nodeattr("fine_grained") == 1:
-                #   assert(self.get_nodeattr("mem_mode") != "const"), """mem_mode must be constant for fine grained"""
-                #   assert(self.get_nodeattr("noActivation") == 1), """noActivation must be 1 for fine grained"""
-                #if self.get_nodeattr("mem_mode") != "const" and self.get_nodeattr("noActivation") == 1:
-                #   pe = self.get_nodeattr("PE")
-                #   simd = self.get_nodeattr("SIMD")
-                #   wp = self.get_weight_datatype().bitwidth()
-                #   weight_width_padded = pe * simd * wp
-                         
-                #else:
+
                 weight_width_padded = roundup_to_integer_multiple(weight_width, 4)
-                print(weight_width_padded)
                 weight_tensor_pe_flipped = pack_innermost_dim_as_hex_string(
                     weight_tensor_pe_flipped, export_wdt, weight_width_padded, prefix=""
                 )
@@ -1010,6 +980,9 @@ class StreamingFCLayer_Batch(HLSCustomOp):
         if mem_mode == "const":
             # self.code_gen_dict["$GLOBALS$"] += ['#include "params.h"']
             pass
+        elif self.get_nodeattr("fine_grained")==True:
+            self.code_gen_dict["$GLOBALS$"] += ['#include "slidingwindow.h"']
+            self.code_gen_dict["$GLOBALS$"] += ['#include "mvau.hpp"']
         elif mem_mode == "decoupled" or mem_mode == "external":
             self.code_gen_dict["$GLOBALS$"] += ['#include "mvau.hpp"']
         else:
@@ -1168,6 +1141,40 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     map_to_hls_mult_style[self.get_nodeattr("resType")],
                 )
             ]
+
+        elif self.get_nodeattr("fine_grained") == True:
+            wdt = self.get_weight_datatype()
+            if wdt == DataType.BIPOLAR:
+                export_wdt = DataType.BINARY
+            else:
+                export_wdt = wdt
+            wdtype_hls_str = export_wdt.get_hls_datatype_str()
+
+            #self.code_gen_dict["$DOCOMPUTE$"] = ["""hls::stream<ap_uint<{}>> inter;""".format(self.get_instream_width())]
+
+            #self.code_gen_dict["$DOCOMPUTE$"] += ["""#pragma HLS STREAM variable=inter depth={}""".format(self.get_nodeattr("inFIFODepth"))]
+
+            #self.code_gen_dict["$DOCOMPUTE$"] += [
+            #    """InputBuffer<MW1, MH1, SIMD1, PE1, {}>
+            #   (in0, inter, numReps);""".format(
+            #        tmpl_args["TSrcI"],
+            #    )
+            #]
+
+
+
+            self.code_gen_dict["$DOCOMPUTE$"] = [
+                """Matrix_Vector_PE_Batch<MW1, MH1, SIMD1, PE1, {}, {}, {} >
+               (in0, out, weights, numReps, {});""".format(
+                    tmpl_args["TSrcI"],
+                    tmpl_args["TDstI"],
+                    tmpl_args["TWeightI"],
+
+                   map_to_hls_mult_style[self.get_nodeattr("resType")],
+                )
+            ]  
+                     
+
         elif mem_mode == "decoupled" or mem_mode == "external":
             wdt = self.get_weight_datatype()
             if wdt == DataType.BIPOLAR:
@@ -1225,7 +1232,6 @@ class StreamingFCLayer_Batch(HLSCustomOp):
         self.code_gen_dict["$SAVEASCNPY$"] = []
 
     def blackboxfunction(self):
-        print("blackboxfunction")
         mem_mode = self.get_nodeattr("mem_mode")
         if mem_mode == "const":
             self.code_gen_dict["$BLACKBOXFUNCTION$"] = [
@@ -1404,6 +1410,142 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             )
 
             if self.get_nodeattr("fine_grained")==True:
+                 #----------------------------------------------------------------------------#
+                 # insert code for Input Buffer generation here
+                 buffer_ipgen_template = """
+                 #define AP_INT_MAX_W $AP_INT_MAX_W$
+
+                 #include "bnn-library.h"
+
+                 // includes for network parameters
+                 $GLOBALS$
+
+                 // defines for network parameters
+                 $DEFINES$
+
+                 $BUFFER_BLACKBOX$
+                 {
+                 $BUFFER_PRAGMAS$
+                 $BUFFER_DOCOMPUTE$
+                 }
+                 """
+                 buffer_dict={}
+                 buffer_dict["$AP_INT_MAX_W$"] = [str(self.get_ap_int_max_w())]
+                 self.global_includes()
+                 self.defines("ipgen")
+                 buffer_dict["$BUFFER_PRAGMAS$"]=["#pragma HLS INTERFACE axis port=in0"]
+                 buffer_dict["$BUFFER_PRAGMAS$"].append("#pragma HLS INTERFACE axis port=out")
+                 in_fifo_depth = self.get_nodeattr("inFIFODepth")
+                 out_fifo_depth = self.get_nodeattr("outFIFODepth")
+                 # insert depth pragmas only if specified
+                 if in_fifo_depth != 0:
+                       buffer_dict["$BUFFER_PRAGMAS$"].append(
+                       "#pragma HLS stream depth=%d variable=in0" % in_fifo_depth
+                       )
+                 if out_fifo_depth != 0:
+                       buffer_dict["$BUFFER_PRAGMAS$"].append(
+                       "#pragma HLS stream depth=%d variable=out" % out_fifo_depth
+                       )
+                 buffer_dict["$BUFFER_PRAGMAS$"].append(
+                       "#pragma HLS INTERFACE ap_ctrl_none port=return"
+                       )
+                 buffer_dict["$BUFFER_BLACKBOX$"]=["""void {}_InputBuffer(hls::stream<ap_uint<{}>> &in0,
+                                                         hls::stream<ap_uint<{}>> &out
+                                                         )""".format(
+                                                                   self.onnx_node.name,
+                                                                   self.get_instream_width(),
+                                                                   self.get_instream_width(),
+                                                                     )
+                                                  ]
+                 tmpl_args = self.get_template_param_values()
+                 buffer_dict["$BUFFER_DOCOMPUTE$"] = [
+                                                       """InputBuffer<MW1, MH1, SIMD1, PE1, {}>
+                                                       (in0, out, numReps);""".format(
+                                                       tmpl_args["TSrcI"],
+                                                                                     )
+                                                     ]
+                 template=buffer_ipgen_template
+                 for key in ["$GLOBALS$", "$DEFINES$"]:
+                    # transform list into long string separated by '\n'
+                    code_gen_line = "\n".join(self.code_gen_dict[key])
+                    template = template.replace(key, code_gen_line)
+                 self.code_gen_dict.clear()
+
+                 for key in buffer_dict:
+                    # transform list into long string separated by '\n'
+                    code_gen_line = "\n".join(buffer_dict[key])
+                    template = template.replace(key, code_gen_line)
+                 buffer_dict.clear()
+                 ghhg=open("existsfile.txt","a")
+                 ghhg.write(str(self.get_nodeattr("code_gen_dir_ipgen")))
+                 ghhg.write("\n\n\n")
+                 head, tail=os.path.split(self.get_nodeattr("code_gen_dir_ipgen"))
+                 ghhg.write(str(tail))
+                 ghhg.write("\n\n")
+                 ghhg.close
+                 code_gen_dir_name= str(tail) + "inputbuffer" + "_"
+                 if not os.path.isdir(str(head)+code_gen_dir_name):
+                     code_gen_dir =make_build_dir (
+                     prefix=code_gen_dir_name
+                 )
+                 #mkdir code_gen_dir
+                 buffer_name=self.onnx_node.name+"_InputBuffer"
+                 ghhg.write(str(os.path.join(code_gen_dir, "top_{}.cpp".format(buffer_name))))
+                 ghhg.close()
+                 f = open(os.path.join(code_gen_dir, "top_{}.cpp".format(buffer_name)), "w")
+                 f.write(template)
+                 f.close()
+                 
+
+                 ##-------STEP2
+                 buffer_dict["$PROJECTNAME$"] = ["project_{}".format(buffer_name)]
+                 buffer_dict["$HWSRCDIR$"] = [code_gen_dir]
+                 buffer_dict["$FPGAPART$"] = ["xc7z020clg400-1"]
+                 buffer_dict["$FINNHLSLIBDIR$"] = ["/workspace/finn-hlslib"]
+                 buffer_dict["$TOPFXN$"] = ["""{}_InputBuffer""".format(self.onnx_node.name)]
+                 buffer_dict["$CLKPERIOD$"] = [str(10)]
+                 buffer_dict["$EXTRA_DIRECTIVES$"] = self.ipgen_extra_directives()
+                 template=self.ipgentcl_template
+                 for key in buffer_dict:
+                    code_gen_line = "\n".join(buffer_dict[key])
+                    template = template.replace(key, code_gen_line)
+
+                 f = open(os.path.join(code_gen_dir, "hls_syn_{}.tcl".format(buffer_name)), "w")
+                 f.write(template)
+                 f.close()
+
+                 buffer_dict.clear()
+
+                 ##-------step 3
+
+       
+                 buffer_ipgen_script = str(code_gen_dir) + "/ipgen.sh"
+                 working_dir = os.environ["PWD"]
+                 f = open(buffer_ipgen_script, "w")
+                 f.write("#!/bin/bash \n")
+                 f.write("cd {}\n".format(code_gen_dir))
+                 f.write("vivado_hls {}\n".format(code_gen_dir + "/hls_syn_{}.tcl".format(buffer_name)))
+                 f.write("cd {}\n".format(working_dir))
+                 f.close()
+                 bash_command = ["bash", buffer_ipgen_script]
+                 process_compile = subprocess.Popen(bash_command, stdout=subprocess.PIPE)
+                 process_compile.communicate()
+
+                 ipgen_path=code_gen_dir + "/project_{}".format(buffer_name)
+                 ip_path = ipgen_path + "/sol1/impl/ip"
+                 assert os.path.isdir(
+                     ip_path
+                 ), """no buffer ip was generated"""
+                 self.set_nodeattr("buffer_ipgen_path", ip_path)
+                 buffer_vlnv="xilinx.com:hls:{}:1.0".format(buffer_name)
+                 cmd.append( "create_bd_cell -type ip -vlnv %s /%s/%s"
+                        % (buffer_vlnv, node_name, buffer_name)
+                     )                 
+
+
+
+                 #----------------------------------------------------------------------------#
+
                  assert (self.get_nodeattr("mem_mode")!="const"), "mem_mode must be constant for fine_grained"
                  assert (self.get_nodeattr("noActivation")==1), "noActivation must be 1 for fine_grained"
                  # instantiate the hls ip "pe" number of times
@@ -1456,10 +1598,24 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                  #    % (node_name, din_name, node_name)
                  #)
 
+                 
+                 #cmd.append(
+                 #    "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                 #    "[get_bd_intf_pins %s/axis_broadcaster_input/s_axis]"
+                 #    % (node_name, din_name, node_name)
+                 #)
+
+                 # connect input of block to input of buffer
                  cmd.append(
                      "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                     "[get_bd_intf_pins %s/%s/%s]"
+                     % (node_name, din_name, node_name, buffer_name, din_name )
+                 )
+
+                 cmd.append(
+                     "connect_bd_intf_net [get_bd_intf_pins %s/%s/%s] "
                      "[get_bd_intf_pins %s/axis_broadcaster_input/s_axis]"
-                     % (node_name, din_name, node_name)
+                     % (node_name, buffer_name, dout_name, node_name)
                  )
 
                  # connect output of broadcaster to input of HLS IPs
@@ -1523,6 +1679,14 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     % (node_name, clk_name, node_name)
                  ) 
  
+                 cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
+                   % (node_name, rst_name, node_name, buffer_name, rst_name)
+                 )
+                 cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
+                    % (node_name, clk_name, node_name, buffer_name, clk_name)
+                 ) 
                  # connect clk and reset - input broadcaster
                  cmd.append(
                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_broadcaster_input/aresetn]"

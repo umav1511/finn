@@ -1,25 +1,27 @@
 #!/bin/sh
 
-
+export FINN_HOST_BUILD_DIR="/home/uma/Desktop/graduation_project/finn-repo/build_directory_new_tfc-1-2/"
+cd ~/Desktop/graduation_project/finn-repo/finn/
+bash run-docker.sh
+#docker exec -it finn_dev_uma eval "python setup.py test --addopts '-k \"End2End and $a-$wbits-$abits and export\"'  "
 for a in tfc 
 do
 for wbits in 1  
 do
 for abits in 1
 do
-             export FINN_HOST_BUILD_DIR="home/uma/Desktop/graduation_project/finn-repo/build_dir_$a$wbits$abits"
-             echo $FINN_HOST_BUILD_DIR
+             #export FINN_HOST_BUILD_DIR="home/uma/Desktop/graduation_project/finn-repo/build_dir_$a$wbits$abits"
+             #echo $FINN_HOST_BUILD_DIR
              
              eval "python setup.py test --addopts '-k \"End2End and $a-$wbits-$abits and export\"'  "
-             for type in import postproc streamline hls dataflow fold ipgen build
+             #for type in import postproc streamline hls dataflow fold ipgen ipstitch build
              #for type in hls dataflow fold ipgen ipstitch build          
-             #for type in ipgen ipstitch build
-             do
-             eval "python setup.py test --addopts '-k \"End2End and $a-$wbits-$abits and $type\"'  "
+             #do
+             #eval "python setup.py test --addopts '-k \"End2End and $a-$wbits-$abits and $type\"'  "
 
              #eval $xy
                 
-             done
+             #done
              #python setup.py test --addopts '-k "End2End and str2 and export//str2/$str1"'
              #python setup.py test --addopts '-k "End2End and $a-$wbits-$abits and import"'
              #python setup.py test --addopts '-k "End2End and $a-$wbits-$abits and postproc"'
@@ -31,6 +33,7 @@ do
 done
 done
 done
+exit
 #python setup.py test --addopts '-k "End2End and tfc-1-1 and fifo"'
 #python setup.py test --addopts '-k "End2End and tfc-1-1 and build"'
 #python setup.py test --addopts '-k "End2End and tfc-1-1 and ipstitch"'
