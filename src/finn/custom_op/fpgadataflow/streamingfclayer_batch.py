@@ -1164,11 +1164,12 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
 
             self.code_gen_dict["$DOCOMPUTE$"] = [
-                """Matrix_Vector_PE_Batch<MW1, MH1, SIMD1, PE1, {}, {}, {} >
+                """Matrix_Vector_PE_Batch<MW1, MH1, SIMD1, PE1, {}, {}, {}, {} >
                (in0, out, weights, numReps, {});""".format(
                     tmpl_args["TSrcI"],
                     tmpl_args["TDstI"],
                     tmpl_args["TWeightI"],
+                    wdtype_hls_str,
 
                    map_to_hls_mult_style[self.get_nodeattr("resType")],
                 )
@@ -1705,8 +1706,10 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                  cmd.append(
                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aclk]"
                    % (node_name, clk_name, node_name)
-                 )      
-            
+                 )  
+                 
+                 #------------------------------debug------------------------------#
+                 
             else:
                 cmd.append(
                   "create_bd_cell -type ip -vlnv %s /%s/%s"
@@ -1737,6 +1740,8 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                   "[get_bd_intf_pins %s/%s/%s]"
                   % (node_name, dout_name, node_name, node_name, dout_name)
                 )
+
+                
             # streamer reset and clock
             cmd.append(
                 "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"

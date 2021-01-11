@@ -1,9 +1,9 @@
 #!/bin/sh
 
 
-for a in tfc 
+for a in cnv 
 do
-for wbits in 1  
+for wbits in 2  
 do
 for abits in 1
 do

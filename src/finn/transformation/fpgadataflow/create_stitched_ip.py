@@ -283,9 +283,20 @@ class CreateStitchedIP(Transformation):
         fclk_mhz = 1 / (self.clk_ns * 0.001)
         fclk_hz = fclk_mhz * 1000000
         model.set_metadata_prop("clk_ns", str(self.clk_ns))
+
+        #if block_name == "StreamingDataflowPartition_1":
+        #   for i in range(20):
+        #      tcl.append("apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/ap_clk (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins system_ila_%d/clk]" % (i))
+        #   tcl.append("apply_bd_automation -rule xilinx.com:bd_rule:board -config { Manual_Source {Auto}}  [get_bd_pins rst_ap_clk_100M/ext_reset_in]")
+
+
         tcl.append("set_property CONFIG.FREQ_HZ %f [get_bd_ports /ap_clk]" % fclk_hz)
+
+
         tcl.append("regenerate_bd_layout")
+
         tcl.append("validate_bd_design")
+
         tcl.append("save_bd_design")
         # create wrapper hdl (for rtlsim later on)
         bd_base = "%s/%s.srcs/sources_1/bd/%s" % (
