@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_splitter_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_splitter" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="8793484999fs"></ZoomStartTime>
+      <ZoomEndTime time="8793485006fs"></ZoomEndTime>
+      <Cursor1Time time="8793485000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="252"></NameColumnWidth>
+      <ValueColumnWidth column_width="119"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="8" />
+   <wvobject type="logic" fp_name="/tb_splitter/aclk_0">
+      <obj_property name="ElementShortName">aclk_0</obj_property>
+      <obj_property name="ObjectShortName">aclk_0</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_splitter/aresetn_0">
+      <obj_property name="ElementShortName">aresetn_0</obj_property>
+      <obj_property name="ObjectShortName">aresetn_0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_splitter/m_axis_00_0_tdata">
+      <obj_property name="ElementShortName">m_axis_00_0_tdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">m_axis_00_0_tdata[7:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_splitter/m_axis_01_0_tdata">
+      <obj_property name="ElementShortName">m_axis_01_0_tdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">m_axis_01_0_tdata[7:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_splitter/m_axis_02_0_tdata">
+      <obj_property name="ElementShortName">m_axis_02_0_tdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">m_axis_02_0_tdata[7:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_splitter/m_axis_03_0_tdata">
+      <obj_property name="ElementShortName">m_axis_03_0_tdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">m_axis_03_0_tdata[7:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_splitter/m_axis_04_0_tdata">
+      <obj_property name="ElementShortName">m_axis_04_0_tdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">m_axis_04_0_tdata[7:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_splitter/s_axis_0_tdata">
+      <obj_property name="ElementShortName">s_axis_0_tdata[15:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axis_0_tdata[15:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+</wave_config>

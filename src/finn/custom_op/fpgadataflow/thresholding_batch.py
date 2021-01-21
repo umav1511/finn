@@ -269,8 +269,6 @@ class Thresholding_Batch(HLSCustomOp):
         fold = ich // pe
         vecs = list(self.get_nodeattr("numInputVectors"))
         folded_input_shape = tuple(vecs + [fold, pe])
-        print("threshold")
-        print(ich, pe, fold, vecs, folded_input_shape)
         return folded_input_shape
 
     def get_folded_output_shape(self):

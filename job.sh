@@ -1,19 +1,19 @@
 #!/bin/sh
 
 
-for a in cnv 
+for a in tfc 
 do
-for wbits in 2  
+for wbits in 1  2
 do
-for abits in 1
+for abits in 1  2
 do
              export FINN_HOST_BUILD_DIR="home/uma/Desktop/graduation_project/finn-repo/build_dir_$a$wbits$abits"
              echo $FINN_HOST_BUILD_DIR
              
              eval "python setup.py test --addopts '-k \"End2End and $a-$wbits-$abits and export\"'  "
-             for type in import postproc streamline hls dataflow fold ipgen build
-             #for type in hls dataflow fold ipgen ipstitch build          
-             #for type in ipgen ipstitch build
+             for type in import postproc streamline hls dataflow fold ipgen build 
+             #for type in import postproc streamline hls           
+             #for type in dataflow fold ipgen build
              do
              eval "python setup.py test --addopts '-k \"End2End and $a-$wbits-$abits and $type\"'  "
 
@@ -31,6 +31,8 @@ do
 done
 done
 done
+
+
 #python setup.py test --addopts '-k "End2End and tfc-1-1 and fifo"'
 #python setup.py test --addopts '-k "End2End and tfc-1-1 and build"'
 #python setup.py test --addopts '-k "End2End and tfc-1-1 and ipstitch"'

@@ -482,17 +482,10 @@ class InferBinaryStreamingFCLayer(Transformation):
                 else:
                     # no activation, matmul only
                     odt = model.get_tensor_datatype(mm_output)
-                    f = open("datatype.txt", "a")
-                    f.write(mm_output)
-
-                    f.write(str(odt))
-                    f.write("\n")
-                    f.close()
-                    print(mm_output)
                     model.set_tensor_shape(mm_input, mm_in_shape)
                     model.set_tensor_shape(mm_output, mm_out_shape)
                     if self.mem_mode != "const":
-                        fine_grained = True
+                          fine_grained = True
                     # create and insert new StreamingFCLayer node
                     new_node = helper.make_node(
                         "StreamingFCLayer_Batch",
@@ -624,7 +617,7 @@ class InferQuantizedStreamingFCLayer(Transformation):
                         graph_modified = True
                     else:
                         if self.mem_mode != "const":
-                            fine_grained = True
+                             fine_grained = True
                         # no activation, matmul only
                         odt = model.get_tensor_datatype(mm_output)
                         model.set_tensor_shape(mm_input, mm_in_shape)
