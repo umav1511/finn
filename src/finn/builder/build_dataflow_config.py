@@ -33,6 +33,9 @@ from enum import Enum
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
+import os
+import numpy as np
+
 
 class ShellFlowType(str, Enum):
     """For builds that produce a bitfile, select the shell flow that will integrate
@@ -48,6 +51,7 @@ class DataflowOutputType(str, Enum):
     STITCHED_IP = "stitched_ip"
     ESTIMATE_REPORTS = "estimate_reports"
     OOC_SYNTH = "out_of_context_synth"
+    RTLSIM_PERFORMANCE = "rtlsim_performance"
     BITFILE = "bitfile"
     PYNQ_DRIVER = "pynq_driver"
     DEPLOYMENT_PACKAGE = "deployment_package"
@@ -82,6 +86,19 @@ class LargeFIFOMemStyle(str, Enum):
     URAM = "ultra"
 
 
+class VerificationStepType(str, Enum):
+    "Steps at which FINN ONNX execution can be launched for verification."
+
+    #: verify after step_tidy_up, using Python execution
+    TIDY_UP_PYTHON = "initial_python"
+    #: verify after step_streamline , using Python execution
+    STREAMLINED_PYTHON = "streamlined_python"
+    #: verify after step_apply_folding_config, using C++ for each HLS node
+    FOLDED_HLS_CPPSIM = "folded_hls_cppsim"
+    #: verify after step_create_stitched_ip, using stitched-ip Verilog
+    STITCHED_IP_RTLSIM = "stitched_ip_rtlsim"
+
+
 #: List of steps that will be run as part of the standard dataflow build, in the
 #: specified order. Use the `steps` as part of build config to restrict which
 #: steps will be run.
@@ -93,14 +110,32 @@ default_build_dataflow_steps = [
     "step_target_fps_parallelization",
     "step_apply_folding_config",
     "step_generate_estimate_reports",
+    "step_hls_codegen",
     "step_hls_ipgen",
     "step_set_fifo_depths",
     "step_create_stitched_ip",
+    "step_measure_rtlsim_performance",
     "step_make_pynq_driver",
     "step_out_of_context_synthesis",
     "step_synthesize_bitfile",
     "step_deployment_package",
 ]
+
+
+#: List of steps to run for an estimate-only (no synthesis) dataflow build
+estimate_only_dataflow_steps = [
+    "step_tidy_up",
+    "step_streamline",
+    "step_convert_to_hls",
+    "step_create_dataflow_partition",
+    "step_target_fps_parallelization",
+    "step_apply_folding_config",
+    "step_generate_estimate_reports",
+]
+
+#: List of steps to run for a dataflow build including HLS code generation, but
+#: without any synthesis.
+hls_codegen_dataflow_steps = estimate_only_dataflow_steps + ["step_hls_codegen"]
 
 
 @dataclass_json
@@ -138,12 +173,32 @@ class DataflowBuildConfig:
     #: that will override the target_fps setting here.
     target_fps: Optional[int] = None
 
+
+    #: (Optional) At which steps the generated intermediate output model
+    #: will be verified. See documentation of VerificationStepType for
+    #: available options.
+    verify_steps: Optional[List[VerificationStepType]] = None
+
+    #: (Optional) Name of .npy file that will be used as the input for
+    #: verification. Only required if verify_steps is not empty.
+    verify_input_npy: Optional[str] = "input.npy"
+
+    #: (Optional) Name of .npy file that will be used as the expected output for
+    #: verification. Only required if verify_steps is not empty.
+    verify_expected_output_npy: Optional[str] = "expected_output.npy"
+
     #: (Optional) Control the maximum width of the per-PE MVAU stream while
     #: exploring the parallelization attributes to reach target_fps
     #: Only relevant if target_fps is specified.
     #: Set this to a large value (e.g. 10000) if targeting full unfolding or
     #: very high performance.
     mvau_wwidth_max: Optional[int] = 36
+
+    #: (Optional) Whether thresholding layers (which implement quantized
+    #: activations in FINN) will be implemented as stand-alone HLS layers,
+    #: instead of being part of StreamingFCLayer. This gives larger flexibility,
+    #: and makes it possible to have runtime-writable thresholds.
+    standalone_thresholds: Optional[bool] = False
 
     #: Target board, only needed for generating full bitfiles where the FINN
     #: design is integrated into a shell.
@@ -260,3 +315,26 @@ class DataflowBuildConfig:
             VitisOptStrategyCfg.BUILD_SPEED: VitisOptStrategy.BUILD_SPEED,
         }
         return name_to_strategy[self.vitis_opt_strategy]
+
+
+    def _resolve_verification_steps(self):
+        if self.verify_steps is None:
+            return []
+        else:
+            return self.verify_steps
+
+    def _resolve_verification_io_pair(self):
+        if self.verify_steps is None:
+            return None
+        else:
+            assert os.path.isfile(self.verify_input_npy), (
+                "verify_input_npy not found: " + self.verify_input_npy
+            )
+            verify_input_npy = np.load(self.verify_input_npy)
+            assert os.path.isfile(self.verify_expected_output_npy), (
+                "verify_expected_output_npy not found: "
+                + self.verify_expected_output_npy
+            )
+            verify_expected_output_npy = np.load(self.verify_expected_output_npy)
+            return (verify_input_npy, verify_expected_output_npy)
+

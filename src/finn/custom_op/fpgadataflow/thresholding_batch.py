@@ -331,7 +331,15 @@ class Thresholding_Batch(HLSCustomOp):
             assert (orig_thres_matrix >= 0).all()
         # ensure all thresholds are integer
         assert np.equal(np.mod(orig_thres_matrix.all(), 1), 0), "Need int threshold tensor"
+
         ret = orig_thres_matrix
+        # workaround for vivado_hls threshold bug
+        if ret[0][0] == 0:
+            ret = np.copy(ret)
+            ret[0][0] = 1
+            warnings.warn(
+                "Setting 0-valued first threshold to 1 to avoid vivado_hls bug"
+            )
         # ensure channels = mh , duplicating if necessary
         if ret.shape[0] == 1:
             ret = np.tile(ret, (mh, 1))
@@ -392,7 +400,7 @@ class Thresholding_Batch(HLSCustomOp):
                     tdt_hls,
                     odt_hls,
                     self.get_nodeattr("ActVal"),
-                    "std::less_equal<%s>" % tdt_hls,
+                    "comp::less_equal<%s>" % tdt_hls,
                 )
             )
             f_thresh.write(thresholds_hls_code)
@@ -927,3 +935,14 @@ class Thresholding_Batch(HLSCustomOp):
             if runtime_writable:
                 intf_names["axilite"] = ["s_axilite"]
         return intf_names
+
+    def get_op_and_param_counts(self):
+        ret_dict = {}
+        weight_bits = self.get_weight_datatype().bitwidth()
+        out_features = self.get_nodeattr("NumChannels")
+        num_steps = self.get_nodeattr("numSteps")
+        # thresholds are called weights in this layer
+        thres_param_type = "param_threshold_%db" % (weight_bits)
+        thres_count = out_features * num_steps
+        ret_dict[thres_param_type] = thres_count
+        return ret_dict
