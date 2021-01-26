@@ -207,7 +207,8 @@ class CreateStitchedIP(Transformation):
             ip_dirs += [ip_dir_value]
 
             self.create_cmds += node_inst.code_generation_ipi()
-            ip_dirs += [node_inst.get_nodeattr("buffer_ipgen_path")]
+            if node.op_type == "StreamingFCLayer_Batch":
+                ip_dirs += [node_inst.get_nodeattr("buffer_ipgen_path")]
             my_producer = model.find_producer(node.input[0])
             self.connect_clk_rst(node)
             self.connect_axi(node)
@@ -283,12 +284,6 @@ class CreateStitchedIP(Transformation):
         fclk_mhz = 1 / (self.clk_ns * 0.001)
         fclk_hz = fclk_mhz * 1000000
         model.set_metadata_prop("clk_ns", str(self.clk_ns))
-
-        #if block_name == "StreamingDataflowPartition_1":
-        #   for i in range(20):
-        #      tcl.append("apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config { Clk {/ap_clk (100 MHz)} Freq {100} Ref_Clk0 {} Ref_Clk1 {} Ref_Clk2 {}}  [get_bd_pins system_ila_%d/clk]" % (i))
-        #   tcl.append("apply_bd_automation -rule xilinx.com:bd_rule:board -config { Manual_Source {Auto}}  [get_bd_pins rst_ap_clk_100M/ext_reset_in]")
-
 
         tcl.append("set_property CONFIG.FREQ_HZ %f [get_bd_ports /ap_clk]" % fclk_hz)
 

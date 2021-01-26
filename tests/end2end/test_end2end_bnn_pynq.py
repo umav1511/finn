@@ -478,32 +478,32 @@ class TestEnd2End:
         model = model.transform(HLSSynthIP())
         model = model.transform(CreateStitchedIP(test_fpga_part, target_clk_ns))
 
-        model = model.transform(PrepareRTLSim())
-        model.set_metadata_prop("exec_mode", "rtlsim")
-        os.environ["LIVENESS_THRESHOLD"] = str(int(latency * 1.1))
-        if rtlsim_trace:
-            model.set_metadata_prop(
-                "rtlsim_trace", "%s_w%da%d.vcd" % (topology, wbits, abits)
-            )
-            os.environ["RTLSIM_TRACE_DEPTH"] = "3"
-        rtlsim_chkpt = get_checkpoint_name(
-            topology, wbits, abits, "ipstitch_rtlsim_" + kind
-        )
-        model.save(rtlsim_chkpt)
-        parent_chkpt = get_checkpoint_name(topology, wbits, abits, "dataflow_parent")
-        (input_tensor_npy, output_tensor_npy) = get_golden_io_pair(
-            topology, wbits, abits, return_topk=1
-        )
-        y = execute_parent(parent_chkpt, rtlsim_chkpt, input_tensor_npy)
-        model = ModelWrapper(rtlsim_chkpt)
-        perf["cycles_rtlsim"] = model.get_metadata_prop("cycles_rtlsim")
-        # warnings.warn("Estimated & rtlsim performance: " + str(perf))
-        # for (k, v) in perf.items():
-        #    update_dashboard_data(topology, wbits, abits, k, v)
-        update_dashboard_data(
-            topology, wbits, abits, "cycles_rtlsim", perf["cycles_rtlsim"]
-        )
-        assert np.isclose(y, output_tensor_npy).all()
+        #model = model.transform(PrepareRTLSim())
+        #model.set_metadata_prop("exec_mode", "rtlsim")
+        #os.environ["LIVENESS_THRESHOLD"] = str(int(latency * 1.1))
+        #if rtlsim_trace:
+        #    model.set_metadata_prop(
+        #        "rtlsim_trace", "%s_w%da%d.vcd" % (topology, wbits, abits)
+        #    )
+        #    os.environ["RTLSIM_TRACE_DEPTH"] = "3"
+        #rtlsim_chkpt = get_checkpoint_name(
+        #    topology, wbits, abits, "ipstitch_rtlsim_" + kind
+        #)
+        #model.save(rtlsim_chkpt)
+        #parent_chkpt = get_checkpoint_name(topology, wbits, abits, "dataflow_parent")
+        #(input_tensor_npy, output_tensor_npy) = get_golden_io_pair(
+        #    topology, wbits, abits, return_topk=1
+        #)
+        #y = execute_parent(parent_chkpt, rtlsim_chkpt, input_tensor_npy)
+        #model = ModelWrapper(rtlsim_chkpt)
+        #perf["cycles_rtlsim"] = model.get_metadata_prop("cycles_rtlsim")
+        ## warnings.warn("Estimated & rtlsim performance: " + str(perf))
+        ## for (k, v) in perf.items():
+        ##    update_dashboard_data(topology, wbits, abits, k, v)
+        #update_dashboard_data(
+        #    topology, wbits, abits, "cycles_rtlsim", perf["cycles_rtlsim"]
+        #)
+        #assert np.isclose(y, output_tensor_npy).all()
 
 
     @pytest.mark.slow

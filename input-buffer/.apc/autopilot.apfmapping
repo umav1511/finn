@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
-  <source>
-    <originFiles name="top_InputBuffer.cpp" path="/home/uma/Desktop/graduation_project/finn-repo/finn/input-buffer/.settings/top_InputBuffer.cpp"/>
-  </source>
-  <testbench/>
-</autopilotfilemapping:AutoPilotFileMapping>
