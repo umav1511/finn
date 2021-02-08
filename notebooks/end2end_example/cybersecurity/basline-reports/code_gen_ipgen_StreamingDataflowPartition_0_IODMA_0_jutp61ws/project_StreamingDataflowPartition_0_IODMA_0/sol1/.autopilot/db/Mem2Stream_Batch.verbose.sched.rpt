@@ -1,0 +1,166 @@
+
+
+================================================================
+== Vivado HLS Report for 'Mem2Stream_Batch'
+================================================================
+* Date:           Wed Jan 27 05:57:13 2021
+
+* Version:        2020.1 (Build 2897737 on Wed May 27 20:21:37 MDT 2020)
+* Project:        project_StreamingDataflowPartition_0_IODMA_0
+* Solution:       sol1
+* Product family: zynq
+* Target device:  xc7z020-clg400-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  | 10.00 ns | 8.750 ns |   1.25 ns  |
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+----------+----------+-----+-----+---------+
+    |  Latency (cycles) |  Latency (absolute) |  Interval | Pipeline|
+    |   min   |   max   |    min   |    max   | min | max |   Type  |
+    +---------+---------+----------+----------+-----+-----+---------+
+    |        ?|        ?|         ?|         ?|    ?|    ?|   none  |
+    +---------+---------+----------+----------+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        +----------+---------+---------+----------+-----------+-----------+------+----------+
+        |          |  Latency (cycles) | Iteration|  Initiation Interval  | Trip |          |
+        | Loop Name|   min   |   max   |  Latency |  achieved |   target  | Count| Pipelined|
+        +----------+---------+---------+----------+-----------+-----------+------+----------+
+        |- Loop 1  |        ?|        ?| 51 ~ 651 |          -|          -|     ?|    no    |
+        +----------+---------+---------+----------+-----------+-----------+------+----------+
+
+============================================================
++ Verbose Summary: Synthesis Manager
+============================================================
+InlineROM: 1
+ExposeGlobal: 0
+============================================================
++ Verbose Summary: CDFG Model
+============================================================
+IsTopModel: 0
+ResetActiveHigh: 1
+IsCombinational: 2
+IsDatapathOnly: 0
+HasWiredReturn: 1
+HasMFsm: 0
+HasVarLatency: 1
+IsPipeline: 0
+IsRtlPipelined: 0
+IsInstanceOverlapped: 0
+IsDontTouch: 0
+HasImplIP: 0
+IsGatedGlobalClock: 0
+
+
+============================================================
++ Verbose Summary: Schedule
+============================================================
+* Number of FSM states : 4
+* Pipeline : 0
+* Dataflow Pipeline: 0
+
+* FSM state transitions: 
+1 --> 2 
+2 --> 4 3 
+3 --> 2 
+4 --> 
+
+* FSM state operations: 
+
+State 1 <SV = 0> <Delay = 1.81>
+ST_1 : Operation 5 [1/1] (0.00ns)   --->   "%rep_2 = alloca i32"   --->   Operation 5 'alloca' 'rep_2' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 6 [1/1] (0.00ns)   --->   "%numReps_read = call i32 @_ssdm_op_Read.ap_auto.i32(i32 %numReps)" [/workspace/finn-hlslib/dma.h:161]   --->   Operation 6 'read' 'numReps_read' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 7 [1/1] (0.00ns)   --->   "%in_V_offset_read = call i64 @_ssdm_op_Read.ap_auto.i64(i64 %in_V_offset)" [/workspace/finn-hlslib/dma.h:161]   --->   Operation 7 'read' 'in_V_offset_read' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 8 [1/1] (0.00ns)   --->   "%in_V_offset1 = call i63 @_ssdm_op_PartSelect.i63.i64.i32.i32(i64 %in_V_offset_read, i32 1, i32 63)" [/workspace/finn-hlslib/dma.h:161]   --->   Operation 8 'partselect' 'in_V_offset1' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 9 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecInterface(i16* %out_V_V, [5 x i8]* @p_str6, i32 1, i32 1, [5 x i8]* @p_str7, i32 0, i32 0, [1 x i8]* @p_str1, [1 x i8]* @p_str1, [1 x i8]* @p_str1, i32 0, i32 0, i32 0, i32 0, [1 x i8]* @p_str1, [1 x i8]* @p_str1) nounwind"   --->   Operation 9 'specinterface' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 10 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecInterface(i16* %in_V, [6 x i8]* @p_str3, i32 0, i32 0, [1 x i8]* @p_str1, i32 0, i32 0, [5 x i8]* @p_str4, [6 x i8]* @p_str5, [1 x i8]* @p_str1, i32 16, i32 16, i32 16, i32 16, [1 x i8]* @p_str1, [1 x i8]* @p_str1)"   --->   Operation 10 'specinterface' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 11 [1/1] (1.81ns)   --->   "store i32 0, i32* %rep_2" [/workspace/finn-hlslib/dma.h:166]   --->   Operation 11 'store' <Predicate = true> <Delay = 1.81>
+ST_1 : Operation 12 [1/1] (0.00ns)   --->   "br label %.backedge" [/workspace/finn-hlslib/dma.h:166]   --->   Operation 12 'br' <Predicate = true> <Delay = 0.00>
+
+State 2 <SV = 1> <Delay = 6.04>
+ST_2 : Operation 13 [1/1] (0.00ns)   --->   "%rep_2_load = load i32* %rep_2" [/workspace/finn-hlslib/dma.h:171]   --->   Operation 13 'load' 'rep_2_load' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 14 [1/1] (2.47ns)   --->   "%icmp_ln166 = icmp eq i32 %rep_2_load, %numReps_read" [/workspace/finn-hlslib/dma.h:166]   --->   Operation 14 'icmp' 'icmp_ln166' <Predicate = true> <Delay = 2.47> <Core = "Cmp">   --->   Core 25 'Cmp' <Latency = 0> <II = 1> <Delay = 1.30> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_2 : Operation 15 [1/1] (0.00ns)   --->   "br i1 %icmp_ln166, label %4, label %1" [/workspace/finn-hlslib/dma.h:166]   --->   Operation 15 'br' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 16 [1/1] (2.55ns)   --->   "%repsLeft = sub i32 %numReps_read, %rep_2_load" [/workspace/finn-hlslib/dma.h:167]   --->   Operation 16 'sub' 'repsLeft' <Predicate = (!icmp_ln166)> <Delay = 2.55> <Core = "AddSub">   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 2.55> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_2 : Operation 17 [1/1] (0.00ns)   --->   "%trunc_ln167 = trunc i32 %repsLeft to i4" [/workspace/finn-hlslib/dma.h:167]   --->   Operation 17 'trunc' 'trunc_ln167' <Predicate = (!icmp_ln166)> <Delay = 0.00>
+ST_2 : Operation 18 [1/1] (1.30ns)   --->   "%icmp_ln168 = icmp eq i4 %trunc_ln167, 0" [/workspace/finn-hlslib/dma.h:168]   --->   Operation 18 'icmp' 'icmp_ln168' <Predicate = (!icmp_ln166)> <Delay = 1.30> <Core = "Cmp">   --->   Core 25 'Cmp' <Latency = 0> <II = 1> <Delay = 1.30> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_2 : Operation 19 [1/1] (0.00ns) (grouped into LUT with out node add_ln170)   --->   "%shl_ln170 = shl i32 %rep_2_load, 5" [/workspace/finn-hlslib/dma.h:170]   --->   Operation 19 'shl' 'shl_ln170' <Predicate = (!icmp_ln166)> <Delay = 0.00>
+ST_2 : Operation 20 [1/1] (0.00ns) (grouped into LUT with out node add_ln170)   --->   "%shl_ln170_1 = shl i32 %rep_2_load, 3" [/workspace/finn-hlslib/dma.h:170]   --->   Operation 20 'shl' 'shl_ln170_1' <Predicate = (!icmp_ln166)> <Delay = 0.00>
+ST_2 : Operation 21 [1/1] (2.55ns) (out node of the LUT)   --->   "%add_ln170 = add i32 %shl_ln170, %shl_ln170_1" [/workspace/finn-hlslib/dma.h:170]   --->   Operation 21 'add' 'add_ln170' <Predicate = (!icmp_ln166)> <Delay = 2.55> <Core = "AddSub">   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 2.55> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_2 : Operation 22 [1/1] (0.00ns)   --->   "br i1 %icmp_ln168, label %2, label %3" [/workspace/finn-hlslib/dma.h:168]   --->   Operation 22 'br' <Predicate = (!icmp_ln166)> <Delay = 0.00>
+ST_2 : Operation 23 [2/2] (3.49ns)   --->   "call fastcc void @"Mem2Stream<16u, 80u>"(i16* %in_V, i63 %in_V_offset1, i32 %add_ln170, i16* %out_V_V)" [/workspace/finn-hlslib/dma.h:174]   --->   Operation 23 'call' <Predicate = (!icmp_ln166 & !icmp_ln168)> <Delay = 3.49> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_2 : Operation 24 [1/1] (2.55ns)   --->   "%rep_3 = add i32 %rep_2_load, 1" [/workspace/finn-hlslib/dma.h:175]   --->   Operation 24 'add' 'rep_3' <Predicate = (!icmp_ln166 & !icmp_ln168)> <Delay = 2.55> <Core = "AddSub">   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 2.55> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_2 : Operation 25 [1/1] (1.81ns)   --->   "store i32 %rep_3, i32* %rep_2" [/workspace/finn-hlslib/dma.h:175]   --->   Operation 25 'store' <Predicate = (!icmp_ln166 & !icmp_ln168)> <Delay = 1.81>
+ST_2 : Operation 26 [2/2] (3.49ns)   --->   "call fastcc void @Mem2Stream(i16* %in_V, i63 %in_V_offset1, i32 %add_ln170, i16* %out_V_V)" [/workspace/finn-hlslib/dma.h:170]   --->   Operation 26 'call' <Predicate = (!icmp_ln166 & icmp_ln168)> <Delay = 3.49> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_2 : Operation 27 [1/1] (2.55ns)   --->   "%rep = add i32 %rep_2_load, 16" [/workspace/finn-hlslib/dma.h:171]   --->   Operation 27 'add' 'rep' <Predicate = (!icmp_ln166 & icmp_ln168)> <Delay = 2.55> <Core = "AddSub">   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 2.55> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_2 : Operation 28 [1/1] (1.81ns)   --->   "store i32 %rep, i32* %rep_2" [/workspace/finn-hlslib/dma.h:172]   --->   Operation 28 'store' <Predicate = (!icmp_ln166 & icmp_ln168)> <Delay = 1.81>
+
+State 3 <SV = 2> <Delay = 8.75>
+ST_3 : Operation 29 [1/2] (8.75ns)   --->   "call fastcc void @"Mem2Stream<16u, 80u>"(i16* %in_V, i63 %in_V_offset1, i32 %add_ln170, i16* %out_V_V)" [/workspace/finn-hlslib/dma.h:174]   --->   Operation 29 'call' <Predicate = (!icmp_ln168)> <Delay = 8.75> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_3 : Operation 30 [1/1] (0.00ns)   --->   "br label %.backedge.backedge"   --->   Operation 30 'br' <Predicate = (!icmp_ln168)> <Delay = 0.00>
+ST_3 : Operation 31 [1/2] (8.75ns)   --->   "call fastcc void @Mem2Stream(i16* %in_V, i63 %in_V_offset1, i32 %add_ln170, i16* %out_V_V)" [/workspace/finn-hlslib/dma.h:170]   --->   Operation 31 'call' <Predicate = (icmp_ln168)> <Delay = 8.75> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_3 : Operation 32 [1/1] (0.00ns)   --->   "br label %.backedge.backedge" [/workspace/finn-hlslib/dma.h:172]   --->   Operation 32 'br' <Predicate = (icmp_ln168)> <Delay = 0.00>
+ST_3 : Operation 33 [1/1] (0.00ns)   --->   "br label %.backedge"   --->   Operation 33 'br' <Predicate = true> <Delay = 0.00>
+
+State 4 <SV = 3> <Delay = 0.00>
+ST_4 : Operation 34 [1/1] (0.00ns)   --->   "ret void" [/workspace/finn-hlslib/dma.h:178]   --->   Operation 34 'ret' <Predicate = true> <Delay = 0.00>
+
+
+============================================================
++ Verbose Summary: Timing violations
+============================================================
+Target clock period: 10ns, clock uncertainty: 1.25ns.
+
+ <State 1>: 1.81ns
+The critical path consists of the following:
+	'alloca' operation ('rep') [5]  (0 ns)
+	'store' operation ('store_ln166', /workspace/finn-hlslib/dma.h:166) of constant 0 on local variable 'rep' [11]  (1.81 ns)
+
+ <State 2>: 6.05ns
+The critical path consists of the following:
+	'load' operation ('rep_2_load', /workspace/finn-hlslib/dma.h:171) on local variable 'rep' [14]  (0 ns)
+	'shl' operation ('shl_ln170', /workspace/finn-hlslib/dma.h:170) [21]  (0 ns)
+	'add' operation ('add_ln170', /workspace/finn-hlslib/dma.h:170) [23]  (2.55 ns)
+	'call' operation ('call_ln174', /workspace/finn-hlslib/dma.h:174) to 'Mem2Stream<16u, 80u>' [26]  (3.49 ns)
+
+ <State 3>: 8.75ns
+The critical path consists of the following:
+	'call' operation ('call_ln174', /workspace/finn-hlslib/dma.h:174) to 'Mem2Stream<16u, 80u>' [26]  (8.75 ns)
+
+ <State 4>: 0ns
+The critical path consists of the following:
+
+
+============================================================
++ Verbose Summary: Binding
+============================================================
+N/A
+* FSMD analyzer results:
+  - Output states:
+ - Input state : 
+  - Chain level:
+	State 1
+	State 2
+	State 3
+	State 4
+
+
+============================================================
++ Verbose Summary: Datapath Resource usage 
+============================================================
+N/A

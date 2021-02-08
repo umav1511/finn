@@ -82,9 +82,12 @@ def out_of_context_synth(
 
     vivado_proj_folder = "%s/results_%s" % (verilog_dir, top_name)
     res_counts_path = vivado_proj_folder + "/res.txt"
-
+    m=open("ooc3.txt", "a")
+    m.write("\n")
+    m.write(str(vivado_proj_folder))
     with open(res_counts_path, "r") as myfile:
         res_data = myfile.read().split("\n")
+
     ret = {}
     ret["vivado_proj_folder"] = vivado_proj_folder
     for res_line in res_data:
@@ -100,4 +103,9 @@ def out_of_context_synth(
         ret["fmax_mhz"] = 0
     else:
         ret["fmax_mhz"] = 1000.0 / (clk_period_ns - ret["WNS"])
+
+    m.write("\n")
+    m.write(str(ret))
+    m.write("\n")
+    m.close()
     return ret

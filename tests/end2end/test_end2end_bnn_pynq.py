@@ -390,6 +390,7 @@ class TestEnd2End:
     def test_convert_to_hls_layers(self, topology, wbits, abits):
         prev_chkpt_name = get_checkpoint_name(topology, wbits, abits, "streamline")
         model = load_test_checkpoint_or_skip(prev_chkpt_name)
+        model = model.transform(to_hls.InferThresholdingLayer())
         #if topology == "tfc" and wbits == 1 and abits == 1:
         #    # use standalone thresholds for tfc-w1a1 to also exercise that option
         #    model = model.transform(to_hls.InferThresholdingLayer())

@@ -458,7 +458,11 @@ class StreamingFCLayer_Batch(HLSCustomOp):
         # base class impl (max of inp/out stream widths)
         max_of_io = super().get_ap_int_max_w()
         # decoupled mode weight stream
-        weightstream = self.get_weightstream_width()
+        if self.get_nodeattr("fine_grained")==True:
+
+           weightstream = self.get_weightstream_width()//self.get_nodeattr("PE")
+        else:
+           weightstream = self.get_weightstream_width()
         # single PE weight entry
         weight_bits = self.get_weight_datatype().bitwidth()
         simd = self.get_nodeattr("SIMD")
@@ -740,10 +744,12 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             # create a weight stream for various flavors of decoupled mode:
             # transpose weight tensor from (1, PE, WMEM, SIMD) to (1, WMEM, PE, SIMD)
             weight_tensor_unflipped = np.transpose(weight_tensor, (0, 2, 1, 3))
+
             # reverse SIMD flip for saving weights in .npy
             weight_tensor_simd_flipped = np.flip(weight_tensor_unflipped, axis=-1)
             # PE flip for saving weights in .dat
             weight_tensor_pe_flipped = np.flip(weight_tensor_unflipped, axis=-2)
+
             # reshape weight tensor (simd_flipped and pe_flipped) to desired shape
             pe = self.get_nodeattr("PE")
             simd = self.get_nodeattr("SIMD")
@@ -756,14 +762,17 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             weight_tensor_pe_flipped = weight_tensor_pe_flipped.reshape(
                 1, -1, pe * simd
             )
+            
             weight_tensor_pe_flipped = weight_tensor_pe_flipped.copy()
             if weight_file_mode == "decoupled_npy":
                 # save weight stream into npy for cppsim
                 np.save(weight_file_name, weight_tensor_simd_flipped)
             elif weight_file_mode == "decoupled_verilog_dat":
+                code_gen_dir = self.get_nodeattr("code_gen_dir_ipgen")
+                w_file = code_gen_dir + "/weights2.npy"
+                np.save(w_file, weight_tensor_pe_flipped)
                 # convert weight values into hexstring
                 weight_width = self.get_weightstream_width()
-
                 weight_width_padded = roundup_to_integer_multiple(weight_width, 4)
                 weight_tensor_pe_flipped = pack_innermost_dim_as_hex_string(
                     weight_tensor_pe_flipped, export_wdt, weight_width_padded, prefix=""
@@ -774,6 +783,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 with open(weight_file_name, "w") as f:
                     for val in weight_stream:
                         f.write(val + "\n")
+                        
             elif weight_file_mode == "decoupled_runtime":
                 # memstream axi-lite interface will map each mem line to
                 # one or multiple 32-bit words
@@ -806,6 +816,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
         code_gen_dir = path
         # weights, if not external
         weights = model.get_initializer(self.onnx_node.input[1])
+
         if mem_mode == "const":
             # save hlslib-compatible weights in params.h
             weight_filename = "{}/params.h".format(code_gen_dir)
@@ -824,6 +835,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     # as a workaround we provide a zero-weight init here
                     # TODO handle this in Verilog with an if statement
                     weights = np.zeros_like(weights)
+
                 self.make_weight_file(
                     weights, "decoupled_verilog_dat", weight_filename_rtl
                 )
@@ -879,6 +891,12 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 )
                 f_thresh.write(thresholds_hls_code)
                 f_thresh.close()
+        weights_file=self.get_nodeattr("code_gen_dir_ipgen") + "/weights2.npy"
+        weights = np.load(weights_file)
+
+        pe = self.get_nodeattr("PE")
+        simd = self.get_nodeattr("SIMD")
+        weights_reshaped = weights.reshape(1, -1, pe, simd)
 
     def execute_node(self, context, graph):
         mode = self.get_nodeattr("exec_mode")
@@ -1053,6 +1071,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                   numReps,
               )
           ]
+          self.code_gen_dict["$AP_INT_MAX_W$"] = [str(self.get_ap_int_max_w()//pe)]
         elif mem_mode == "decoupled" or mem_mode == "external":
           pe = self.get_nodeattr("PE")
           mh = self.get_nodeattr("MH")
@@ -1069,6 +1088,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                   numReps,
               )
           ]
+          self.code_gen_dict["$AP_INT_MAX_W$"] = [str(self.get_ap_int_max_w())]
         if mem_mode == "decoupled" or mem_mode == "external":
             wdt = self.get_weight_datatype()
             self.code_gen_dict["$DEFINES$"].append(
@@ -1395,32 +1415,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             # instantiate a streamer and connect it to the HLS IP
             strm_vlnv = "xilinx.com:user:memstream:1.0"
             strm_inst = node_name + "_wstrm"
-            cmd.append(
-                "create_bd_cell -type ip -vlnv %s /%s/%s"
-                % (strm_vlnv, node_name, strm_inst)
-            )
-            cmd.append(
-                "set_property -dict [list "
-                "CONFIG.NSTREAMS {1} "
-                "CONFIG.MEM_DEPTH {%d} "
-                "CONFIG.MEM_WIDTH {%d} "
-                "CONFIG.MEM_INIT {%s} "
-                "CONFIG.RAM_STYLE {%s} "
-                "CONFIG.STRM0_DEPTH {%d} "
-                "CONFIG.STRM0_WIDTH {%d} "
-                "CONFIG.STRM0_OFFSET {0} "
-                "] [get_bd_cells /%s/%s]"
-                % (
-                    self.calc_wmem(),
-                    self.get_weightstream_width_padded(),
-                    self.get_nodeattr("code_gen_dir_ipgen") + "/",
-                    self.get_nodeattr("ram_style"),
-                    self.calc_wmem(),
-                    self.get_weightstream_width_padded(),
-                    node_name,
-                    strm_inst,
-                )
-            )
+
 
             if self.get_nodeattr("fine_grained")==True:
                  #----------------------------------------------------------------------------#
@@ -1560,19 +1555,90 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                         % (self.get_nodeattr("ip_vlnv"), node_name, node_name, i)
                      )
                  # WEIGHTS
+                 if self.calc_wmem() != 1:
+                    cmd.append(
+                    "create_bd_cell -type ip -vlnv %s /%s/%s"
+                    % (strm_vlnv, node_name, strm_inst)
+                    )
+                    cmd.append(
+                      "set_property -dict [list "
+                      "CONFIG.NSTREAMS {1} "
+                      "CONFIG.MEM_DEPTH {%d} "
+                      "CONFIG.MEM_WIDTH {%d} "
+                      "CONFIG.MEM_INIT {%s} "
+                      "CONFIG.RAM_STYLE {%s} "
+                      "CONFIG.STRM0_DEPTH {%d} "
+                      "CONFIG.STRM0_WIDTH {%d} "
+                      "CONFIG.STRM0_OFFSET {0} "
+                      "] [get_bd_cells /%s/%s]"
+                      % (
+                        self.calc_wmem(),
+                        self.get_weightstream_width_padded(),
+                        self.get_nodeattr("code_gen_dir_ipgen") + "/",
+                        self.get_nodeattr("ram_style"),
+                        self.calc_wmem(),
+                        self.get_weightstream_width_padded(),
+                        node_name,
+                        strm_inst,
+                        )
+                    )
+                     #instantiate and configure the weight splitter
+                    cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter" % (node_name))
+                    cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter]" % (self.get_weightstream_width_padded(), self.get_weightstream_width(), self.get_splitter_output_width_padded(), pe, node_name))
 
-                 #instantiate and configure the weight splitter
-                 cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter" % (node_name))
-                 cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter]" % (self.get_weightstream_width_padded(), self.get_weightstream_width(), self.get_splitter_output_width_padded(), pe, node_name))
 
+                    cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] [get_bd_intf_pins %s/axis_splitter/s_axis]" % (node_name, strm_inst, node_name))
 
-                 for i in range(pe):
+ 
+                    for i in range(pe):
                         cmd.append(
                           "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter/m_axis_%02d] "
                           "[get_bd_intf_pins %s/%s_%d/weights_V_V]"
                           % (node_name, i, node_name, node_name, i)
-                          )           
-                  
+                          )    
+
+                    # connect clk and reset - weight_splitter
+                    cmd.append(
+                      "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aresetn]"
+                      % (node_name, rst_name, node_name)
+                    )
+                    cmd.append(
+                      "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aclk]"
+                      % (node_name, clk_name, node_name)
+                    )
+
+                    #streamer reset and clock
+                    cmd.append(
+                         "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
+                         % (node_name, rst_name, node_name, strm_inst)
+                        )
+                    cmd.append(
+                        "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aclk]"
+                        % (node_name, clk_name, node_name, strm_inst)
+                     )
+
+                 else:
+                    weight_file=self.get_nodeattr("code_gen_dir_ipgen") + "/weights2.npy"
+                    weights = np.load(weight_file)
+                    weights_reshaped = weights.reshape(1, -1, pe, simd)
+                    export_wdt = self.get_weight_datatype()
+                    
+                    # we have converted bipolar weights to binary for export,
+                    # so use it as such for weight generation
+                    if self.get_weight_datatype() == DataType.BIPOLAR:
+                             export_wdt = DataType.BINARY
+                    weights_pack=pack_innermost_dim_as_hex_string(weights_reshaped, export_wdt, roundup_to_integer_multiple((self.get_weightstream_width()//pe), 4))
+                    for i in range(pe):
+
+                        cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_data_%02d" % (node_name, i))
+     
+                        cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_data_%02d]" % (self.get_splitter_output_width_padded(), int(str(weights_pack[0][0][i]), 16), node_name, i))
+                        cmd.append("connect_bd_net [get_bd_pins %s/xlconstant_data_%02d/dout] [get_bd_pins %s/%s_%d/weights_V_V_TDATA]" % (node_name, i, node_name, node_name, i))
+
+                        cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_valid_%02d" % (node_name, i))
+                        cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_valid_%02d]" % (1, 1, node_name, i))
+                        cmd.append("connect_bd_net [get_bd_pins %s/xlconstant_valid_%02d/dout] [get_bd_pins %s/%s_%d/weights_V_V_TVALID]" % (node_name, i, node_name, node_name, i))
+
                  # instantiate combiner block and set input parameters
 
                  cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_output" % node_name)
@@ -1605,7 +1671,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                            % (node_name, i, node_name, node_name, i, din_name)
                        ) 
 
-                 cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] [get_bd_intf_pins %s/axis_splitter/s_axis]" % (node_name, strm_inst, node_name)) 
+
 
 
                  for i in range(pe):
@@ -1616,7 +1682,6 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                  cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output/m_axis] [get_bd_intf_pins %s/out_V_V]"  % (node_name, node_name))  
    
 
-                 #  TODO : hls ip reset and clock - add these connections to all the instantiated IPs 
                  for i in range(pe):
                     cmd.append(
                       "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
@@ -1655,18 +1720,37 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                    % (node_name, clk_name, node_name)
                  ) 
 
-                 # connect clk and reset - weight_splitter
-                 cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aresetn]"
-                   % (node_name, rst_name, node_name)
-                 )
-                 cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aclk]"
-                   % (node_name, clk_name, node_name)
-                 )  
+
                  
                  
             else:
+
+                cmd.append(
+                  "create_bd_cell -type ip -vlnv %s /%s/%s"
+                  % (strm_vlnv, node_name, strm_inst)
+                )
+                cmd.append(
+                  "set_property -dict [list "
+                  "CONFIG.NSTREAMS {1} "
+                  "CONFIG.MEM_DEPTH {%d} "
+                  "CONFIG.MEM_WIDTH {%d} "
+                  "CONFIG.MEM_INIT {%s} "
+                  "CONFIG.RAM_STYLE {%s} "
+                  "CONFIG.STRM0_DEPTH {%d} "
+                  "CONFIG.STRM0_WIDTH {%d} "
+                  "CONFIG.STRM0_OFFSET {0} "
+                  "] [get_bd_cells /%s/%s]"
+                  % (
+                    self.calc_wmem(),
+                    self.get_weightstream_width_padded(),
+                    self.get_nodeattr("code_gen_dir_ipgen") + "/",
+                    self.get_nodeattr("ram_style"),
+                    self.calc_wmem(),
+                    self.get_weightstream_width_padded(),
+                    node_name,
+                    strm_inst,
+                    )
+                )
                 cmd.append(
                   "create_bd_cell -type ip -vlnv %s /%s/%s"
                   % (self.get_nodeattr("ip_vlnv"), node_name, node_name)
@@ -1699,14 +1783,14 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
                 
             # streamer reset and clock
-            cmd.append(
-                "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
-                % (node_name, rst_name, node_name, strm_inst)
-            )
-            cmd.append(
-                "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aclk]"
-                % (node_name, clk_name, node_name, strm_inst)
-            )
+            #cmd.append(
+            #    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
+            #    % (node_name, rst_name, node_name, strm_inst)
+            #)
+            #cmd.append(
+            #    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aclk]"
+            #    % (node_name, clk_name, node_name, strm_inst)
+            #)
 
 
 

@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:35 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Wed Jan 27 06:08:46 2021
+# Process ID: 1363
+# Current directory: /tmp/finn_dev_uma/code_gen_ipgen_StreamingDataflowPartition_2_IODMA_0_01shf2du/project_StreamingDataflowPartition_2_IODMA_0/sol1/impl/ip
+# Command line: vivado -notrace -mode batch -source run_ippack.tcl
+# Log file: /tmp/finn_dev_uma/code_gen_ipgen_StreamingDataflowPartition_2_IODMA_0_01shf2du/project_StreamingDataflowPartition_2_IODMA_0/sol1/impl/ip/vivado.log
+# Journal file: /tmp/finn_dev_uma/code_gen_ipgen_StreamingDataflowPartition_2_IODMA_0_01shf2du/project_StreamingDataflowPartition_2_IODMA_0/sol1/impl/ip/vivado.jou
+#-----------------------------------------------------------
+source run_ippack.tcl -notrace

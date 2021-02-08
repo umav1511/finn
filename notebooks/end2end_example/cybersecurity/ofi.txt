@@ -1,0 +1,7 @@
+
+writing from streamingfclayer_batch.py file
+(1, 1)
+writing from streamingfclayer_batch.py file
+(1, 1)
+writing from streamingfclayer_batch.py file
+(1, 1)

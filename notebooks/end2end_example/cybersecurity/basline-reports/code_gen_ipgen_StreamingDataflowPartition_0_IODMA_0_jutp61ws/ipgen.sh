@@ -1,0 +1,4 @@
+#!/bin/bash 
+cd /tmp/finn_dev_uma/code_gen_ipgen_StreamingDataflowPartition_0_IODMA_0_jutp61ws
+vivado_hls /tmp/finn_dev_uma/code_gen_ipgen_StreamingDataflowPartition_0_IODMA_0_jutp61ws/hls_syn_StreamingDataflowPartition_0_IODMA_0.tcl
+cd /workspace/finn/notebooks/end2end_example/cybersecurity

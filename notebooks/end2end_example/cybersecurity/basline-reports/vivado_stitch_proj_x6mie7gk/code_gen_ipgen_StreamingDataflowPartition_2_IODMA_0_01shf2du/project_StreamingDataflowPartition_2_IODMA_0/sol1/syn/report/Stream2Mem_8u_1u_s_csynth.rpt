@@ -1,0 +1,193 @@
+
+
+================================================================
+== Vivado HLS Report for 'Stream2Mem_8u_1u_s'
+================================================================
+* Date:           Wed Jan 27 06:08:43 2021
+
+* Version:        2020.1 (Build 2897737 on Wed May 27 20:21:37 MDT 2020)
+* Project:        project_StreamingDataflowPartition_2_IODMA_0
+* Solution:       sol1
+* Product family: zynq
+* Target device:  xc7z020-clg400-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  | 10.00 ns | 8.750 ns |   1.25 ns  |
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+-----+-----+----------+
+    |  Latency (cycles) |   Latency (absolute)  |  Interval | Pipeline |
+    |   min   |   max   |    min    |    max    | min | max |   Type   |
+    +---------+---------+-----------+-----------+-----+-----+----------+
+    |        7|        7| 70.000 ns | 70.000 ns |    1|    1| function |
+    +---------+---------+-----------+-----------+-----+-----+----------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+-------+--------+-------+-----+
+|       Name      | BRAM_18K| DSP48E|   FF   |  LUT  | URAM|
++-----------------+---------+-------+--------+-------+-----+
+|DSP              |        -|      -|       -|      -|    -|
+|Expression       |        -|      -|       0|     79|    -|
+|FIFO             |        -|      -|       -|      -|    -|
+|Instance         |        -|      -|       -|      -|    -|
+|Memory           |        -|      -|       -|      -|    -|
+|Multiplexer      |        -|      -|       -|     36|    -|
+|Register         |        -|      -|      88|      -|    -|
++-----------------+---------+-------+--------+-------+-----+
+|Total            |        0|      0|      88|    115|    0|
++-----------------+---------+-------+--------+-------+-----+
+|Available        |      280|    220|  106400|  53200|    0|
++-----------------+---------+-------+--------+-------+-----+
+|Utilization (%)  |        0|      0|   ~0   |   ~0  |    0|
++-----------------+---------+-------+--------+-------+-----+
+
++ Detail: 
+    * Instance: 
+    N/A
+
+    * DSP48E: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +----------------------------------+----------+-------+---+----+------------+------------+
+    |           Variable Name          | Operation| DSP48E| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +----------------------------------+----------+-------+---+----+------------+------------+
+    |add_ln149_fu_88_p2                |     +    |      0|  0|  71|          64|          64|
+    |ap_block_pp0_stage0_01001         |    or    |      0|  0|   2|           1|           1|
+    |ap_block_pp0_stage0_11001         |    or    |      0|  0|   2|           1|           1|
+    |ap_block_state1_pp0_stage0_iter0  |    or    |      0|  0|   2|           1|           1|
+    |ap_enable_pp0                     |    xor   |      0|  0|   2|           1|           2|
+    +----------------------------------+----------+-------+---+----+------------+------------+
+    |Total                             |          |      0|  0|  79|          68|          69|
+    +----------------------------------+----------+-------+---+----+------------+------------+
+
+    * Multiplexer: 
+    +--------------------+----+-----------+-----+-----------+
+    |        Name        | LUT| Input Size| Bits| Total Bits|
+    +--------------------+----+-----------+-----+-----------+
+    |in_V_V_TDATA_blk_n  |   9|          2|    1|          2|
+    |out_V_blk_n_AW      |   9|          2|    1|          2|
+    |out_V_blk_n_B       |   9|          2|    1|          2|
+    |out_V_blk_n_W       |   9|          2|    1|          2|
+    +--------------------+----+-----------+-----+-----------+
+    |Total               |  36|          8|    4|          8|
+    +--------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +-----------------------------+----+----+-----+-----------+
+    |             Name            | FF | LUT| Bits| Const Bits|
+    +-----------------------------+----+----+-----+-----------+
+    |ap_CS_fsm                    |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter1      |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter2      |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter3      |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter4      |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter5      |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter6      |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter7      |   1|   0|    1|          0|
+    |out_V_addr_reg_100           |  64|   0|   64|          0|
+    |tmp_V_reg_106                |   8|   0|    8|          0|
+    |tmp_V_reg_106_pp0_iter1_reg  |   8|   0|    8|          0|
+    +-----------------------------+----+----+-----+-----------+
+    |Total                        |  88|   0|   88|          0|
+    +-----------------------------+----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++----------------------+-----+-----+------------+--------------------+--------------+
+|       RTL Ports      | Dir | Bits|  Protocol  |    Source Object   |    C Type    |
++----------------------+-----+-----+------------+--------------------+--------------+
+|ap_clk                |  in |    1| ap_ctrl_hs | Stream2Mem<8u, 1u> | return value |
+|ap_rst                |  in |    1| ap_ctrl_hs | Stream2Mem<8u, 1u> | return value |
+|ap_start              |  in |    1| ap_ctrl_hs | Stream2Mem<8u, 1u> | return value |
+|ap_done               | out |    1| ap_ctrl_hs | Stream2Mem<8u, 1u> | return value |
+|ap_idle               | out |    1| ap_ctrl_hs | Stream2Mem<8u, 1u> | return value |
+|ap_ready              | out |    1| ap_ctrl_hs | Stream2Mem<8u, 1u> | return value |
+|in_V_V_TDATA_blk_n    | out |    1| ap_ctrl_hs | Stream2Mem<8u, 1u> | return value |
+|out_V_blk_n_AW        | out |    1| ap_ctrl_hs | Stream2Mem<8u, 1u> | return value |
+|out_V_blk_n_W         | out |    1| ap_ctrl_hs | Stream2Mem<8u, 1u> | return value |
+|out_V_blk_n_B         | out |    1| ap_ctrl_hs | Stream2Mem<8u, 1u> | return value |
+|in_V_V_TVALID         |  in |    1|    axis    |       in_V_V       |    pointer   |
+|in_V_V_TDATA          |  in |    8|    axis    |       in_V_V       |    pointer   |
+|in_V_V_TREADY         | out |    1|    axis    |       in_V_V       |    pointer   |
+|m_axi_out_V_AWVALID   | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_AWREADY   |  in |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_AWADDR    | out |   64|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_AWID      | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_AWLEN     | out |   32|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_AWSIZE    | out |    3|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_AWBURST   | out |    2|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_AWLOCK    | out |    2|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_AWCACHE   | out |    4|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_AWPROT    | out |    3|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_AWQOS     | out |    4|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_AWREGION  | out |    4|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_AWUSER    | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_WVALID    | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_WREADY    |  in |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_WDATA     | out |    8|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_WSTRB     | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_WLAST     | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_WID       | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_WUSER     | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARVALID   | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARREADY   |  in |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARADDR    | out |   64|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARID      | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARLEN     | out |   32|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARSIZE    | out |    3|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARBURST   | out |    2|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARLOCK    | out |    2|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARCACHE   | out |    4|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARPROT    | out |    3|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARQOS     | out |    4|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARREGION  | out |    4|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_ARUSER    | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_RVALID    |  in |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_RREADY    | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_RDATA     |  in |    8|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_RLAST     |  in |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_RID       |  in |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_RUSER     |  in |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_RRESP     |  in |    2|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_BVALID    |  in |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_BREADY    | out |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_BRESP     |  in |    2|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_BID       |  in |    1|    m_axi   |        out_V       |    pointer   |
+|m_axi_out_V_BUSER     |  in |    1|    m_axi   |        out_V       |    pointer   |
+|out_V_offset          |  in |   64|   ap_none  |    out_V_offset    |    scalar    |
+|out_V_offset1         |  in |   32|   ap_none  |    out_V_offset1   |    scalar    |
++----------------------+-----+-----+------------+--------------------+--------------+
+

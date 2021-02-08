@@ -60,5 +60,11 @@ class SynthOutOfContext(Transformation):
         ret = out_of_context_synth(
             build_dir, top_module_name, self.part, self.clk_name, self.clk_period_ns
         )
+        l=open("ooc2.txt","a")
+        l.write("in file synth_ooc.py")
+        l.write("\n")
+        l.write(str(ret))
+        l.write("\n")
+        l.close()
         model.set_metadata_prop("res_total_ooc_synth", str(ret))
         return (model, False)

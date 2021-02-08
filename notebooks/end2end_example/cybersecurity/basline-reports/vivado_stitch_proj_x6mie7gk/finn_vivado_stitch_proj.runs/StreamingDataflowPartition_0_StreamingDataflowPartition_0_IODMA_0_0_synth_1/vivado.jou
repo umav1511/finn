@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:35 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Wed Jan 27 05:57:50 2021
+# Process ID: 31332
+# Current directory: /tmp/finn_dev_uma/vivado_stitch_proj_x6mie7gk/finn_vivado_stitch_proj.runs/StreamingDataflowPartition_0_StreamingDataflowPartition_0_IODMA_0_0_synth_1
+# Command line: vivado -log StreamingDataflowPartition_0_StreamingDataflowPartition_0_IODMA_0_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source StreamingDataflowPartition_0_StreamingDataflowPartition_0_IODMA_0_0.tcl
+# Log file: /tmp/finn_dev_uma/vivado_stitch_proj_x6mie7gk/finn_vivado_stitch_proj.runs/StreamingDataflowPartition_0_StreamingDataflowPartition_0_IODMA_0_0_synth_1/StreamingDataflowPartition_0_StreamingDataflowPartition_0_IODMA_0_0.vds
+# Journal file: /tmp/finn_dev_uma/vivado_stitch_proj_x6mie7gk/finn_vivado_stitch_proj.runs/StreamingDataflowPartition_0_StreamingDataflowPartition_0_IODMA_0_0_synth_1/vivado.jou
+#-----------------------------------------------------------
+source StreamingDataflowPartition_0_StreamingDataflowPartition_0_IODMA_0_0.tcl -notrace

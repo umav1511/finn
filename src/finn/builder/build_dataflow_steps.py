@@ -56,6 +56,7 @@ from finn.transformation.fpgadataflow.insert_fifo import InsertFIFO
 from finn.transformation.fpgadataflow.prepare_ip import PrepareIP
 from finn.transformation.fpgadataflow.hlssynth_ip import HLSSynthIP
 from finn.transformation.fpgadataflow.create_stitched_ip import CreateStitchedIP
+from finn.transformation.fpgadataflow.prepare_rtlsim import PrepareRTLSim
 from finn.transformation.fpgadataflow.set_fifo_depths import (
     InsertAndSetFIFODepths,
     RemoveShallowFIFOs,
@@ -88,9 +89,20 @@ from finn.builder.build_dataflow_config import (
     DataflowBuildConfig,
     DataflowOutputType,
     ShellFlowType,
+    VerificationStepType,
 )
 from finn.transformation.fpgadataflow.annotate_cycles import AnnotateCycles
 
+from finn.core.onnx_exec import execute_onnx
+import numpy as np
+from finn.util.test import execute_parent
+from finn.transformation.fpgadataflow.prepare_cppsim import PrepareCppSim
+from finn.transformation.fpgadataflow.compile_cppsim import CompileCppSim
+from finn.transformation.fpgadataflow.set_exec_mode import SetExecMode
+from finn.transformation.fpgadataflow.prepare_rtlsim import PrepareRTLSim
+from finn.core.throughput_test import throughput_test_rtlsim
+
+from copy import deepcopy
 
 def step_tidy_up(model: ModelWrapper, cfg: DataflowBuildConfig):
     """Run the tidy-up step on given model. This includes shape and datatype
@@ -136,6 +148,7 @@ def step_convert_to_hls(model: ModelWrapper, cfg: DataflowBuildConfig):
     is limited, see the source code of the `convert_to_hls` module for more. """
 
     mem_mode = cfg.default_mem_mode.value
+    model = model.transform(to_hls.InferThresholdingLayer())
     # needed for bipolar MatMul layers
     model = model.transform(to_hls.InferBinaryStreamingFCLayer(mem_mode))
     # needed for non-bipolar MatMul layers
@@ -144,7 +157,7 @@ def step_convert_to_hls(model: ModelWrapper, cfg: DataflowBuildConfig):
     model = model.transform(to_hls.InferLabelSelectLayer())
     # input quantization (if any) to standalone thresholding
     # TODO call first if standalone thresholding is desired
-    model = model.transform(to_hls.InferThresholdingLayer())
+    #model = model.transform(to_hls.InferThresholdingLayer())
     # needed for convolutions -- TODO always exec?
     need_conv = len(model.get_nodes_by_op_type("Im2Col")) > 0
     if need_conv:
@@ -155,6 +168,7 @@ def step_convert_to_hls(model: ModelWrapper, cfg: DataflowBuildConfig):
     model = model.transform(absorb.AbsorbConsecutiveTransposes())
     model = model.transform(GiveUniqueNodeNames())
     model = model.transform(InferDataLayouts())
+    model.save("new_hls.onnx")
     return model
 
 
@@ -184,6 +198,7 @@ def step_target_fps_parallelization(model: ModelWrapper, cfg: DataflowBuildConfi
         model = model.transform(
             SetFolding(target_cycles_per_frame, mvau_wwidth_max=cfg.mvau_wwidth_max)
         )
+    model.save("new_folding.onnx")
     return model
 
 
@@ -234,6 +249,14 @@ def step_generate_estimate_reports(model: ModelWrapper, cfg: DataflowBuildConfig
             json.dump(estimate_network_performance, f, indent=2)
     return model
 
+def step_hls_codegen(model: ModelWrapper, cfg: DataflowBuildConfig):
+    "Generate Vivado HLS code to prepare HLSCustomOp nodes for IP generation."
+
+    model = model.transform(
+        PrepareIP(cfg._resolve_fpga_part(), cfg._resolve_hls_clk_period())
+    )
+   
+    return model
 
 def step_hls_ipgen(model: ModelWrapper, cfg: DataflowBuildConfig):
     "Run Vivado HLS synthesis on any HLSCustomOp nodes to generate IP blocks."
@@ -248,6 +271,7 @@ def step_hls_ipgen(model: ModelWrapper, cfg: DataflowBuildConfig):
     estimate_layer_resources_hls = model.analysis(hls_synth_res_estimation)
     with open(report_dir + "/estimate_layer_resources_hls.json", "w") as f:
         json.dump(estimate_layer_resources_hls, f, indent=2)
+    model.save("new_ipgen.onnx")
     return model
 
 
@@ -323,6 +347,42 @@ def step_create_stitched_ip(model: ModelWrapper, cfg: DataflowBuildConfig):
         print("Vivado stitched IP written into " + stitched_ip_dir)
     return model
 
+def step_measure_rtlsim_performance(model: ModelWrapper, cfg: DataflowBuildConfig):
+    """Measure performance + latency of stitched-IP model in rtlsim (pyverilator).
+    Depends on the DataflowOutputType.STITCHED_IP output product.
+    """
+
+    if DataflowOutputType.RTLSIM_PERFORMANCE in cfg.generate_outputs:
+        assert (
+            DataflowOutputType.STITCHED_IP in cfg.generate_outputs
+        ), "rtlsim_perf needs stitched IP"
+        # prepare ip-stitched rtlsim
+        rtlsim_model = deepcopy(model)
+        # rtlsim only supports impl_style=rtl for StreamingFIFO, ensure that
+        for fifo_layer in rtlsim_model.get_nodes_by_op_type("StreamingFIFO"):
+            getCustomOp(fifo_layer).set_nodeattr("impl_style", "rtl")
+        # similarly for StreamingDataWidthConverter with impl_style=hls
+        for dwc_layer in rtlsim_model.get_nodes_by_op_type(
+            "StreamingDataWidthConverter_Batch"
+        ):
+            getCustomOp(dwc_layer).set_nodeattr("impl_style", "hls")
+        rtlsim_model = rtlsim_model.transform(PrepareRTLSim())
+        rtlsim_model.set_metadata_prop("exec_mode", "rtlsim")
+        # run with single input to get latency
+        rtlsim_perf_dict = throughput_test_rtlsim(rtlsim_model, 1)
+        rtlsim_latency = rtlsim_perf_dict["cycles"]
+        # run with num inputs equal to layers to fill the whole pipeline
+        # to get the steady-state throughput
+        rtlsim_bs = len(rtlsim_model.graph.node)
+        rtlsim_perf_dict = throughput_test_rtlsim(rtlsim_model, rtlsim_bs)
+        rtlsim_perf_dict["latency_cycles"] = rtlsim_latency
+        report_dir = cfg.output_dir + "/report"
+        os.makedirs(report_dir, exist_ok=True)
+        with open(report_dir + "/rtlsim_performance.json", "w") as f:
+            json.dump(rtlsim_perf_dict, f, indent=2)
+
+    return model
+
 
 def step_make_pynq_driver(model: ModelWrapper, cfg: DataflowBuildConfig):
     """Create a PYNQ Python driver that can be used to interface the generated
@@ -350,8 +410,16 @@ def step_out_of_context_synthesis(model: ModelWrapper, cfg: DataflowBuildConfig)
     report_dir = cfg.output_dir + "/report"
     os.makedirs(report_dir, exist_ok=True)
     ooc_res_dict = model.get_metadata_prop("res_total_ooc_synth")
-    ooc_res_dict = eval(ooc_res_dict)
-
+    f=open("ooc.txt", "a")
+    f.write(str(ooc_res_dict))
+    f.write("\n")
+    f.close()
+    ooc_res_dict = eval(str(ooc_res_dict))
+    f=open("ooc.txt", "a")
+    f.write("after")
+    f.write(str(ooc_res_dict))
+    f.write("\n")
+    f.close()
     estimate_network_performance = model.analysis(dataflow_performance)
     # add some more metrics to estimated performance
     n_clock_cycles_per_sec = float(ooc_res_dict["fmax_mhz"]) * (10 ** 6)
@@ -433,9 +501,11 @@ build_dataflow_step_lookup = {
     "step_target_fps_parallelization": step_target_fps_parallelization,
     "step_apply_folding_config": step_apply_folding_config,
     "step_generate_estimate_reports": step_generate_estimate_reports,
+    "step_hls_codegen": step_hls_codegen,
     "step_hls_ipgen": step_hls_ipgen,
     "step_set_fifo_depths": step_set_fifo_depths,
     "step_create_stitched_ip": step_create_stitched_ip,
+    "step_measure_rtlsim_performance": step_measure_rtlsim_performance,
     "step_make_pynq_driver": step_make_pynq_driver,
     "step_out_of_context_synthesis": step_out_of_context_synthesis,
     "step_synthesize_bitfile": step_synthesize_bitfile,

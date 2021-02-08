@@ -1,0 +1,1362 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:35 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Wed Jan 27 05:52:16 2021
+# Process ID: 18179
+# Current directory: /tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/vivadocompile/vivadocompile.runs/synth_1
+# Command line: vivado -log finn_design_wrapper.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source finn_design_wrapper.tcl
+# Log file: /tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/vivadocompile/vivadocompile.runs/synth_1/finn_design_wrapper.vds
+# Journal file: /tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/vivadocompile/vivadocompile.runs/synth_1/vivado.jou
+#-----------------------------------------------------------
+source finn_design_wrapper.tcl -notrace
+Command: synth_design -top finn_design_wrapper -part xc7z020clg400-1 -directive PerformanceOptimized -retiming -fsm_extraction one_hot -keep_equivalent_registers -resource_sharing off -no_lc -shreg_min_size 5 -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 18184
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 2145.371 ; gain = 0.000 ; free physical = 705 ; free virtual = 6116
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'finn_design_wrapper' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_wrapper.v:12]
+INFO: [Synth 8-6157] synthesizing module 'finn_design' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:289]
+INFO: [Synth 8-6157] synthesizing module 'finn_design_StreamingDataWidthConverter_Batch_0_0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingDataWidthConverter_Batch_0_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'StreamingDataWidthConverter_Batch_0_StreamingDataWidthConverter_Batch_0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_0_StreamingDataWidthConverter_Batch_0.v:12]
+	Parameter ap_ST_fsm_state1 bound to: 4'b0001 
+	Parameter ap_ST_fsm_state2 bound to: 4'b0010 
+	Parameter ap_ST_fsm_state3 bound to: 4'b0100 
+	Parameter ap_ST_fsm_state4 bound to: 4'b1000 
+INFO: [Synth 8-6157] synthesizing module 'StreamingDataWidthConverter_Batch_0_StreamingDataWidthCo_1' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_0_StreamingDataWidthCo_1.v:10]
+	Parameter ap_ST_fsm_state1 bound to: 3'b001 
+	Parameter ap_ST_fsm_pp0_stage0 bound to: 3'b010 
+	Parameter ap_ST_fsm_state4 bound to: 3'b100 
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_0_StreamingDataWidthCo_1.v:331]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingDataWidthConverter_Batch_0_StreamingDataWidthCo_1' (1#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_0_StreamingDataWidthCo_1.v:10]
+INFO: [Synth 8-6157] synthesizing module 'regslice_both' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:8]
+	Parameter DataWidth bound to: 64 - type: integer 
+	Parameter W bound to: 65 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'ibuf' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:372]
+	Parameter W bound to: 65 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'ibuf' (2#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:372]
+INFO: [Synth 8-6157] synthesizing module 'obuf' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:402]
+	Parameter W bound to: 65 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'obuf' (3#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:402]
+INFO: [Synth 8-6155] done synthesizing module 'regslice_both' (4#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:8]
+INFO: [Synth 8-6157] synthesizing module 'regslice_both__parameterized0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:8]
+	Parameter DataWidth bound to: 32 - type: integer 
+	Parameter W bound to: 33 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'ibuf__parameterized0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:372]
+	Parameter W bound to: 33 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'ibuf__parameterized0' (4#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:372]
+INFO: [Synth 8-6157] synthesizing module 'obuf__parameterized0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:402]
+	Parameter W bound to: 33 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'obuf__parameterized0' (4#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:402]
+INFO: [Synth 8-6155] done synthesizing module 'regslice_both__parameterized0' (4#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingDataWidthConverter_Batch_0_StreamingDataWidthConverter_Batch_0' (5#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_0_StreamingDataWidthConverter_Batch_0.v:12]
+INFO: [Synth 8-6155] done synthesizing module 'finn_design_StreamingDataWidthConverter_Batch_0_0' (6#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingDataWidthConverter_Batch_0_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'finn_design_StreamingDataWidthConverter_Batch_1_0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingDataWidthConverter_Batch_1_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'StreamingDataWidthConverter_Batch_1_StreamingDataWidthConverter_Batch_1' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_1_StreamingDataWidthConverter_Batch_1.v:12]
+	Parameter ap_ST_fsm_state1 bound to: 4'b0001 
+	Parameter ap_ST_fsm_state2 bound to: 4'b0010 
+	Parameter ap_ST_fsm_state3 bound to: 4'b0100 
+	Parameter ap_ST_fsm_state4 bound to: 4'b1000 
+INFO: [Synth 8-6157] synthesizing module 'StreamingDataWidthConverter_Batch_1_StreamingDataWidthCo_1' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_1_StreamingDataWidthCo_1.v:10]
+	Parameter ap_ST_fsm_state1 bound to: 3'b001 
+	Parameter ap_ST_fsm_pp0_stage0 bound to: 3'b010 
+	Parameter ap_ST_fsm_state4 bound to: 3'b100 
+INFO: [Synth 8-6155] done synthesizing module 'StreamingDataWidthConverter_Batch_1_StreamingDataWidthCo_1' (7#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_1_StreamingDataWidthCo_1.v:10]
+INFO: [Synth 8-6157] synthesizing module 'regslice_both__parameterized1' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:8]
+	Parameter DataWidth bound to: 8 - type: integer 
+	Parameter W bound to: 9 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'ibuf__parameterized1' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:372]
+	Parameter W bound to: 9 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'ibuf__parameterized1' (7#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:372]
+INFO: [Synth 8-6157] synthesizing module 'obuf__parameterized1' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:402]
+	Parameter W bound to: 9 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'obuf__parameterized1' (7#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:402]
+INFO: [Synth 8-6155] done synthesizing module 'regslice_both__parameterized1' (7#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingDataWidthConverter_Batch_1_StreamingDataWidthConverter_Batch_1' (8#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_1_StreamingDataWidthConverter_Batch_1.v:12]
+INFO: [Synth 8-6155] done synthesizing module 'finn_design_StreamingDataWidthConverter_Batch_1_0' (9#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingDataWidthConverter_Batch_1_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'finn_design_StreamingDataWidthConverter_Batch_2_0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingDataWidthConverter_Batch_2_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'StreamingDataWidthConverter_Batch_2_StreamingDataWidthConverter_Batch_2' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_2_StreamingDataWidthConverter_Batch_2.v:12]
+	Parameter ap_ST_fsm_state1 bound to: 4'b0001 
+	Parameter ap_ST_fsm_state2 bound to: 4'b0010 
+	Parameter ap_ST_fsm_state3 bound to: 4'b0100 
+	Parameter ap_ST_fsm_state4 bound to: 4'b1000 
+INFO: [Synth 8-6157] synthesizing module 'StreamingDataWidthConverter_Batch_2_StreamingDataWidthCo_1' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_2_StreamingDataWidthCo_1.v:10]
+	Parameter ap_ST_fsm_state1 bound to: 3'b001 
+	Parameter ap_ST_fsm_pp0_stage0 bound to: 3'b010 
+	Parameter ap_ST_fsm_state4 bound to: 3'b100 
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_2_StreamingDataWidthCo_1.v:334]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingDataWidthConverter_Batch_2_StreamingDataWidthCo_1' (10#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_2_StreamingDataWidthCo_1.v:10]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingDataWidthConverter_Batch_2_StreamingDataWidthConverter_Batch_2' (11#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingDataWidthConverter_Batch_2_StreamingDataWidthConverter_Batch_2.v:12]
+INFO: [Synth 8-6155] done synthesizing module 'finn_design_StreamingDataWidthConverter_Batch_2_0' (12#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingDataWidthConverter_Batch_2_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_0_imp_5FXKV0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:12]
+INFO: [Synth 8-6157] synthesizing module 'finn_design_StreamingFCLayer_Batch_0_0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingFCLayer_Batch_0_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_0_StreamingFCLayer_Batch_0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_StreamingFCLayer_Batch_0.v:12]
+	Parameter ap_ST_fsm_state1 bound to: 4'b0001 
+	Parameter ap_ST_fsm_state2 bound to: 4'b0010 
+	Parameter ap_ST_fsm_state3 bound to: 4'b0100 
+	Parameter ap_ST_fsm_state4 bound to: 4'b1000 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_0_Matrix_Vector_Activa' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:10]
+	Parameter ap_ST_fsm_state1 bound to: 3'b001 
+	Parameter ap_ST_fsm_pp0_stage0 bound to: 3'b010 
+	Parameter ap_ST_fsm_state5 bound to: 3'b100 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_0_StreamingFCLayer_bkb' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_StreamingFCLayer_bkb.v:8]
+	Parameter ID bound to: 1 - type: integer 
+	Parameter NUM_STAGE bound to: 1 - type: integer 
+	Parameter din0_WIDTH bound to: 15 - type: integer 
+	Parameter din1_WIDTH bound to: 15 - type: integer 
+	Parameter din2_WIDTH bound to: 15 - type: integer 
+	Parameter din3_WIDTH bound to: 15 - type: integer 
+	Parameter din4_WIDTH bound to: 15 - type: integer 
+	Parameter din5_WIDTH bound to: 15 - type: integer 
+	Parameter din6_WIDTH bound to: 15 - type: integer 
+	Parameter din7_WIDTH bound to: 15 - type: integer 
+	Parameter din8_WIDTH bound to: 15 - type: integer 
+	Parameter din9_WIDTH bound to: 15 - type: integer 
+	Parameter din10_WIDTH bound to: 15 - type: integer 
+	Parameter din11_WIDTH bound to: 15 - type: integer 
+	Parameter din12_WIDTH bound to: 15 - type: integer 
+	Parameter din13_WIDTH bound to: 15 - type: integer 
+	Parameter din14_WIDTH bound to: 15 - type: integer 
+	Parameter din15_WIDTH bound to: 15 - type: integer 
+	Parameter din16_WIDTH bound to: 15 - type: integer 
+	Parameter din17_WIDTH bound to: 15 - type: integer 
+	Parameter din18_WIDTH bound to: 15 - type: integer 
+	Parameter din19_WIDTH bound to: 15 - type: integer 
+	Parameter din20_WIDTH bound to: 15 - type: integer 
+	Parameter din21_WIDTH bound to: 15 - type: integer 
+	Parameter din22_WIDTH bound to: 15 - type: integer 
+	Parameter din23_WIDTH bound to: 15 - type: integer 
+	Parameter din24_WIDTH bound to: 15 - type: integer 
+	Parameter din25_WIDTH bound to: 15 - type: integer 
+	Parameter din26_WIDTH bound to: 15 - type: integer 
+	Parameter din27_WIDTH bound to: 15 - type: integer 
+	Parameter din28_WIDTH bound to: 15 - type: integer 
+	Parameter din29_WIDTH bound to: 15 - type: integer 
+	Parameter din30_WIDTH bound to: 15 - type: integer 
+	Parameter din31_WIDTH bound to: 15 - type: integer 
+	Parameter din32_WIDTH bound to: 15 - type: integer 
+	Parameter din33_WIDTH bound to: 15 - type: integer 
+	Parameter din34_WIDTH bound to: 15 - type: integer 
+	Parameter din35_WIDTH bound to: 15 - type: integer 
+	Parameter din36_WIDTH bound to: 15 - type: integer 
+	Parameter din37_WIDTH bound to: 15 - type: integer 
+	Parameter din38_WIDTH bound to: 15 - type: integer 
+	Parameter din39_WIDTH bound to: 15 - type: integer 
+	Parameter din40_WIDTH bound to: 6 - type: integer 
+	Parameter dout_WIDTH bound to: 15 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_0_StreamingFCLayer_bkb' (13#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_StreamingFCLayer_bkb.v:8]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6718]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6720]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6722]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6724]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6726]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6728]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6730]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6732]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6734]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6736]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6738]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6740]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6742]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6744]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6746]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6748]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6750]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6752]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6754]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6756]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6758]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6760]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6762]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6764]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6766]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6768]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6770]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6772]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6774]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6776]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6778]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6780]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6782]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6784]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6786]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6788]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6790]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6792]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6794]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6796]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6798]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6800]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6802]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6804]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6806]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6808]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6810]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6812]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6814]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6816]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6818]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6820]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6822]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6824]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6826]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6828]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6830]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6832]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6834]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6836]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6838]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6840]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6842]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6844]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6846]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6848]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6850]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6852]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6854]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6856]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6858]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6860]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6862]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6864]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6866]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6868]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6870]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6872]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6874]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6876]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6878]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6880]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6882]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6884]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6886]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6888]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6890]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6892]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6894]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6896]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6898]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6900]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6902]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6904]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6906]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6908]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6910]
+WARNING: [Synth 8-589] replacing case/wildcard equality operator === with logical equality operator == [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:6912]
+INFO: [Common 17-14] Message 'Synth 8-589' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_0_Matrix_Vector_Activa' (14#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_Matrix_Vector_Activa.v:10]
+INFO: [Synth 8-6157] synthesizing module 'regslice_both__parameterized2' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:8]
+	Parameter DataWidth bound to: 16 - type: integer 
+	Parameter W bound to: 17 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'ibuf__parameterized2' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:372]
+	Parameter W bound to: 17 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'ibuf__parameterized2' (14#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:372]
+INFO: [Synth 8-6157] synthesizing module 'obuf__parameterized2' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:402]
+	Parameter W bound to: 17 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'obuf__parameterized2' (14#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:402]
+INFO: [Synth 8-6155] done synthesizing module 'regslice_both__parameterized2' (14#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:8]
+INFO: [Synth 8-6157] synthesizing module 'regslice_both__parameterized3' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:8]
+	Parameter DataWidth bound to: 960 - type: integer 
+	Parameter W bound to: 961 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'ibuf__parameterized3' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:372]
+	Parameter W bound to: 961 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'ibuf__parameterized3' (14#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:372]
+INFO: [Synth 8-6157] synthesizing module 'obuf__parameterized3' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:402]
+	Parameter W bound to: 961 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'obuf__parameterized3' (14#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:402]
+INFO: [Synth 8-6155] done synthesizing module 'regslice_both__parameterized3' (14#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_0_StreamingFCLayer_Batch_0' (15#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_0_StreamingFCLayer_Batch_0.v:12]
+INFO: [Synth 8-6155] done synthesizing module 'finn_design_StreamingFCLayer_Batch_0_0' (16#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingFCLayer_Batch_0_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'finn_design_StreamingFCLayer_Batch_0_wstrm_0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingFCLayer_Batch_0_wstrm_0.v:59]
+INFO: [Synth 8-6157] synthesizing module 'memstream' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/memstream.v:31]
+	Parameter CONFIG_EN bound to: 1'b1 
+	Parameter NSTREAMS bound to: 1 - type: integer 
+	Parameter MEM_DEPTH bound to: 80 - type: integer 
+	Parameter MEM_WIDTH bound to: 960 - type: integer 
+	Parameter MEM_INIT bound to: /tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_0_hjzgxsrx/ - type: string 
+	Parameter RAM_STYLE bound to: auto - type: string 
+	Parameter STRM0_WIDTH bound to: 960 - type: integer 
+	Parameter STRM1_WIDTH bound to: 32 - type: integer 
+	Parameter STRM2_WIDTH bound to: 32 - type: integer 
+	Parameter STRM3_WIDTH bound to: 32 - type: integer 
+	Parameter STRM4_WIDTH bound to: 32 - type: integer 
+	Parameter STRM5_WIDTH bound to: 32 - type: integer 
+	Parameter STRM0_DEPTH bound to: 80 - type: integer 
+	Parameter STRM1_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM2_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM3_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM4_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM5_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM0_OFFSET bound to: 0 - type: integer 
+	Parameter STRM1_OFFSET bound to: 2304 - type: integer 
+	Parameter STRM2_OFFSET bound to: 4608 - type: integer 
+	Parameter STRM3_OFFSET bound to: 6912 - type: integer 
+	Parameter STRM4_OFFSET bound to: 9216 - type: integer 
+	Parameter STRM5_OFFSET bound to: 11520 - type: integer 
+	Parameter AXILITE_ADDR_WIDTH bound to: 14 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'memstream_singleblock' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/memstream_singleblock.v:35]
+	Parameter CONFIG_EN bound to: 1'b1 
+	Parameter NSTREAMS bound to: 1 - type: integer 
+	Parameter MEM_DEPTH bound to: 80 - type: integer 
+	Parameter MEM_WIDTH bound to: 960 - type: integer 
+	Parameter MEM_INIT bound to: /tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_0_hjzgxsrx/ - type: string 
+	Parameter RAM_STYLE bound to: auto - type: string 
+	Parameter STRM0_WIDTH bound to: 960 - type: integer 
+	Parameter STRM1_WIDTH bound to: 32 - type: integer 
+	Parameter STRM0_DEPTH bound to: 80 - type: integer 
+	Parameter STRM1_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM0_OFFSET bound to: 0 - type: integer 
+	Parameter STRM1_OFFSET bound to: 2304 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'ramb18_sdp' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/ramb18_sdp.v:31]
+	Parameter ID bound to: 0 - type: integer 
+	Parameter DWIDTH bound to: 960 - type: integer 
+	Parameter AWIDTH bound to: 7 - type: integer 
+	Parameter DEPTH bound to: 80 - type: integer 
+	Parameter MEM_INIT bound to: /tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_0_hjzgxsrx/ - type: string 
+	Parameter RAM_STYLE bound to: auto - type: string 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_0_hjzgxsrx/memblock_0.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/ramb18_sdp.v:74]
+INFO: [Synth 8-6155] done synthesizing module 'ramb18_sdp' (17#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/ramb18_sdp.v:31]
+INFO: [Synth 8-6155] done synthesizing module 'memstream_singleblock' (18#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/memstream_singleblock.v:35]
+INFO: [Synth 8-6157] synthesizing module 'axi4lite_if' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/axilite_if.v:31]
+	Parameter ADDR_WIDTH bound to: 14 - type: integer 
+	Parameter DATA_WIDTH bound to: 32 - type: integer 
+	Parameter IP_DATA_WIDTH bound to: 960 - type: integer 
+	Parameter RESP_OKAY bound to: 2'b00 
+	Parameter RESP_SLVERR bound to: 2'b10 
+	Parameter NFOLDS_LOG bound to: 5 - type: integer 
+	Parameter STATE_IDLE bound to: 0 - type: integer 
+	Parameter STATE_READ bound to: 1 - type: integer 
+	Parameter STATE_WRITE bound to: 2 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'axi4lite_if' (19#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/axilite_if.v:31]
+WARNING: [Synth 8-689] width (32) of port connection 'ip_addr' does not match port width (14) of module 'axi4lite_if' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/memstream.v:321]
+INFO: [Synth 8-6155] done synthesizing module 'memstream' (20#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/memstream.v:31]
+INFO: [Synth 8-6155] done synthesizing module 'finn_design_StreamingFCLayer_Batch_0_wstrm_0' (21#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingFCLayer_Batch_0_wstrm_0.v:59]
+WARNING: [Synth 8-7071] port 'awready' of module 'finn_design_StreamingFCLayer_Batch_0_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_0_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:62]
+WARNING: [Synth 8-7071] port 'wready' of module 'finn_design_StreamingFCLayer_Batch_0_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_0_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:62]
+WARNING: [Synth 8-7071] port 'bvalid' of module 'finn_design_StreamingFCLayer_Batch_0_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_0_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:62]
+WARNING: [Synth 8-7071] port 'bresp' of module 'finn_design_StreamingFCLayer_Batch_0_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_0_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:62]
+WARNING: [Synth 8-7071] port 'arready' of module 'finn_design_StreamingFCLayer_Batch_0_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_0_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:62]
+WARNING: [Synth 8-7071] port 'rvalid' of module 'finn_design_StreamingFCLayer_Batch_0_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_0_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:62]
+WARNING: [Synth 8-7071] port 'rresp' of module 'finn_design_StreamingFCLayer_Batch_0_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_0_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:62]
+WARNING: [Synth 8-7071] port 'rdata' of module 'finn_design_StreamingFCLayer_Batch_0_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_0_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:62]
+WARNING: [Synth 8-7023] instance 'StreamingFCLayer_Batch_0_wstrm' of module 'finn_design_StreamingFCLayer_Batch_0_wstrm_0' has 24 connections declared, but only 16 given [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:62]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_0_imp_5FXKV0' (22#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:12]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_imp_11SOJ3N' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:81]
+INFO: [Synth 8-6157] synthesizing module 'finn_design_StreamingFCLayer_Batch_1_0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingFCLayer_Batch_1_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_StreamingFCLayer_Batch_1' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_StreamingFCLayer_Batch_1.v:12]
+	Parameter ap_ST_fsm_state1 bound to: 4'b0001 
+	Parameter ap_ST_fsm_state2 bound to: 4'b0010 
+	Parameter ap_ST_fsm_state3 bound to: 4'b0100 
+	Parameter ap_ST_fsm_state4 bound to: 4'b1000 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Activa' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Activa.v:10]
+	Parameter ap_ST_fsm_state1 bound to: 3'b001 
+	Parameter ap_ST_fsm_pp0_stage0 bound to: 3'b010 
+	Parameter ap_ST_fsm_state5 bound to: 3'b100 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actbkb' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actbkb.v:39]
+	Parameter DataWidth bound to: 5 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actbkb_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actbkb.v:6]
+	Parameter DWIDTH bound to: 5 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/project_StreamingFCLayer_Batch_1/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_1_Matrix_Vector_Actbkb_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actbkb.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actbkb_rom' (23#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actbkb.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actbkb' (24#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actbkb.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actcud' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actcud.v:39]
+	Parameter DataWidth bound to: 7 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actcud_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actcud.v:6]
+	Parameter DWIDTH bound to: 7 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/project_StreamingFCLayer_Batch_1/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_1_Matrix_Vector_Actcud_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actcud.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actcud_rom' (25#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actcud.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actcud' (26#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actcud.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActdEe' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActdEe.v:39]
+	Parameter DataWidth bound to: 8 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActdEe_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActdEe.v:6]
+	Parameter DWIDTH bound to: 8 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/project_StreamingFCLayer_Batch_1/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_1_Matrix_Vector_ActdEe_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActdEe.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActdEe_rom' (27#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActdEe.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActdEe' (28#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActdEe.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActeOg' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActeOg.v:39]
+	Parameter DataWidth bound to: 6 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActeOg_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActeOg.v:6]
+	Parameter DWIDTH bound to: 6 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/project_StreamingFCLayer_Batch_1/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_1_Matrix_Vector_ActeOg_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActeOg.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActeOg_rom' (29#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActeOg.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActeOg' (30#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActeOg.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActfYi' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActfYi.v:39]
+	Parameter DataWidth bound to: 7 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActfYi_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActfYi.v:6]
+	Parameter DWIDTH bound to: 7 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/project_StreamingFCLayer_Batch_1/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_1_Matrix_Vector_ActfYi_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActfYi.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActfYi_rom' (31#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActfYi.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActfYi' (32#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActfYi.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actg8j' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actg8j.v:39]
+	Parameter DataWidth bound to: 8 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actg8j_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actg8j.v:6]
+	Parameter DWIDTH bound to: 8 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/project_StreamingFCLayer_Batch_1/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_1_Matrix_Vector_Actg8j_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actg8j.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actg8j_rom' (33#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actg8j.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actg8j' (34#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actg8j.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Acthbi' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Acthbi.v:39]
+	Parameter DataWidth bound to: 4 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Acthbi_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Acthbi.v:6]
+	Parameter DWIDTH bound to: 4 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/project_StreamingFCLayer_Batch_1/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_1_Matrix_Vector_Acthbi_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Acthbi.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Acthbi_rom' (35#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Acthbi.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Acthbi' (36#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Acthbi.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actibs' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actibs.v:39]
+	Parameter DataWidth bound to: 5 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actibs_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actibs.v:6]
+	Parameter DWIDTH bound to: 5 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/project_StreamingFCLayer_Batch_1/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_1_Matrix_Vector_Actibs_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actibs.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actibs_rom' (37#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actibs.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actibs' (38#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actibs.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActjbC' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActjbC.v:39]
+	Parameter DataWidth bound to: 6 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActjbC_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActjbC.v:6]
+	Parameter DWIDTH bound to: 6 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/project_StreamingFCLayer_Batch_1/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_1_Matrix_Vector_ActjbC_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActjbC.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActjbC_rom' (39#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActjbC.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActjbC' (40#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActjbC.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActkbM' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActkbM.v:39]
+	Parameter DataWidth bound to: 4 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActkbM_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActkbM.v:6]
+	Parameter DWIDTH bound to: 4 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/project_StreamingFCLayer_Batch_1/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_1_Matrix_Vector_ActkbM_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActkbM.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActkbM_rom' (41#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActkbM.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActkbM' (42#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActkbM.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActlbW' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActlbW.v:39]
+	Parameter DataWidth bound to: 6 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActlbW_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActlbW.v:6]
+	Parameter DWIDTH bound to: 6 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/project_StreamingFCLayer_Batch_1/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_1_Matrix_Vector_ActlbW_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActlbW.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActlbW_rom' (43#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActlbW.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_ActlbW' (44#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_ActlbW.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actmb6' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actmb6.v:39]
+	Parameter DataWidth bound to: 7 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actmb6_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actmb6.v:6]
+	Parameter DWIDTH bound to: 7 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/project_StreamingFCLayer_Batch_1/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_1_Matrix_Vector_Actmb6_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actmb6.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actmb6_rom' (45#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actmb6.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Actmb6' (46#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Actmb6.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_StreamingFCLayer_ncg' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_StreamingFCLayer_ncg.v:8]
+	Parameter ID bound to: 1 - type: integer 
+	Parameter NUM_STAGE bound to: 1 - type: integer 
+	Parameter din0_WIDTH bound to: 32 - type: integer 
+	Parameter din1_WIDTH bound to: 32 - type: integer 
+	Parameter din2_WIDTH bound to: 32 - type: integer 
+	Parameter din3_WIDTH bound to: 32 - type: integer 
+	Parameter din4_WIDTH bound to: 2 - type: integer 
+	Parameter dout_WIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_StreamingFCLayer_ncg' (47#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_StreamingFCLayer_ncg.v:8]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_StreamingFCLayer_ocq' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_StreamingFCLayer_ocq.v:16]
+	Parameter ID bound to: 1 - type: integer 
+	Parameter NUM_STAGE bound to: 1 - type: integer 
+	Parameter din0_WIDTH bound to: 2 - type: integer 
+	Parameter din1_WIDTH bound to: 2 - type: integer 
+	Parameter dout_WIDTH bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_1_StreamingFCLayer_ocq_Mul_LUT_0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_StreamingFCLayer_ocq.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_StreamingFCLayer_ocq_Mul_LUT_0' (48#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_StreamingFCLayer_ocq.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_StreamingFCLayer_ocq' (49#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_StreamingFCLayer_ocq.v:16]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_Matrix_Vector_Activa' (50#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_Matrix_Vector_Activa.v:10]
+INFO: [Synth 8-6157] synthesizing module 'regslice_both__parameterized4' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:8]
+	Parameter DataWidth bound to: 128 - type: integer 
+	Parameter W bound to: 129 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'ibuf__parameterized4' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:372]
+	Parameter W bound to: 129 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'ibuf__parameterized4' (50#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:372]
+INFO: [Synth 8-6157] synthesizing module 'obuf__parameterized4' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:402]
+	Parameter W bound to: 129 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'obuf__parameterized4' (50#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:402]
+INFO: [Synth 8-6155] done synthesizing module 'regslice_both__parameterized4' (50#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/regslice_core.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_StreamingFCLayer_Batch_1' (51#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_1_StreamingFCLayer_Batch_1.v:12]
+INFO: [Synth 8-6155] done synthesizing module 'finn_design_StreamingFCLayer_Batch_1_0' (52#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingFCLayer_Batch_1_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'finn_design_StreamingFCLayer_Batch_1_wstrm_0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingFCLayer_Batch_1_wstrm_0.v:59]
+INFO: [Synth 8-6157] synthesizing module 'memstream__parameterized0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/memstream.v:31]
+	Parameter CONFIG_EN bound to: 1'b1 
+	Parameter NSTREAMS bound to: 1 - type: integer 
+	Parameter MEM_DEPTH bound to: 64 - type: integer 
+	Parameter MEM_WIDTH bound to: 128 - type: integer 
+	Parameter MEM_INIT bound to: /tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/ - type: string 
+	Parameter RAM_STYLE bound to: auto - type: string 
+	Parameter STRM0_WIDTH bound to: 128 - type: integer 
+	Parameter STRM1_WIDTH bound to: 32 - type: integer 
+	Parameter STRM2_WIDTH bound to: 32 - type: integer 
+	Parameter STRM3_WIDTH bound to: 32 - type: integer 
+	Parameter STRM4_WIDTH bound to: 32 - type: integer 
+	Parameter STRM5_WIDTH bound to: 32 - type: integer 
+	Parameter STRM0_DEPTH bound to: 64 - type: integer 
+	Parameter STRM1_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM2_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM3_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM4_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM5_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM0_OFFSET bound to: 0 - type: integer 
+	Parameter STRM1_OFFSET bound to: 2304 - type: integer 
+	Parameter STRM2_OFFSET bound to: 4608 - type: integer 
+	Parameter STRM3_OFFSET bound to: 6912 - type: integer 
+	Parameter STRM4_OFFSET bound to: 9216 - type: integer 
+	Parameter STRM5_OFFSET bound to: 11520 - type: integer 
+	Parameter AXILITE_ADDR_WIDTH bound to: 10 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'memstream_singleblock__parameterized0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/memstream_singleblock.v:35]
+	Parameter CONFIG_EN bound to: 1'b1 
+	Parameter NSTREAMS bound to: 1 - type: integer 
+	Parameter MEM_DEPTH bound to: 64 - type: integer 
+	Parameter MEM_WIDTH bound to: 128 - type: integer 
+	Parameter MEM_INIT bound to: /tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/ - type: string 
+	Parameter RAM_STYLE bound to: auto - type: string 
+	Parameter STRM0_WIDTH bound to: 128 - type: integer 
+	Parameter STRM1_WIDTH bound to: 32 - type: integer 
+	Parameter STRM0_DEPTH bound to: 64 - type: integer 
+	Parameter STRM1_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM0_OFFSET bound to: 0 - type: integer 
+	Parameter STRM1_OFFSET bound to: 2304 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'ramb18_sdp__parameterized0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/ramb18_sdp.v:31]
+	Parameter ID bound to: 0 - type: integer 
+	Parameter DWIDTH bound to: 128 - type: integer 
+	Parameter AWIDTH bound to: 6 - type: integer 
+	Parameter DEPTH bound to: 64 - type: integer 
+	Parameter MEM_INIT bound to: /tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/ - type: string 
+	Parameter RAM_STYLE bound to: auto - type: string 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_1_qppq8t4w/memblock_0.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/ramb18_sdp.v:74]
+INFO: [Synth 8-6155] done synthesizing module 'ramb18_sdp__parameterized0' (52#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/ramb18_sdp.v:31]
+INFO: [Synth 8-6155] done synthesizing module 'memstream_singleblock__parameterized0' (52#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/memstream_singleblock.v:35]
+INFO: [Synth 8-6157] synthesizing module 'axi4lite_if__parameterized0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/axilite_if.v:31]
+	Parameter ADDR_WIDTH bound to: 10 - type: integer 
+	Parameter DATA_WIDTH bound to: 32 - type: integer 
+	Parameter IP_DATA_WIDTH bound to: 128 - type: integer 
+	Parameter RESP_OKAY bound to: 2'b00 
+	Parameter RESP_SLVERR bound to: 2'b10 
+	Parameter NFOLDS_LOG bound to: 2 - type: integer 
+	Parameter STATE_IDLE bound to: 0 - type: integer 
+	Parameter STATE_READ bound to: 1 - type: integer 
+	Parameter STATE_WRITE bound to: 2 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'axi4lite_if__parameterized0' (52#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/axilite_if.v:31]
+WARNING: [Synth 8-689] width (32) of port connection 'ip_addr' does not match port width (10) of module 'axi4lite_if__parameterized0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/memstream.v:321]
+INFO: [Synth 8-6155] done synthesizing module 'memstream__parameterized0' (52#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/memstream.v:31]
+INFO: [Synth 8-6155] done synthesizing module 'finn_design_StreamingFCLayer_Batch_1_wstrm_0' (53#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingFCLayer_Batch_1_wstrm_0.v:59]
+WARNING: [Synth 8-7071] port 'awready' of module 'finn_design_StreamingFCLayer_Batch_1_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_1_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:131]
+WARNING: [Synth 8-7071] port 'wready' of module 'finn_design_StreamingFCLayer_Batch_1_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_1_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:131]
+WARNING: [Synth 8-7071] port 'bvalid' of module 'finn_design_StreamingFCLayer_Batch_1_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_1_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:131]
+WARNING: [Synth 8-7071] port 'bresp' of module 'finn_design_StreamingFCLayer_Batch_1_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_1_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:131]
+WARNING: [Synth 8-7071] port 'arready' of module 'finn_design_StreamingFCLayer_Batch_1_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_1_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:131]
+WARNING: [Synth 8-7071] port 'rvalid' of module 'finn_design_StreamingFCLayer_Batch_1_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_1_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:131]
+WARNING: [Synth 8-7071] port 'rresp' of module 'finn_design_StreamingFCLayer_Batch_1_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_1_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:131]
+WARNING: [Synth 8-7071] port 'rdata' of module 'finn_design_StreamingFCLayer_Batch_1_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_1_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:131]
+WARNING: [Synth 8-7023] instance 'StreamingFCLayer_Batch_1_wstrm' of module 'finn_design_StreamingFCLayer_Batch_1_wstrm_0' has 24 connections declared, but only 16 given [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:131]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_1_imp_11SOJ3N' (54#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:81]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_imp_1YXLQV7' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:150]
+INFO: [Synth 8-6157] synthesizing module 'finn_design_StreamingFCLayer_Batch_2_0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_StreamingFCLayer_Batch_2_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_StreamingFCLayer_Batch_2' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_StreamingFCLayer_Batch_2.v:12]
+	Parameter ap_ST_fsm_state1 bound to: 4'b0001 
+	Parameter ap_ST_fsm_state2 bound to: 4'b0010 
+	Parameter ap_ST_fsm_state3 bound to: 4'b0100 
+	Parameter ap_ST_fsm_state4 bound to: 4'b1000 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Activa' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Activa.v:10]
+	Parameter ap_ST_fsm_state1 bound to: 3'b001 
+	Parameter ap_ST_fsm_pp0_stage0 bound to: 3'b010 
+	Parameter ap_ST_fsm_state5 bound to: 3'b100 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actbkb' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actbkb.v:39]
+	Parameter DataWidth bound to: 4 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actbkb_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actbkb.v:6]
+	Parameter DWIDTH bound to: 4 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/project_StreamingFCLayer_Batch_2/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_2_Matrix_Vector_Actbkb_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actbkb.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actbkb_rom' (55#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actbkb.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actbkb' (56#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actbkb.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actcud' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actcud.v:39]
+	Parameter DataWidth bound to: 4 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actcud_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actcud.v:6]
+	Parameter DWIDTH bound to: 4 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/project_StreamingFCLayer_Batch_2/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_2_Matrix_Vector_Actcud_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actcud.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actcud_rom' (57#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actcud.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actcud' (58#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actcud.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActdEe' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActdEe.v:39]
+	Parameter DataWidth bound to: 5 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActdEe_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActdEe.v:6]
+	Parameter DWIDTH bound to: 5 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/project_StreamingFCLayer_Batch_2/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_2_Matrix_Vector_ActdEe_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActdEe.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActdEe_rom' (59#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActdEe.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActdEe' (60#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActdEe.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActeOg' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActeOg.v:39]
+	Parameter DataWidth bound to: 5 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActeOg_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActeOg.v:6]
+	Parameter DWIDTH bound to: 5 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/project_StreamingFCLayer_Batch_2/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_2_Matrix_Vector_ActeOg_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActeOg.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActeOg_rom' (61#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActeOg.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActeOg' (62#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActeOg.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActfYi' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActfYi.v:39]
+	Parameter DataWidth bound to: 5 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActfYi_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActfYi.v:6]
+	Parameter DWIDTH bound to: 5 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/project_StreamingFCLayer_Batch_2/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_2_Matrix_Vector_ActfYi_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActfYi.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActfYi_rom' (63#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActfYi.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActfYi' (64#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActfYi.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actg8j' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actg8j.v:39]
+	Parameter DataWidth bound to: 5 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actg8j_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actg8j.v:6]
+	Parameter DWIDTH bound to: 5 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/project_StreamingFCLayer_Batch_2/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_2_Matrix_Vector_Actg8j_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actg8j.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actg8j_rom' (65#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actg8j.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actg8j' (66#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actg8j.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Acthbi' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Acthbi.v:39]
+	Parameter DataWidth bound to: 6 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Acthbi_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Acthbi.v:6]
+	Parameter DWIDTH bound to: 6 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/project_StreamingFCLayer_Batch_2/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_2_Matrix_Vector_Acthbi_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Acthbi.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Acthbi_rom' (67#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Acthbi.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Acthbi' (68#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Acthbi.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actibs' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actibs.v:39]
+	Parameter DataWidth bound to: 6 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actibs_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actibs.v:6]
+	Parameter DWIDTH bound to: 6 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/project_StreamingFCLayer_Batch_2/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_2_Matrix_Vector_Actibs_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actibs.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actibs_rom' (69#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actibs.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actibs' (70#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actibs.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActjbC' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActjbC.v:39]
+	Parameter DataWidth bound to: 6 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActjbC_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActjbC.v:6]
+	Parameter DWIDTH bound to: 6 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/project_StreamingFCLayer_Batch_2/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_2_Matrix_Vector_ActjbC_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActjbC.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActjbC_rom' (71#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActjbC.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActjbC' (72#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActjbC.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActkbM' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActkbM.v:39]
+	Parameter DataWidth bound to: 2 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActkbM_rom' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActkbM.v:6]
+	Parameter DWIDTH bound to: 2 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/project_StreamingFCLayer_Batch_2/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_2_Matrix_Vector_ActkbM_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActkbM.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActkbM_rom' (73#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActkbM.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActkbM' (74#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActkbM.v:39]
+INFO: [Synth 8-6157] synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActlbW' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActlbW.v:39]
+INFO: [Common 17-14] Message 'Synth 8-6157' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+	Parameter DataWidth bound to: 3 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+	Parameter DWIDTH bound to: 3 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/project_StreamingFCLayer_Batch_2/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_2_Matrix_Vector_ActlbW_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActlbW.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActlbW_rom' (75#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActlbW.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_ActlbW' (76#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_ActlbW.v:39]
+	Parameter DataWidth bound to: 5 - type: integer 
+	Parameter AddressRange bound to: 16 - type: integer 
+	Parameter AddressWidth bound to: 4 - type: integer 
+	Parameter DWIDTH bound to: 5 - type: integer 
+	Parameter AWIDTH bound to: 4 - type: integer 
+	Parameter MEM_SIZE bound to: 16 - type: integer 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/project_StreamingFCLayer_Batch_2/sol1/impl/ip/hdl/verilog/StreamingFCLayer_Batch_2_Matrix_Vector_Actmb6_rom.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actmb6.v:21]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actmb6_rom' (77#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actmb6.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_Matrix_Vector_Actmb6' (78#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_Matrix_Vector_Actmb6.v:39]
+	Parameter ID bound to: 1 - type: integer 
+	Parameter NUM_STAGE bound to: 1 - type: integer 
+	Parameter din0_WIDTH bound to: 32 - type: integer 
+	Parameter din1_WIDTH bound to: 32 - type: integer 
+	Parameter din2_WIDTH bound to: 32 - type: integer 
+	Parameter din3_WIDTH bound to: 32 - type: integer 
+	Parameter din4_WIDTH bound to: 2 - type: integer 
+	Parameter dout_WIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_StreamingFCLayer_ncg' (79#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_StreamingFCLayer_ncg.v:8]
+	Parameter ID bound to: 1 - type: integer 
+	Parameter NUM_STAGE bound to: 1 - type: integer 
+	Parameter din0_WIDTH bound to: 2 - type: integer 
+	Parameter din1_WIDTH bound to: 2 - type: integer 
+	Parameter dout_WIDTH bound to: 4 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_StreamingFCLayer_ocq_Mul_LUT_0' (80#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_StreamingFCLayer_ocq.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'StreamingFCLayer_Batch_2_StreamingFCLayer_ocq' (81#1) [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFCLayer_Batch_2_StreamingFCLayer_ocq.v:16]
+INFO: [Common 17-14] Message 'Synth 8-6155' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+	Parameter CONFIG_EN bound to: 1'b1 
+	Parameter NSTREAMS bound to: 1 - type: integer 
+	Parameter MEM_DEPTH bound to: 64 - type: integer 
+	Parameter MEM_WIDTH bound to: 128 - type: integer 
+	Parameter MEM_INIT bound to: /tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/ - type: string 
+	Parameter RAM_STYLE bound to: auto - type: string 
+	Parameter STRM0_WIDTH bound to: 128 - type: integer 
+	Parameter STRM1_WIDTH bound to: 32 - type: integer 
+	Parameter STRM2_WIDTH bound to: 32 - type: integer 
+	Parameter STRM3_WIDTH bound to: 32 - type: integer 
+	Parameter STRM4_WIDTH bound to: 32 - type: integer 
+	Parameter STRM5_WIDTH bound to: 32 - type: integer 
+	Parameter STRM0_DEPTH bound to: 64 - type: integer 
+	Parameter STRM1_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM2_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM3_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM4_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM5_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM0_OFFSET bound to: 0 - type: integer 
+	Parameter STRM1_OFFSET bound to: 2304 - type: integer 
+	Parameter STRM2_OFFSET bound to: 4608 - type: integer 
+	Parameter STRM3_OFFSET bound to: 6912 - type: integer 
+	Parameter STRM4_OFFSET bound to: 9216 - type: integer 
+	Parameter STRM5_OFFSET bound to: 11520 - type: integer 
+	Parameter AXILITE_ADDR_WIDTH bound to: 10 - type: integer 
+	Parameter CONFIG_EN bound to: 1'b1 
+	Parameter NSTREAMS bound to: 1 - type: integer 
+	Parameter MEM_DEPTH bound to: 64 - type: integer 
+	Parameter MEM_WIDTH bound to: 128 - type: integer 
+	Parameter MEM_INIT bound to: /tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/ - type: string 
+	Parameter RAM_STYLE bound to: auto - type: string 
+	Parameter STRM0_WIDTH bound to: 128 - type: integer 
+	Parameter STRM1_WIDTH bound to: 32 - type: integer 
+	Parameter STRM0_DEPTH bound to: 64 - type: integer 
+	Parameter STRM1_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM0_OFFSET bound to: 0 - type: integer 
+	Parameter STRM1_OFFSET bound to: 2304 - type: integer 
+	Parameter ID bound to: 0 - type: integer 
+	Parameter DWIDTH bound to: 128 - type: integer 
+	Parameter AWIDTH bound to: 6 - type: integer 
+	Parameter DEPTH bound to: 64 - type: integer 
+	Parameter MEM_INIT bound to: /tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/ - type: string 
+	Parameter RAM_STYLE bound to: auto - type: string 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_2_908v5i3j/memblock_0.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/ramb18_sdp.v:74]
+WARNING: [Synth 8-689] width (32) of port connection 'ip_addr' does not match port width (10) of module 'axi4lite_if__parameterized0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/memstream.v:321]
+WARNING: [Synth 8-7071] port 'awready' of module 'finn_design_StreamingFCLayer_Batch_2_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_2_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:200]
+WARNING: [Synth 8-7071] port 'wready' of module 'finn_design_StreamingFCLayer_Batch_2_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_2_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:200]
+WARNING: [Synth 8-7071] port 'bvalid' of module 'finn_design_StreamingFCLayer_Batch_2_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_2_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:200]
+WARNING: [Synth 8-7071] port 'bresp' of module 'finn_design_StreamingFCLayer_Batch_2_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_2_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:200]
+WARNING: [Synth 8-7071] port 'arready' of module 'finn_design_StreamingFCLayer_Batch_2_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_2_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:200]
+WARNING: [Synth 8-7071] port 'rvalid' of module 'finn_design_StreamingFCLayer_Batch_2_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_2_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:200]
+WARNING: [Synth 8-7071] port 'rresp' of module 'finn_design_StreamingFCLayer_Batch_2_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_2_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:200]
+WARNING: [Synth 8-7071] port 'rdata' of module 'finn_design_StreamingFCLayer_Batch_2_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_2_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:200]
+WARNING: [Synth 8-7023] instance 'StreamingFCLayer_Batch_2_wstrm' of module 'finn_design_StreamingFCLayer_Batch_2_wstrm_0' has 24 connections declared, but only 16 given [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:200]
+	Parameter ap_ST_fsm_state1 bound to: 4'b0001 
+	Parameter ap_ST_fsm_state2 bound to: 4'b0010 
+	Parameter ap_ST_fsm_state3 bound to: 4'b0100 
+	Parameter ap_ST_fsm_state4 bound to: 4'b1000 
+	Parameter ap_ST_fsm_state1 bound to: 3'b001 
+	Parameter ap_ST_fsm_pp0_stage0 bound to: 3'b010 
+	Parameter ap_ST_fsm_state4 bound to: 3'b100 
+	Parameter ID bound to: 1 - type: integer 
+	Parameter NUM_STAGE bound to: 1 - type: integer 
+	Parameter din0_WIDTH bound to: 2 - type: integer 
+	Parameter din1_WIDTH bound to: 2 - type: integer 
+	Parameter din2_WIDTH bound to: 2 - type: integer 
+	Parameter din3_WIDTH bound to: 2 - type: integer 
+	Parameter din4_WIDTH bound to: 2 - type: integer 
+	Parameter din5_WIDTH bound to: 2 - type: integer 
+	Parameter din6_WIDTH bound to: 2 - type: integer 
+	Parameter din7_WIDTH bound to: 2 - type: integer 
+	Parameter din8_WIDTH bound to: 2 - type: integer 
+	Parameter din9_WIDTH bound to: 2 - type: integer 
+	Parameter din10_WIDTH bound to: 2 - type: integer 
+	Parameter din11_WIDTH bound to: 2 - type: integer 
+	Parameter din12_WIDTH bound to: 2 - type: integer 
+	Parameter din13_WIDTH bound to: 2 - type: integer 
+	Parameter din14_WIDTH bound to: 2 - type: integer 
+	Parameter din15_WIDTH bound to: 2 - type: integer 
+	Parameter din16_WIDTH bound to: 2 - type: integer 
+	Parameter din17_WIDTH bound to: 2 - type: integer 
+	Parameter din18_WIDTH bound to: 2 - type: integer 
+	Parameter din19_WIDTH bound to: 2 - type: integer 
+	Parameter din20_WIDTH bound to: 2 - type: integer 
+	Parameter din21_WIDTH bound to: 2 - type: integer 
+	Parameter din22_WIDTH bound to: 2 - type: integer 
+	Parameter din23_WIDTH bound to: 2 - type: integer 
+	Parameter din24_WIDTH bound to: 2 - type: integer 
+	Parameter din25_WIDTH bound to: 2 - type: integer 
+	Parameter din26_WIDTH bound to: 2 - type: integer 
+	Parameter din27_WIDTH bound to: 2 - type: integer 
+	Parameter din28_WIDTH bound to: 2 - type: integer 
+	Parameter din29_WIDTH bound to: 2 - type: integer 
+	Parameter din30_WIDTH bound to: 2 - type: integer 
+	Parameter din31_WIDTH bound to: 2 - type: integer 
+	Parameter din32_WIDTH bound to: 2 - type: integer 
+	Parameter din33_WIDTH bound to: 2 - type: integer 
+	Parameter din34_WIDTH bound to: 2 - type: integer 
+	Parameter din35_WIDTH bound to: 2 - type: integer 
+	Parameter din36_WIDTH bound to: 2 - type: integer 
+	Parameter din37_WIDTH bound to: 2 - type: integer 
+	Parameter din38_WIDTH bound to: 2 - type: integer 
+	Parameter din39_WIDTH bound to: 2 - type: integer 
+	Parameter din40_WIDTH bound to: 2 - type: integer 
+	Parameter din41_WIDTH bound to: 2 - type: integer 
+	Parameter din42_WIDTH bound to: 2 - type: integer 
+	Parameter din43_WIDTH bound to: 2 - type: integer 
+	Parameter din44_WIDTH bound to: 2 - type: integer 
+	Parameter din45_WIDTH bound to: 2 - type: integer 
+	Parameter din46_WIDTH bound to: 2 - type: integer 
+	Parameter din47_WIDTH bound to: 2 - type: integer 
+	Parameter din48_WIDTH bound to: 2 - type: integer 
+	Parameter din49_WIDTH bound to: 2 - type: integer 
+	Parameter din50_WIDTH bound to: 2 - type: integer 
+	Parameter din51_WIDTH bound to: 2 - type: integer 
+	Parameter din52_WIDTH bound to: 2 - type: integer 
+	Parameter din53_WIDTH bound to: 2 - type: integer 
+	Parameter din54_WIDTH bound to: 2 - type: integer 
+	Parameter din55_WIDTH bound to: 2 - type: integer 
+	Parameter din56_WIDTH bound to: 2 - type: integer 
+	Parameter din57_WIDTH bound to: 2 - type: integer 
+	Parameter din58_WIDTH bound to: 2 - type: integer 
+	Parameter din59_WIDTH bound to: 2 - type: integer 
+	Parameter din60_WIDTH bound to: 2 - type: integer 
+	Parameter din61_WIDTH bound to: 2 - type: integer 
+	Parameter din62_WIDTH bound to: 2 - type: integer 
+	Parameter din63_WIDTH bound to: 2 - type: integer 
+	Parameter din64_WIDTH bound to: 6 - type: integer 
+	Parameter dout_WIDTH bound to: 2 - type: integer 
+	Parameter ID bound to: 1 - type: integer 
+	Parameter NUM_STAGE bound to: 1 - type: integer 
+	Parameter din0_WIDTH bound to: 2 - type: integer 
+	Parameter din1_WIDTH bound to: 2 - type: integer 
+	Parameter dout_WIDTH bound to: 4 - type: integer 
+	Parameter CONFIG_EN bound to: 1'b1 
+	Parameter NSTREAMS bound to: 1 - type: integer 
+	Parameter MEM_DEPTH bound to: 64 - type: integer 
+	Parameter MEM_WIDTH bound to: 8 - type: integer 
+	Parameter MEM_INIT bound to: /tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_3_a9whvd4t/ - type: string 
+	Parameter RAM_STYLE bound to: auto - type: string 
+	Parameter STRM0_WIDTH bound to: 8 - type: integer 
+	Parameter STRM1_WIDTH bound to: 32 - type: integer 
+	Parameter STRM2_WIDTH bound to: 32 - type: integer 
+	Parameter STRM3_WIDTH bound to: 32 - type: integer 
+	Parameter STRM4_WIDTH bound to: 32 - type: integer 
+	Parameter STRM5_WIDTH bound to: 32 - type: integer 
+	Parameter STRM0_DEPTH bound to: 64 - type: integer 
+	Parameter STRM1_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM2_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM3_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM4_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM5_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM0_OFFSET bound to: 0 - type: integer 
+	Parameter STRM1_OFFSET bound to: 2304 - type: integer 
+	Parameter STRM2_OFFSET bound to: 4608 - type: integer 
+	Parameter STRM3_OFFSET bound to: 6912 - type: integer 
+	Parameter STRM4_OFFSET bound to: 9216 - type: integer 
+	Parameter STRM5_OFFSET bound to: 11520 - type: integer 
+	Parameter AXILITE_ADDR_WIDTH bound to: 8 - type: integer 
+	Parameter CONFIG_EN bound to: 1'b1 
+	Parameter NSTREAMS bound to: 1 - type: integer 
+	Parameter MEM_DEPTH bound to: 64 - type: integer 
+	Parameter MEM_WIDTH bound to: 8 - type: integer 
+	Parameter MEM_INIT bound to: /tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_3_a9whvd4t/ - type: string 
+	Parameter RAM_STYLE bound to: auto - type: string 
+	Parameter STRM0_WIDTH bound to: 8 - type: integer 
+	Parameter STRM1_WIDTH bound to: 32 - type: integer 
+	Parameter STRM0_DEPTH bound to: 64 - type: integer 
+	Parameter STRM1_DEPTH bound to: 2304 - type: integer 
+	Parameter STRM0_OFFSET bound to: 0 - type: integer 
+	Parameter STRM1_OFFSET bound to: 2304 - type: integer 
+	Parameter ID bound to: 0 - type: integer 
+	Parameter DWIDTH bound to: 8 - type: integer 
+	Parameter AWIDTH bound to: 6 - type: integer 
+	Parameter DEPTH bound to: 64 - type: integer 
+	Parameter MEM_INIT bound to: /tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_3_a9whvd4t/ - type: string 
+	Parameter RAM_STYLE bound to: auto - type: string 
+INFO: [Synth 8-3876] $readmem data file '/tmp/finn_dev_uma/code_gen_ipgen_StreamingFCLayer_Batch_3_a9whvd4t/memblock_0.dat' is read successfully [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/ramb18_sdp.v:74]
+	Parameter ADDR_WIDTH bound to: 8 - type: integer 
+	Parameter DATA_WIDTH bound to: 32 - type: integer 
+	Parameter IP_DATA_WIDTH bound to: 8 - type: integer 
+	Parameter RESP_OKAY bound to: 2'b00 
+	Parameter RESP_SLVERR bound to: 2'b10 
+	Parameter NFOLDS_LOG bound to: 0 - type: integer 
+	Parameter STATE_IDLE bound to: 0 - type: integer 
+	Parameter STATE_READ bound to: 1 - type: integer 
+	Parameter STATE_WRITE bound to: 2 - type: integer 
+WARNING: [Synth 8-689] width (32) of port connection 'ip_addr' does not match port width (8) of module 'axi4lite_if__parameterized1' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/memstream.v:321]
+WARNING: [Synth 8-7071] port 'awready' of module 'finn_design_StreamingFCLayer_Batch_3_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_3_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:269]
+WARNING: [Synth 8-7071] port 'wready' of module 'finn_design_StreamingFCLayer_Batch_3_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_3_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:269]
+WARNING: [Synth 8-7071] port 'bvalid' of module 'finn_design_StreamingFCLayer_Batch_3_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_3_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:269]
+WARNING: [Synth 8-7071] port 'bresp' of module 'finn_design_StreamingFCLayer_Batch_3_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_3_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:269]
+WARNING: [Synth 8-7071] port 'arready' of module 'finn_design_StreamingFCLayer_Batch_3_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_3_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:269]
+WARNING: [Synth 8-7071] port 'rvalid' of module 'finn_design_StreamingFCLayer_Batch_3_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_3_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:269]
+WARNING: [Synth 8-7071] port 'rresp' of module 'finn_design_StreamingFCLayer_Batch_3_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_3_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:269]
+WARNING: [Synth 8-7071] port 'rdata' of module 'finn_design_StreamingFCLayer_Batch_3_wstrm_0' is unconnected for instance 'StreamingFCLayer_Batch_3_wstrm' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:269]
+WARNING: [Synth 8-7023] instance 'StreamingFCLayer_Batch_3_wstrm' of module 'finn_design_StreamingFCLayer_Batch_3_wstrm_0' has 24 connections declared, but only 16 given [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:269]
+	Parameter depth bound to: 32 - type: integer 
+	Parameter width bound to: 16 - type: integer 
+	Parameter addrwidth bound to: 5 - type: integer 
+	Parameter state_empty bound to: 2'b00 
+	Parameter state_one bound to: 2'b01 
+	Parameter state_more bound to: 2'b10 
+WARNING: [Synth 8-689] width (5) of port connection 'count' does not match port width (6) of module 'Q_srl' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/StreamingFIFO_0.v:32]
+WARNING: [Synth 8-7071] port 'count' of module 'finn_design_StreamingFIFO_0_0' is unconnected for instance 'StreamingFIFO_0' [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:408]
+WARNING: [Synth 8-7023] instance 'StreamingFIFO_0' of module 'finn_design_StreamingFIFO_0_0' has 9 connections declared, but only 8 given [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design.v:408]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:09 ; elapsed = 00:00:11 . Memory (MB): peak = 2268.348 ; gain = 122.977 ; free physical = 715 ; free virtual = 6131
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 2283.191 ; gain = 137.820 ; free physical = 733 ; free virtual = 6149
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 2283.191 ; gain = 137.820 ; free physical = 733 ; free virtual = 6149
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00.18 ; elapsed = 00:00:00.18 . Memory (MB): peak = 2283.191 ; gain = 0.000 ; free physical = 711 ; free virtual = 6126
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_wrapper.xdc]
+Finished Parsing XDC File [/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/finn_design_wrapper.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2457.973 ; gain = 0.000 ; free physical = 597 ; free virtual = 6012
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.33 ; elapsed = 00:00:00.14 . Memory (MB): peak = 2467.879 ; gain = 9.906 ; free physical = 593 ; free virtual = 6008
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:18 ; elapsed = 00:00:20 . Memory (MB): peak = 2467.879 ; gain = 322.508 ; free physical = 718 ; free virtual = 6134
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg400-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:18 ; elapsed = 00:00:20 . Memory (MB): peak = 2467.879 ; gain = 322.508 ; free physical = 718 ; free virtual = 6134
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:18 ; elapsed = 00:00:20 . Memory (MB): peak = 2467.879 ; gain = 322.508 ; free physical = 718 ; free virtual = 6134
+---------------------------------------------------------------------------------
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'axi4lite_if__parameterized1'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'Q_srl'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+              STATE_IDLE |                              001 |                               00
+             STATE_WRITE |                              010 |                               10
+              STATE_READ |                              100 |                               01
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'axi4lite_if__parameterized1'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+             state_empty |                              001 |                               00
+               state_one |                              010 |                               01
+              state_more |                              100 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'Q_srl'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 2467.879 ; gain = 322.508 ; free physical = 690 ; free virtual = 6109
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   32 Bit       Adders := 10    
+	   3 Input   11 Bit       Adders := 64    
+	   3 Input    9 Bit       Adders := 16    
+	   2 Input    9 Bit       Adders := 2     
+	   2 Input    7 Bit       Adders := 14    
+	   2 Input    6 Bit       Adders := 52    
+	   3 Input    6 Bit       Adders := 8     
+	   2 Input    5 Bit       Adders := 155   
+	   2 Input    4 Bit       Adders := 224   
+	   2 Input    3 Bit       Adders := 1     
+	   3 Input    2 Bit       Adders := 35    
++---XORs : 
+	   2 Input      1 Bit         XORs := 108   
++---Registers : 
+	              961 Bit    Registers := 2     
+	              960 Bit    Registers := 2     
+	              129 Bit    Registers := 4     
+	              128 Bit    Registers := 4     
+	               65 Bit    Registers := 4     
+	               64 Bit    Registers := 1     
+	               33 Bit    Registers := 8     
+	               32 Bit    Registers := 55    
+	               24 Bit    Registers := 1     
+	               17 Bit    Registers := 2     
+	               16 Bit    Registers := 1     
+	               15 Bit    Registers := 41    
+	               14 Bit    Registers := 1     
+	               11 Bit    Registers := 64    
+	               10 Bit    Registers := 2     
+	                9 Bit    Registers := 33    
+	                8 Bit    Registers := 7     
+	                7 Bit    Registers := 17    
+	                6 Bit    Registers := 50    
+	                5 Bit    Registers := 57    
+	                4 Bit    Registers := 11    
+	                3 Bit    Registers := 9     
+	                2 Bit    Registers := 704   
+	                1 Bit    Registers := 84    
++---Multipliers : 
+	                2x3  Multipliers := 129   
++---RAMs : 
+	              75K Bit	(80 X 960 bit)          RAMs := 1     
+	               8K Bit	(64 X 128 bit)          RAMs := 2     
+	              512 Bit	(64 X 8 bit)          RAMs := 1     
++---Muxes : 
+	   2 Input  961 Bit        Muxes := 1     
+	   2 Input  129 Bit        Muxes := 2     
+	   2 Input   65 Bit        Muxes := 2     
+	   2 Input   64 Bit        Muxes := 1     
+	   2 Input   33 Bit        Muxes := 4     
+	   2 Input   32 Bit        Muxes := 18    
+	   2 Input   24 Bit        Muxes := 1     
+	   2 Input   17 Bit        Muxes := 1     
+	   3 Input   16 Bit        Muxes := 1     
+	   2 Input   15 Bit        Muxes := 40    
+	   2 Input   14 Bit        Muxes := 1     
+	   2 Input   11 Bit        Muxes := 67    
+	   2 Input   10 Bit        Muxes := 2     
+	   2 Input    9 Bit        Muxes := 26    
+	   2 Input    8 Bit        Muxes := 5     
+	   2 Input    7 Bit        Muxes := 1     
+	   2 Input    6 Bit        Muxes := 19    
+	   2 Input    5 Bit        Muxes := 20    
+	   3 Input    5 Bit        Muxes := 1     
+	   6 Input    4 Bit        Muxes := 7     
+	   2 Input    4 Bit        Muxes := 19    
+	   6 Input    3 Bit        Muxes := 7     
+	   2 Input    3 Bit        Muxes := 484   
+	   3 Input    3 Bit        Muxes := 1     
+	  15 Input    3 Bit        Muxes := 1     
+	   2 Input    2 Bit        Muxes := 92    
+	   4 Input    2 Bit        Muxes := 18    
+	   5 Input    2 Bit        Muxes := 3     
+	   7 Input    2 Bit        Muxes := 2     
+	   3 Input    2 Bit        Muxes := 2     
+	   2 Input    1 Bit        Muxes := 205   
+	   4 Input    1 Bit        Muxes := 3     
+	   3 Input    1 Bit        Muxes := 3     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:06 ; elapsed = 00:01:10 . Memory (MB): peak = 2467.879 ; gain = 322.508 ; free physical = 564 ; free virtual = 6054
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+ROM: Preliminary Mapping	Report
++--------------------------------------------------+------------+---------------+----------------+
+|Module Name                                       | RTL Object | Depth x Width | Implemented As | 
++--------------------------------------------------+------------+---------------+----------------+
+|StreamingFCLayer_Batch_1_Matrix_Vector_Actbkb_rom | p_0_out    | 16x5          | LUT            | 
+|StreamingFCLayer_Batch_1_Matrix_Vector_Actcud_rom | p_0_out    | 16x7          | LUT            | 
+|StreamingFCLayer_Batch_1_Matrix_Vector_ActdEe_rom | p_0_out    | 16x8          | LUT            | 
+|StreamingFCLayer_Batch_1_Matrix_Vector_ActeOg_rom | p_0_out    | 16x6          | LUT            | 
+|StreamingFCLayer_Batch_1_Matrix_Vector_ActfYi_rom | p_0_out    | 16x7          | LUT            | 
+|StreamingFCLayer_Batch_1_Matrix_Vector_Actg8j_rom | p_0_out    | 16x8          | LUT            | 
+|StreamingFCLayer_Batch_1_Matrix_Vector_Acthbi_rom | p_0_out    | 16x4          | LUT            | 
+|StreamingFCLayer_Batch_1_Matrix_Vector_Actibs_rom | p_0_out    | 16x5          | LUT            | 
+|StreamingFCLayer_Batch_1_Matrix_Vector_ActjbC_rom | p_0_out    | 16x6          | LUT            | 
+|StreamingFCLayer_Batch_1_Matrix_Vector_ActkbM_rom | p_0_out    | 16x4          | LUT            | 
+|StreamingFCLayer_Batch_1_Matrix_Vector_ActlbW_rom | p_0_out    | 16x6          | LUT            | 
+|StreamingFCLayer_Batch_1_Matrix_Vector_Actmb6_rom | p_0_out    | 16x7          | LUT            | 
+|StreamingFCLayer_Batch_2_Matrix_Vector_Actbkb_rom | p_0_out    | 16x4          | LUT            | 
+|StreamingFCLayer_Batch_2_Matrix_Vector_Actcud_rom | p_0_out    | 16x4          | LUT            | 
+|StreamingFCLayer_Batch_2_Matrix_Vector_ActdEe_rom | p_0_out    | 16x5          | LUT            | 
+|StreamingFCLayer_Batch_2_Matrix_Vector_ActeOg_rom | p_0_out    | 16x5          | LUT            | 
+|StreamingFCLayer_Batch_2_Matrix_Vector_ActfYi_rom | p_0_out    | 16x5          | LUT            | 
+|StreamingFCLayer_Batch_2_Matrix_Vector_Actg8j_rom | p_0_out    | 16x5          | LUT            | 
+|StreamingFCLayer_Batch_2_Matrix_Vector_Acthbi_rom | p_0_out    | 16x6          | LUT            | 
+|StreamingFCLayer_Batch_2_Matrix_Vector_Actibs_rom | p_0_out    | 16x6          | LUT            | 
+|StreamingFCLayer_Batch_2_Matrix_Vector_ActjbC_rom | p_0_out    | 16x6          | LUT            | 
+|StreamingFCLayer_Batch_2_Matrix_Vector_ActkbM_rom | p_0_out    | 16x2          | LUT            | 
+|StreamingFCLayer_Batch_2_Matrix_Vector_ActlbW_rom | p_0_out    | 16x3          | LUT            | 
+|StreamingFCLayer_Batch_2_Matrix_Vector_Actmb6_rom | p_0_out    | 16x5          | LUT            | 
++--------------------------------------------------+------------+---------------+----------------+
+
+
+Block RAM: Preliminary Mapping	Report (see note below)
++---------------------------------------+-----------------------------------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name                            | RTL Object                                                                  | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++---------------------------------------+-----------------------------------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|finn_design_i/StreamingFCLayer_Batch_0 | StreamingFCLayer_Batch_0_wstrm/inst/singleblock.mem/use_ram.sdp.ram/mem_reg | 80 x 960(READ_FIRST)   | W |   | 80 x 960(WRITE_FIRST)  |   | R | Port A and B     | 1      | 13     | 
+|finn_design_i/StreamingFCLayer_Batch_1 | StreamingFCLayer_Batch_1_wstrm/inst/singleblock.mem/use_ram.sdp.ram/mem_reg | 64 x 128(READ_FIRST)   | W |   | 64 x 128(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 
+|finn_design_i/StreamingFCLayer_Batch_2 | StreamingFCLayer_Batch_2_wstrm/inst/singleblock.mem/use_ram.sdp.ram/mem_reg | 64 x 128(READ_FIRST)   | W |   | 64 x 128(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 
++---------------------------------------+-----------------------------------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+Note: The table above is a preliminary report that shows the Block RAMs at the current stage of the synthesis flow. Some Block RAMs may be reimplemented as non Block RAM primitives later in the synthesis flow. Multiple instantiated Block RAMs are reported only once. 
+
+Distributed RAM: Preliminary Mapping	Report (see note below)
++---------------------------------------+-----------------------------------------------------------------------------+-----------+----------------------+-------------+
+|Module Name                            | RTL Object                                                                  | Inference | Size (Depth x Width) | Primitives  | 
++---------------------------------------+-----------------------------------------------------------------------------+-----------+----------------------+-------------+
+|finn_design_i/StreamingFCLayer_Batch_3 | StreamingFCLayer_Batch_3_wstrm/inst/singleblock.mem/use_ram.sdp.ram/mem_reg | Implied   | 64 x 8               | RAM64M x 3	 | 
++---------------------------------------+-----------------------------------------------------------------------------+-----------+----------------------+-------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:12 ; elapsed = 00:01:17 . Memory (MB): peak = 2467.879 ; gain = 322.508 ; free physical = 444 ; free virtual = 5929
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:01:24 ; elapsed = 00:01:29 . Memory (MB): peak = 2563.270 ; gain = 417.898 ; free physical = 369 ; free virtual = 5846
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Final Mapping	Report
++---------------------------------------+-----------------------------------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name                            | RTL Object                                                                  | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++---------------------------------------+-----------------------------------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|finn_design_i/StreamingFCLayer_Batch_0 | StreamingFCLayer_Batch_0_wstrm/inst/singleblock.mem/use_ram.sdp.ram/mem_reg | 80 x 960(READ_FIRST)   | W |   | 80 x 960(WRITE_FIRST)  |   | R | Port A and B     | 1      | 13     | 
+|finn_design_i/StreamingFCLayer_Batch_1 | StreamingFCLayer_Batch_1_wstrm/inst/singleblock.mem/use_ram.sdp.ram/mem_reg | 64 x 128(READ_FIRST)   | W |   | 64 x 128(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 
+|finn_design_i/StreamingFCLayer_Batch_2 | StreamingFCLayer_Batch_2_wstrm/inst/singleblock.mem/use_ram.sdp.ram/mem_reg | 64 x 128(READ_FIRST)   | W |   | 64 x 128(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 
++---------------------------------------+-----------------------------------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+
+Distributed RAM: Final Mapping	Report
++---------------------------------------+-----------------------------------------------------------------------------+-----------+----------------------+-------------+
+|Module Name                            | RTL Object                                                                  | Inference | Size (Depth x Width) | Primitives  | 
++---------------------------------------+-----------------------------------------------------------------------------+-----------+----------------------+-------------+
+|finn_design_i/StreamingFCLayer_Batch_3 | StreamingFCLayer_Batch_3_wstrm/inst/singleblock.mem/use_ram.sdp.ram/mem_reg | Implied   | 64 x 8               | RAM64M x 3	 | 
++---------------------------------------+-----------------------------------------------------------------------------+-----------+----------------------+-------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+INFO: [Synth 8-5816] Retiming module `finn_design_wrapper`
+	Numbers of forward move = 0, and backward move = 0
+
+
+INFO: [Synth 8-5816] Retiming module `finn_design_wrapper' done
+
+
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:01:42 ; elapsed = 00:01:48 . Memory (MB): peak = 2683.270 ; gain = 537.898 ; free physical = 347 ; free virtual = 5823
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:01:45 ; elapsed = 00:01:51 . Memory (MB): peak = 2683.270 ; gain = 537.898 ; free physical = 350 ; free virtual = 5820
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:45 ; elapsed = 00:01:51 . Memory (MB): peak = 2683.270 ; gain = 537.898 ; free physical = 350 ; free virtual = 5820
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:47 ; elapsed = 00:01:53 . Memory (MB): peak = 2683.270 ; gain = 537.898 ; free physical = 356 ; free virtual = 5820
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:47 ; elapsed = 00:01:53 . Memory (MB): peak = 2683.270 ; gain = 537.898 ; free physical = 356 ; free virtual = 5820
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:47 ; elapsed = 00:01:53 . Memory (MB): peak = 2683.270 ; gain = 537.898 ; free physical = 356 ; free virtual = 5820
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:47 ; elapsed = 00:01:53 . Memory (MB): peak = 2683.270 ; gain = 537.898 ; free physical = 356 ; free virtual = 5820
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Dynamic Shift Register Report:
++------------+-------------+--------+------------+--------+---------+--------+--------+--------+
+|Module Name | RTL Name    | Length | Data Width | SRL16E | SRLC32E | Mux F7 | Mux F8 | Mux F9 | 
++------------+-------------+--------+------------+--------+---------+--------+--------+--------+
+|dsrl        | srl_reg[30] | 16     | 16         | 0      | 16      | 0      | 0      | 0      | 
++------------+-------------+--------+------------+--------+---------+--------+--------+--------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+---------+------+
+|      |Cell     |Count |
++------+---------+------+
+|1     |CARRY4   |   612|
+|2     |LUT1     |   131|
+|3     |LUT2     |   559|
+|4     |LUT3     |  1302|
+|5     |LUT4     |  2796|
+|6     |LUT5     |  1111|
+|7     |LUT6     |  2154|
+|8     |MUXF7    |    91|
+|9     |MUXF8    |     8|
+|10    |RAM64M   |     1|
+|11    |RAMB18E1 |     1|
+|12    |RAMB36E1 |    17|
+|29    |SRLC32E  |    15|
+|30    |FDRE     |  7518|
+|31    |FDSE     |    16|
++------+---------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:47 ; elapsed = 00:01:53 . Memory (MB): peak = 2683.270 ; gain = 537.898 ; free physical = 356 ; free virtual = 5820
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 0 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:01:43 ; elapsed = 00:01:50 . Memory (MB): peak = 2683.270 ; gain = 353.211 ; free physical = 409 ; free virtual = 5873
+Synthesis Optimization Complete : Time (s): cpu = 00:01:47 ; elapsed = 00:01:53 . Memory (MB): peak = 2683.277 ; gain = 537.898 ; free physical = 409 ; free virtual = 5873
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00.16 ; elapsed = 00:00:00.16 . Memory (MB): peak = 2683.277 ; gain = 0.000 ; free physical = 480 ; free virtual = 5944
+INFO: [Netlist 29-17] Analyzing 730 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2715.285 ; gain = 0.000 ; free physical = 420 ; free virtual = 5897
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 1 instances were transformed.
+  RAM64M => RAM64M (RAMD64E(x4)): 1 instance 
+
+INFO: [Common 17-83] Releasing license: Synthesis
+265 Infos, 143 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:01:58 ; elapsed = 00:02:02 . Memory (MB): peak = 2715.285 ; gain = 569.938 ; free physical = 645 ; free virtual = 6122
+INFO: [Common 17-1381] The checkpoint '/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper/vivadocompile/vivadocompile.runs/synth_1/finn_design_wrapper.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file finn_design_wrapper_utilization_synth.rpt -pb finn_design_wrapper_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Wed Jan 27 05:54:30 2021...

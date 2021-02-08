@@ -849,8 +849,9 @@ class InferThresholdingLayer(Transformation):
 
                 odt = model.get_tensor_datatype(thl_output)
                 scale = getCustomOp(node).get_nodeattr("out_scale")
+                bipolar_ok = odt == DataType.BIPOLAR and scale == 2.0
                 assert (
-                    scale == 1.0
+                    scale == 1.0 or bipolar_ok
                 ), "MultiThreshold out_scale must be equal to 1.0 for HLS conversion."
                 actval = getCustomOp(node).get_nodeattr("out_bias")
                 assert (
