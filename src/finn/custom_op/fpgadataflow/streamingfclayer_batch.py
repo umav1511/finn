@@ -1500,7 +1500,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                  ##-------STEP2
                  buffer_dict["$PROJECTNAME$"] = ["project_{}".format(buffer_name)]
                  buffer_dict["$HWSRCDIR$"] = [code_gen_dir]
-                 buffer_dict["$FPGAPART$"] = ["xc7z020clg400-1"]
+                 buffer_dict["$FPGAPART$"] = ["xczu7ev-ffvc1156-2-e"]
                  buffer_dict["$FINNHLSLIBDIR$"] = ["/workspace/finn-hlslib"]
                  buffer_dict["$TOPFXN$"] = ["""{}_InputBuffer""".format(self.onnx_node.name)]
                  buffer_dict["$CLKPERIOD$"] = [str(10)]

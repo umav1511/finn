@@ -255,7 +255,7 @@ cfg = build.DataflowBuildConfig(
     output_dir          = final_output_dir,
     target_fps          = 40000000,
     synth_clk_period_ns = 10.0,
-    board               = "Pynq-Z2",
+    board               = "ZCU104",
     shell_flow_type     = build_cfg.ShellFlowType.VIVADO_ZYNQ,
     steps               = [
     #"step_tidy_up",
