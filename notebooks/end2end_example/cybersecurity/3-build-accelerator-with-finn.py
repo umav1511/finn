@@ -83,7 +83,7 @@
 import finn.builder.build_dataflow as build
 import finn.builder.build_dataflow_config as build_cfg
 import os
-
+from finn.transformation.fpgadataflow.make_deployment import DeployToPYNQ
 os.system("rm -r output_ipstitch_ooc_rtlsim/stitched_ip")
 os.system("rm -r output_final/driver")
 os.system("rm -r output_final/stitched_ip")
@@ -249,24 +249,26 @@ import finn.builder.build_dataflow_config as build_cfg
 #model_file = "cybsec-mlp-verified.onnx"
 #model_file = "9_step_hls_ipgen.onnx"
 model_file = "new_ipgen.onnx"
+#model_file="before_implementation.onnx"
 final_output_dir = "output_final"
 
 cfg = build.DataflowBuildConfig(
     output_dir          = final_output_dir,
+    #target_fps          = 40000000,
     target_fps          = 40000000,
     synth_clk_period_ns = 10.0,
-    board               = "ZCU104",
+    board               = "Pynq-Z2",
     shell_flow_type     = build_cfg.ShellFlowType.VIVADO_ZYNQ,
     steps               = [
-    #"step_tidy_up",
-    #"step_streamline",
-    #"step_convert_to_hls",
-    #"step_create_dataflow_partition",
-    #"step_target_fps_parallelization",
-    #"step_apply_folding_config",
-    #"step_generate_estimate_reports",
-    #"step_hls_codegen",
-    #"step_hls_ipgen",
+    "step_tidy_up",
+    "step_streamline",
+    "step_convert_to_hls",
+    "step_create_dataflow_partition",
+    "step_target_fps_parallelization",
+    "step_apply_folding_config",
+    "step_generate_estimate_reports",
+    "step_hls_codegen",
+    "step_hls_ipgen",
     #"step_set_fifo_depths",
     #"step_create_stitched_ip",
     #"step_measure_rtlsim_performance",
@@ -285,44 +287,6 @@ cfg = build.DataflowBuildConfig(
     ],
     mvau_wwidth_max = 10000
 )
-
-build.build_dataflow_cfg(model_file, cfg)
-
-
-# For our final build, the output products include the bitfile (and the accompanying .hwh file, also needed to execute correctly on PYNQ for Zynq platforms):
-
-# In[9]:
-
-
-#get_ipython().system(' ls {final_output_dir}/bitfile')
-
-
-# The generated Python driver lets us execute the accelerator on PYNQ platforms with simply numpy i/o. You can find some notebooks showing how to use FINN-generated accelerators at runtime in the [finn-examples](https://github.com/Xilinx/finn-examples) repository.
-
-# In[10]:
-
-
-#get_ipython().system(' ls {final_output_dir}/driver')
-
-
-# The reports folder contains the post-synthesis resource and timing reports:
-
-# In[11]:
-
-
-#get_ipython().system(' ls {final_output_dir}/report')
-
-
-# Finally, we have the `deploy` folder which contains everything you need to copy onto the target board to get the accelerator running:
-
-# In[12]:
-
-
-#get_ipython().system(' ls {final_output_dir}/deploy')
-
-
-# In[ ]:
-
 
 
 

@@ -321,6 +321,7 @@ class ZynqBuild(Transformation):
             )
             kernel_model.set_metadata_prop("platform", "zynq-iodma")
             kernel_model.save(dataflow_model_filename)
+        model.save("before_implementation.onnx")
         # Assemble design from IPs
         model = model.transform(
             MakeZYNQProject(self.platform, enable_debug=self.enable_debug)

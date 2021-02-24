@@ -57,12 +57,12 @@ else
   if [ -z "$PLATFORM_REPO_PATHS" ];then
     recho "Please set PLATFORM_REPO_PATHS pointing to Vitis platform files (DSAs)."
     recho "This is required to be able to use Vitis."
-    exit -1
+    #exit -1
   fi
   if [ -z "$XILINX_XRT" ];then
     recho "Please set XILINX_XRT pointing to your XRT installation."
     recho "This is required to be able to use Vitis."
-    exit -1
+    #exit -1
   fi
 fi
 

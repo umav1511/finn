@@ -102,7 +102,7 @@ build_dir = os.environ["FINN_BUILD_DIR"]
 target_clk_ns = 10
 mem_mode = "decoupled"
 rtlsim_trace = False
-
+set_fine_grained = True
 
 def get_checkpoint_name(topology, wbits, abits, step):
     return build_dir + "/end2end_%s_w%da%d_%s.onnx" % (topology, wbits, abits, step)
@@ -135,18 +135,25 @@ def fold_tfc(model):
         (8, 8, "auto"),
         (10, 8, "distributed"),
     ]
+    config = [
+        (16, 49, "block"),
+        (64, 64, "auto"),
+        (8, 8, "auto"),
+        (10, 8, "distributed"),
+    ]
     for fcl, (pe, simd, ramstyle) in zip(fc_layers, config):
         fcl_inst = getCustomOp(fcl)
         fcl_inst.set_nodeattr("PE", pe)
         fcl_inst.set_nodeattr("SIMD", simd)
         fcl_inst.set_nodeattr("ram_style", ramstyle)
-        fcl_inst.set_nodeattr("runtime_writeable_weights", 1)
+        #fcl_inst.set_nodeattr("runtime_writeable_weights", 1)
     # set parallelism for input quantizer to be same as first layer's SIMD
     inp_qnt_node = model.get_nodes_by_op_type("Thresholding_Batch")[0]
     inp_qnt = getCustomOp(inp_qnt_node)
-    inp_qnt.set_nodeattr("PE", 49)
-    inp_qnt.set_nodeattr("mem_mode", "decoupled")
-    inp_qnt.set_nodeattr("runtime_writeable_weights", 1)
+    inp_qnt.set_nodeattr("PE", 784)
+    #inp_qnt.set_nodeattr("PE", 49)
+    #inp_qnt.set_nodeattr("mem_mode", "decoupled")
+    #inp_qnt.set_nodeattr("runtime_writeable_weights", 1)
     return model
 
 
@@ -395,9 +402,9 @@ class TestEnd2End:
         #    # use standalone thresholds for tfc-w1a1 to also exercise that option
         #    model = model.transform(to_hls.InferThresholdingLayer())
         # needed for bipolar MatMul layers
-        model = model.transform(to_hls.InferBinaryStreamingFCLayer(mem_mode))
+        model = model.transform(to_hls.InferBinaryStreamingFCLayer(mem_mode, set_fine_grained))
         # needed for non-bipolar MatMul layers
-        model = model.transform(to_hls.InferQuantizedStreamingFCLayer(mem_mode))
+        model = model.transform(to_hls.InferQuantizedStreamingFCLayer(mem_mode, set_fine_grained))
         # TopK to LabelSelect
         model = model.transform(to_hls.InferLabelSelectLayer())
         # input quantization (if any) to standalone thresholding
@@ -585,6 +592,7 @@ class TestEnd2End:
             topology, wbits, abits, "ipgen_" + kind
         )
         model = load_test_checkpoint_or_skip(prev_chkpt_name)
+        #model = load_test_checkpoint_or_skip("before_implementation.onnx")
         cfg = get_build_env(kind, target_clk_ns)
         model = model.transform(cfg["build_fxn"])
         model = model.transform(AnnotateResources("synth"))

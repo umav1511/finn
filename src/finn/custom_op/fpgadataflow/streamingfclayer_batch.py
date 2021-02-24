@@ -119,6 +119,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             # to determine hls ip block sizes
             "fine_grained" : ("i", False, 0, {0, 1}),
             "buffer_ipgen_path": ("s", False, ""),
+    
         }
         my_attrs.update(super().get_nodeattr_types())
         return my_attrs
@@ -762,27 +763,59 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             weight_tensor_pe_flipped = weight_tensor_pe_flipped.reshape(
                 1, -1, pe * simd
             )
-            
+            #er=open("er_fi","a")
             weight_tensor_pe_flipped = weight_tensor_pe_flipped.copy()
+            #er.write(str(weight_tensor_pe_flipped.shape))
+            weight_tensor_pe_flipped2=weight_tensor_pe_flipped
             if weight_file_mode == "decoupled_npy":
                 # save weight stream into npy for cppsim
                 np.save(weight_file_name, weight_tensor_simd_flipped)
             elif weight_file_mode == "decoupled_verilog_dat":
                 code_gen_dir = self.get_nodeattr("code_gen_dir_ipgen")
-                w_file = code_gen_dir + "/weights2.npy"
-                np.save(w_file, weight_tensor_pe_flipped)
                 # convert weight values into hexstring
                 weight_width = self.get_weightstream_width()
                 weight_width_padded = roundup_to_integer_multiple(weight_width, 4)
                 weight_tensor_pe_flipped = pack_innermost_dim_as_hex_string(
                     weight_tensor_pe_flipped, export_wdt, weight_width_padded, prefix=""
                 )
+                #er.write(str(weight_tensor_pe_flipped.shape))
                 # add zeroes to pad out file to 1024 entries
                 weight_stream = weight_tensor_pe_flipped.flatten()
                 weight_stream = weight_stream.copy()
                 with open(weight_file_name, "w") as f:
                     for val in weight_stream:
                         f.write(val + "\n")
+
+                ##
+                if self.get_weightstream_width() > 40000:
+                    # TODO create a function for finding a suitable wtrm factor
+                    wstrm_factor = 2
+                    split_weightstream_width=self.get_weightstream_width()//wstrm_factor
+                    split_weightstream_width_padded=roundup_to_integer_multiple(split_weightstream_width, 4)
+
+                    assert pe%wstrm_factor==0 ,"number of weightstreams must be divisible by pe"
+
+                    split_array=np.split(weight_tensor_pe_flipped2, wstrm_factor, axis=-1)
+                    split_array.reverse()
+                    head, tail=os.path.split(self.get_nodeattr("code_gen_dir_ipgen"))
+                    for w in range(wstrm_factor):
+                        split_array_hex = pack_innermost_dim_as_hex_string(
+                           split_array[w], export_wdt, split_weightstream_width_padded, prefix=""
+                        )
+                        code_gen_dir_name =  os.environ["FINN_BUILD_DIR"] + "/" + tail + "/wstrm" + str(w)
+                        if not os.path.isdir(code_gen_dir_name):
+                           os.makedirs(code_gen_dir_name)
+                        
+                        weight_file_name = code_gen_dir_name + "/memblock_0.dat"
+                        split_stream = split_array_hex.flatten()
+                        split_stream = split_stream.copy()
+                        with open(weight_file_name, "w") as f:
+                          for val in split_stream:
+                              f.write(val + "\n")
+                              
+                else:
+                    wstrm_factor = 1
+                    
                         
             elif weight_file_mode == "decoupled_runtime":
                 # memstream axi-lite interface will map each mem line to
@@ -891,12 +924,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 )
                 f_thresh.write(thresholds_hls_code)
                 f_thresh.close()
-        weights_file=self.get_nodeattr("code_gen_dir_ipgen") + "/weights2.npy"
-        weights = np.load(weights_file)
 
-        pe = self.get_nodeattr("PE")
-        simd = self.get_nodeattr("SIMD")
-        weights_reshaped = weights.reshape(1, -1, pe, simd)
 
     def execute_node(self, context, graph):
         mode = self.get_nodeattr("exec_mode")
@@ -1181,19 +1209,6 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 export_wdt = wdt
             wdtype_hls_str = export_wdt.get_hls_datatype_str()
 
-            #self.code_gen_dict["$DOCOMPUTE$"] = ["""hls::stream<ap_uint<{}>> inter;""".format(self.get_instream_width())]
-
-            #self.code_gen_dict["$DOCOMPUTE$"] += ["""#pragma HLS STREAM variable=inter depth={}""".format(self.get_nodeattr("inFIFODepth"))]
-
-            #self.code_gen_dict["$DOCOMPUTE$"] += [
-            #    """InputBuffer<MW1, MH1, SIMD1, PE1, {}>
-            #   (in0, inter, numReps);""".format(
-            #        tmpl_args["TSrcI"],
-            #    )
-            #]
-
-
-
             self.code_gen_dict["$DOCOMPUTE$"] = [
                 """Matrix_Vector_PE_Batch<MW1, MH1, SIMD1, PE1, {}, {}, {}, {} >
                (in0, out, weights, numReps, {});""".format(
@@ -1386,7 +1401,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
             pe = self.get_nodeattr("PE")
             simd = self.get_nodeattr("SIMD")
-
+            wp = self.get_weight_datatype().bitwidth()
 
             if self.get_nodeattr("ram_style") == "ultra":
                 assert (
@@ -1500,7 +1515,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                  ##-------STEP2
                  buffer_dict["$PROJECTNAME$"] = ["project_{}".format(buffer_name)]
                  buffer_dict["$HWSRCDIR$"] = [code_gen_dir]
-                 buffer_dict["$FPGAPART$"] = ["xczu7ev-ffvc1156-2-e"]
+                 buffer_dict["$FPGAPART$"] = ["xc7z020clg400-1"]
                  buffer_dict["$FINNHLSLIBDIR$"] = ["/workspace/finn-hlslib"]
                  buffer_dict["$TOPFXN$"] = ["""{}_InputBuffer""".format(self.onnx_node.name)]
                  buffer_dict["$CLKPERIOD$"] = [str(10)]
@@ -1555,90 +1570,96 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                         % (self.get_nodeattr("ip_vlnv"), node_name, node_name, i)
                      )
                  # WEIGHTS
-                 if self.calc_wmem() != 1:
-                    cmd.append(
-                    "create_bd_cell -type ip -vlnv %s /%s/%s"
-                    % (strm_vlnv, node_name, strm_inst)
-                    )
-                    cmd.append(
-                      "set_property -dict [list "
-                      "CONFIG.NSTREAMS {1} "
-                      "CONFIG.MEM_DEPTH {%d} "
-                      "CONFIG.MEM_WIDTH {%d} "
-                      "CONFIG.MEM_INIT {%s} "
-                      "CONFIG.RAM_STYLE {%s} "
-                      "CONFIG.STRM0_DEPTH {%d} "
-                      "CONFIG.STRM0_WIDTH {%d} "
-                      "CONFIG.STRM0_OFFSET {0} "
-                      "] [get_bd_cells /%s/%s]"
-                      % (
-                        self.calc_wmem(),
-                        self.get_weightstream_width_padded(),
-                        self.get_nodeattr("code_gen_dir_ipgen") + "/",
-                        self.get_nodeattr("ram_style"),
-                        self.calc_wmem(),
-                        self.get_weightstream_width_padded(),
-                        node_name,
-                        strm_inst,
-                        )
-                    )
-                     #instantiate and configure the weight splitter
-                    cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter" % (node_name))
-                    cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter]" % (self.get_weightstream_width_padded(), self.get_weightstream_width(), self.get_splitter_output_width_padded(), pe, node_name))
+
+                 # Condition for split wstrms or constant blocks
+                 if self.calc_wmem() != 1: 
+                    if self.get_weightstream_width() > 40000:
+                       wstrm_factor = 2
+                    else:
+                       wstrm_factor = 1
+                    split_weightstream_width=self.get_weightstream_width()//wstrm_factor
+                    split_weightstream_width_padded=roundup_to_integer_multiple(split_weightstream_width, 8)
+                    for w in range(wstrm_factor):
+                       if wstrm_factor == 1: 
+                           mem_init = self.get_nodeattr("code_gen_dir_ipgen") + "/"
+                       else:
+                           mem_init = self.get_nodeattr("code_gen_dir_ipgen") + "/wstrm" + str(w) + "/"
+                       cmd.append(
+                       "create_bd_cell -type ip -vlnv %s /%s/%s_%d"
+                       % (strm_vlnv, node_name, strm_inst, w)
+                       )
+                       cmd.append(
+                         "set_property -dict [list "
+                         "CONFIG.NSTREAMS {1} "
+                         "CONFIG.MEM_DEPTH {%d} "
+                         "CONFIG.MEM_WIDTH {%d} "
+                         "CONFIG.MEM_INIT {%s} "
+                         "CONFIG.RAM_STYLE {%s} "
+                         "CONFIG.STRM0_DEPTH {%d} "
+                         "CONFIG.STRM0_WIDTH {%d} "
+                         "CONFIG.STRM0_OFFSET {0} "
+                         "] [get_bd_cells /%s/%s_%d]"
+                         % (
+                           self.calc_wmem(),
+                           split_weightstream_width_padded,
+                           mem_init,
+                           self.get_nodeattr("ram_style"),
+                           self.calc_wmem(),
+                           split_weightstream_width_padded,
+                           node_name,
+                           strm_inst,
+                           w
+                           )
+                       )
+                        #instantiate and configure the weight splitter
+                       cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter_%d" % (node_name, w))
+                       cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter_%d]" % (split_weightstream_width_padded, split_weightstream_width, self.get_splitter_output_width_padded(), pe//wstrm_factor, node_name, w))
 
 
-                    cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] [get_bd_intf_pins %s/axis_splitter/s_axis]" % (node_name, strm_inst, node_name))
+                       cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/m_axis_0] [get_bd_intf_pins %s/axis_splitter_%d/s_axis]" % (node_name, strm_inst, w, node_name, w))
 
  
-                    for i in range(pe):
-                        cmd.append(
-                          "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter/m_axis_%02d] "
-                          "[get_bd_intf_pins %s/%s_%d/weights_V_V]"
-                          % (node_name, i, node_name, node_name, i)
-                          )    
+                       for i in range(pe//wstrm_factor):
+                          cmd.append(
+                            "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter_%d/m_axis_%02d] "
+                            "[get_bd_intf_pins %s/%s_%d/weights_V_V]"
+                            % (node_name, w, i, node_name, node_name, w * (pe//wstrm_factor) + i)
+                            )    
 
-                    # connect clk and reset - weight_splitter
-                    cmd.append(
-                      "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aresetn]"
-                      % (node_name, rst_name, node_name)
-                    )
-                    cmd.append(
-                      "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aclk]"
-                      % (node_name, clk_name, node_name)
-                    )
+                       # connect clk and reset - weight_splitter
+                       cmd.append(
+                         "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_%d/aresetn]"
+                         % (node_name, rst_name, node_name, w)
+                       )
+                       cmd.append(
+                         "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_%d/aclk]"
+                         % (node_name, clk_name, node_name, w)
+                       )
 
-                    #streamer reset and clock
-                    cmd.append(
-                         "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
-                         % (node_name, rst_name, node_name, strm_inst)
-                        )
-                    cmd.append(
-                        "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aclk]"
-                        % (node_name, clk_name, node_name, strm_inst)
-                     )
+                       #streamer reset and clock
+                       cmd.append(
+                           "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/aresetn]"
+                           % (node_name, rst_name, node_name, strm_inst, w)
+                           )
+                       cmd.append(
+                           "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/aclk]"
+                           % (node_name, clk_name, node_name, strm_inst, w)
+                           )
 
                  else:
-                    weight_file=self.get_nodeattr("code_gen_dir_ipgen") + "/weights2.npy"
-                    weights = np.load(weight_file)
-                    weights_reshaped = weights.reshape(1, -1, pe, simd)
-                    export_wdt = self.get_weight_datatype()
-                    
-                    # we have converted bipolar weights to binary for export,
-                    # so use it as such for weight generation
-                    if self.get_weight_datatype() == DataType.BIPOLAR:
-                             export_wdt = DataType.BINARY
-                    weights_pack=pack_innermost_dim_as_hex_string(weights_reshaped, export_wdt, roundup_to_integer_multiple((self.get_weightstream_width()//pe), 4))
+                    dat_file = self.get_nodeattr("code_gen_dir_ipgen") + "/memblock_0.dat" 
+                    df = open(dat_file, "r")
                     for i in range(pe):
-
-                        cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_data_%02d" % (node_name, i))
-     
-                        cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_data_%02d]" % (self.get_splitter_output_width_padded(), int(str(weights_pack[0][0][i]), 16), node_name, i))
+                        cmd.append("create_bd_cell -type ip -vlnv user.org:user:constant_ip:1.0 %s/xlconstant_data_%02d" % (node_name, i))
+                        df.seek((pe - 1 - i)*((simd*wp)//4), 0)
+                        weight_val = df.read((simd*wp)//4)
+                        cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_data_%02d]" % (self.get_splitter_output_width_padded(), int(str(weight_val), 16), node_name, i))
                         cmd.append("connect_bd_net [get_bd_pins %s/xlconstant_data_%02d/dout] [get_bd_pins %s/%s_%d/weights_V_V_TDATA]" % (node_name, i, node_name, node_name, i))
 
                         cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_valid_%02d" % (node_name, i))
                         cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_valid_%02d]" % (1, 1, node_name, i))
                         cmd.append("connect_bd_net [get_bd_pins %s/xlconstant_valid_%02d/dout] [get_bd_pins %s/%s_%d/weights_V_V_TVALID]" % (node_name, i, node_name, node_name, i))
-
+                    df.close()
                  # instantiate combiner block and set input parameters
 
                  cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_output" % node_name)
@@ -1796,6 +1817,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
 
             if runtime_writable:
+
                 # expose axi lite interface for writeable weights
                 axilite_name = self.get_verilog_top_module_intf_names()["axilite"][0]
                 cmd.append(

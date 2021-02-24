@@ -187,6 +187,7 @@ def inference_with_finn_onnx(current_inp):
     current_inp = 2*current_inp-1
     # reshape to expected input (add 1 for batch dimension)
     current_inp = current_inp.reshape(finnonnx_model_in_shape)
+    print(current_inp.shape)
     # create the input dictionary
     input_dict = {finnonnx_in_tensor_name : current_inp} 
     # run with FINN's execute_onnx

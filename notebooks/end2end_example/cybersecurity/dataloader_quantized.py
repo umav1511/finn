@@ -48,19 +48,19 @@ class UNSW_NB15_quantized(torch.utils.data.Dataset):
         onehot=False,
         train=True,
     ):
-
+        print("}}}")
         self.dataframe = (
             pd.concat([pd.read_csv(file_path_train), pd.read_csv(file_path_test)])
             .reset_index()
             .drop(columns=["index", "id", "attack_cat"])
         )
-
+        print(">>>")
         if onehot:
             self.one_hot_df_encoded = self.one_hot_encoding(self.dataframe)
-
+        print("\\\.")
         if quantization:
             _, self.train_df, self.test_df = self.quantize_df(self.dataframe)
-
+        
         if train:
             self.data = torch.FloatTensor(self.train_df.astype("float"))
         else:

@@ -188,7 +188,11 @@ class CreateStitchedIP(Transformation):
         #ip_dirs.append("/workspace/finn/finn-rtllib/axis_split_core")
         ip_dirs.append("/workspace/finn/finn-rtllib/broadcast")
         ip_dirs.append("/workspace/finn/finn-rtllib/splitter")
-        ip_dirs.append("/workspace/finn/finn-rtllib/combiner")
+        ip_dirs.append("/workspace/finn/finn-rtllib/combiner2")
+        ip_dirs.append("/workspace/finn/finn-rtllib/const_reg10")
+        #ip_dirs.append("/workspace/finn/finn-rtllib/extended_broadcaster2")
+        #ip_dirs.append("/workspace/finn/finn-rtllib/splitter_4")
+        #ip_dirs.append("/workspace/finn/finn-rtllib/combiner3")
         # ensure that all nodes are fpgadataflow, and that IPs are generated
         for node in model.graph.node:
             assert is_finn_op(node.domain), "Found non-FINN node"
