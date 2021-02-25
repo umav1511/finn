@@ -1650,15 +1650,16 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     dat_file = self.get_nodeattr("code_gen_dir_ipgen") + "/memblock_0.dat" 
                     df = open(dat_file, "r")
                     for i in range(pe):
-                        cmd.append("create_bd_cell -type ip -vlnv user.org:user:constant_ip:1.0 %s/xlconstant_data_%02d" % (node_name, i))
+                        cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_data_%02d" % (node_name, i))
                         df.seek((pe - 1 - i)*((simd*wp)//4), 0)
                         weight_val = df.read((simd*wp)//4)
-                        cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_data_%02d]" % (self.get_splitter_output_width_padded(), int(str(weight_val), 16), node_name, i))
+                        cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_data_%02d]" % (self.get_splitter_output_width_padded(), '0x'+weight_val, node_name, i))
                         cmd.append("connect_bd_net [get_bd_pins %s/xlconstant_data_%02d/dout] [get_bd_pins %s/%s_%d/weights_V_V_TDATA]" % (node_name, i, node_name, node_name, i))
 
                         cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_valid_%02d" % (node_name, i))
                         cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_valid_%02d]" % (1, 1, node_name, i))
                         cmd.append("connect_bd_net [get_bd_pins %s/xlconstant_valid_%02d/dout] [get_bd_pins %s/%s_%d/weights_V_V_TVALID]" % (node_name, i, node_name, node_name, i))
+                        cmd.append("save_bd_design")
                     df.close()
                  # instantiate combiner block and set input parameters
 
