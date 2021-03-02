@@ -115,18 +115,8 @@ class SetFolding(Transformation):
             if op_type == "StreamingFCLayer_Batch":
                 max_simd = node_inst.get_nodeattr("MW")
                 max_pe = node_inst.get_nodeattr("MH")
-                g=open("set_folding.txt", "a")
-                g.write("\n\nnew iteration\n\n")
-                g.write(str(max_simd))
-                g.write("\n")
-                g.write(str(max_pe))
-                g.write("\n")
-                g.write(str(self.target_cycles_per_frame))
-                g.write("\n")
                 node_inst.set_nodeattr("PE", 1)
                 node_inst.set_nodeattr("SIMD", 1)
-                print(max_simd)
-                print(max_pe)
                 # increase SIMD until either we meet
                 # the target or weight stream becomes
                 # too wide
@@ -134,43 +124,19 @@ class SetFolding(Transformation):
                     prev_simd_val = node_inst.get_nodeattr("SIMD")
                     node_inst.set_nodeattr("SIMD", simd_val)
                     cyc = node_inst.get_exp_cycles()
-                    g.write(str(cyc))
-                    g.write("\n")                
-                    print(cyc)
-                    print(self.target_cycles_per_frame)
-                    print(node_inst.get_weight_datatype().bitwidth()* node_inst.get_nodeattr("SIMD"))
-                    print(node_inst.get_nodeattr("SIMD"))
-                    g.write("\nsimd\n")
-                    g.write(str(node_inst.get_nodeattr("SIMD")))
-                    g.write("\n")
-                    g.write(str(self.target_cycles_per_frame))
-                    g.write("\n")
                     if cyc < self.target_cycles_per_frame:
                         # finish if target met
-                        print("final simd because target is met")
-                        print(node_inst.get_nodeattr("SIMD"))
-                        g.write("\nfinal simd because target is met\n")
-                        g.write(str(node_inst.get_nodeattr("SIMD")))
                         break
                     if (
                         node_inst.get_weight_datatype().bitwidth()
                         * node_inst.get_nodeattr("SIMD")
                         > self.mvau_wwidth_max
                     ):
-                        g.write("\nfinal simd because width threshold is met\n")
-                        g.write(str(node_inst.get_nodeattr("SIMD")))
                         # revert if we've gone above width threshold
                         node_inst.set_nodeattr("SIMD", prev_simd_val)
                         break
-                    g.write("\nfinal simd becauase this is the max possible\n")
-                    g.write(str(node_inst.get_nodeattr("SIMD")))                   
                 # increase PE until target met or reached max_pe
                 self.optimize_attribute_val(node_inst, max_pe, "PE")
-                print(node_inst.get_nodeattr("PE"))
-                g.write("\npe\n")
-                g.write(str(node_inst.get_nodeattr("PE")))
-                g.write("\n")
-                g.close()
             elif op_type in pe_ops:
                 max_pe = node_inst.get_nodeattr("NumChannels")
                 self.optimize_attribute_val(node_inst, max_pe, "PE")

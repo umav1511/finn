@@ -1,6 +1,0 @@
-in file synth_ooc.py
-{'vivado_proj_folder': '/tmp/finn_dev_uma/synth_out_of_context_ahlvyoa3/results_finn_design_wrapper', 'LUT': 7073.0, 'FF': 7534.0, 'DSP': 0.0, 'BRAM': 18.0, 'WNS': 0.632, '': 0, 'fmax_mhz': 106.7463706233988}
-in file synth_ooc.py
-{'vivado_proj_folder': '/tmp/finn_dev_uma/synth_out_of_context_h36ipm5p/results_finn_design_wrapper', 'LUT': 7073.0, 'FF': 7534.0, 'DSP': 0.0, 'BRAM': 18.0, 'WNS': 0.632, '': 0, 'fmax_mhz': 106.7463706233988}
-in file synth_ooc.py
-{'vivado_proj_folder': '/tmp/finn_dev_uma/synth_out_of_context_ybw78khx/results_finn_design_wrapper', 'LUT': 7073.0, 'FF': 7534.0, 'DSP': 0.0, 'BRAM': 18.0, 'WNS': 0.632, '': 0, 'fmax_mhz': 106.7463706233988}
