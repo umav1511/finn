@@ -185,14 +185,11 @@ class CreateStitchedIP(Transformation):
         ip_dirs = ["list"]
         # add RTL streamer IP
         ip_dirs.append("/workspace/finn/finn-rtllib/memstream")
-        #ip_dirs.append("/workspace/finn/finn-rtllib/axis_split_core")
+        ip_dirs.append("/workspace/finn/finn-rtllib/inputbuf")
         ip_dirs.append("/workspace/finn/finn-rtllib/broadcast")
         ip_dirs.append("/workspace/finn/finn-rtllib/splitter")
         ip_dirs.append("/workspace/finn/finn-rtllib/combiner2")
         ip_dirs.append("/workspace/finn/finn-rtllib/const_reg10")
-        #ip_dirs.append("/workspace/finn/finn-rtllib/extended_broadcaster2")
-        #ip_dirs.append("/workspace/finn/finn-rtllib/splitter_4")
-        #ip_dirs.append("/workspace/finn/finn-rtllib/combiner3")
         # ensure that all nodes are fpgadataflow, and that IPs are generated
         for node in model.graph.node:
             assert is_finn_op(node.domain), "Found non-FINN node"
@@ -211,8 +208,7 @@ class CreateStitchedIP(Transformation):
             ip_dirs += [ip_dir_value]
 
             self.create_cmds += node_inst.code_generation_ipi()
-            if node.op_type == "StreamingFCLayer_Batch":
-                ip_dirs += [node_inst.get_nodeattr("buffer_ipgen_path")]
+
             my_producer = model.find_producer(node.input[0])
             self.connect_clk_rst(node)
             self.connect_axi(node)
