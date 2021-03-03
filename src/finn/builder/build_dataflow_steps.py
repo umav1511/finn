@@ -103,7 +103,7 @@ from finn.transformation.fpgadataflow.prepare_rtlsim import PrepareRTLSim
 from finn.core.throughput_test import throughput_test_rtlsim
 
 from copy import deepcopy
-
+set_fine_grained=True
 def step_tidy_up(model: ModelWrapper, cfg: DataflowBuildConfig):
     """Run the tidy-up step on given model. This includes shape and datatype
     inference, constant folding, and giving nodes and tensors better names.
@@ -150,9 +150,9 @@ def step_convert_to_hls(model: ModelWrapper, cfg: DataflowBuildConfig):
     mem_mode = cfg.default_mem_mode.value
     model = model.transform(to_hls.InferThresholdingLayer())
     # needed for bipolar MatMul layers
-    model = model.transform(to_hls.InferBinaryStreamingFCLayer(mem_mode))
+    model = model.transform(to_hls.InferBinaryStreamingFCLayer(mem_mode, set_fine_grained))
     # needed for non-bipolar MatMul layers
-    model = model.transform(to_hls.InferQuantizedStreamingFCLayer(mem_mode))
+    model = model.transform(to_hls.InferQuantizedStreamingFCLayer(mem_mode, set_fine_grained))
     # TopK to LabelSelect
     model = model.transform(to_hls.InferLabelSelectLayer())
     # input quantization (if any) to standalone thresholding
