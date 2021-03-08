@@ -880,6 +880,10 @@ class InferThresholdingLayer(Transformation):
                     actval < 0
                 ), "Signed output requres actval < 0"
                 # create and insert new Thresholding_Batch node
+                if bipolar_ok:
+                            # remove bias for bipolar, since
+                            # binary->bipolar is achieved by reinterpretation
+                            actval = 0
                 new_node = helper.make_node(
                     "Thresholding_Batch",
                     [thl_input, thl_threshold],
