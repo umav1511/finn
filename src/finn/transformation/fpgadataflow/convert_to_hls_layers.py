@@ -875,11 +875,20 @@ class InferThresholdingLayer(Transformation):
                 assert (
                     int(actval) == actval
                 ), "MultiThreshold out_bias must be integer for HLS conversion."
+
+
+                if bipolar_ok:
+                            # remove bias for bipolar, since
+                            # binary->bipolar is achieved by reinterpretation
+                            actval = 0
                 actval = int(actval)
+
+
                 assert (not odt.signed()) or (
                     actval < 0
                 ), "Signed output requres actval < 0"
                 # create and insert new Thresholding_Batch node
+
                 new_node = helper.make_node(
                     "Thresholding_Batch",
                     [thl_input, thl_threshold],
