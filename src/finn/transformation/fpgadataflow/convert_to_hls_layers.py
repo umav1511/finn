@@ -494,8 +494,8 @@ class InferBinaryStreamingFCLayer(Transformation):
                     odt = model.get_tensor_datatype(mm_output)
                     model.set_tensor_shape(mm_input, mm_in_shape)
                     model.set_tensor_shape(mm_output, mm_out_shape)
-                    if self.mem_mode != "const":
-                          fine_grained = self.fine_grained
+                    if self.mem_mode == "const":
+                          assert self.fine_grained==False, "Block cannot be fine-grained for const mode"
                     # create and insert new StreamingFCLayer node
                     new_node = helper.make_node(
                         "StreamingFCLayer_Batch",
@@ -515,7 +515,7 @@ class InferBinaryStreamingFCLayer(Transformation):
                         noActivation=1,
                         numInputVectors=list(mm_in_shape[:-1]),
                         mem_mode=self.mem_mode,
-                        fine_grained=fine_grained,
+                        fine_grained=self.fine_grained,
                     )
                     graph.node.insert(node_ind, new_node)
                     # remove old node
@@ -635,8 +635,8 @@ class InferQuantizedStreamingFCLayer(Transformation):
                         graph.node.remove(consumer)
                         graph_modified = True
                     else:
-                        if self.mem_mode != "const":
-                             fine_grained = self.fine_grained
+                        if self.mem_mode == "const":
+                           assert self.fine_grained==False, "Block cannot be fine-grained for const mode"
                         # no activation, matmul only
                         odt = model.get_tensor_datatype(mm_output)
                         model.set_tensor_shape(mm_input, mm_in_shape)
@@ -660,7 +660,7 @@ class InferQuantizedStreamingFCLayer(Transformation):
                             noActivation=1,
                             numInputVectors=list(mm_in_shape[:-1]),
                             mem_mode=self.mem_mode,
-                            fine_grained=fine_grained,
+                            fine_grained=self.fine_grained,
                         )
                         graph.node.insert(node_ind, new_node)
                         # remove old node

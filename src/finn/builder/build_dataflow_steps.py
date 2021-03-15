@@ -148,7 +148,12 @@ def step_convert_to_hls(model: ModelWrapper, cfg: DataflowBuildConfig):
     is limited, see the source code of the `convert_to_hls` module for more. """
 
     mem_mode = cfg.default_mem_mode.value
-    model = model.transform(to_hls.InferThresholdingLayer())
+    if set_fine_grained:
+        assert cfg.standalone_thresholds==1, "Fine grained nodes need separate thresholding layer"
+    if cfg.standalone_thresholds:
+        # doing this first causes all threshold layers to be standalone
+        model = model.transform(to_hls.InferThresholdingLayer())
+
     # needed for bipolar MatMul layers
     model = model.transform(to_hls.InferBinaryStreamingFCLayer(mem_mode, set_fine_grained))
     # needed for non-bipolar MatMul layers
@@ -157,7 +162,7 @@ def step_convert_to_hls(model: ModelWrapper, cfg: DataflowBuildConfig):
     model = model.transform(to_hls.InferLabelSelectLayer())
     # input quantization (if any) to standalone thresholding
     # TODO call first if standalone thresholding is desired
-    #model = model.transform(to_hls.InferThresholdingLayer())
+    model = model.transform(to_hls.InferThresholdingLayer())
     # needed for convolutions -- TODO always exec?
     need_conv = len(model.get_nodes_by_op_type("Im2Col")) > 0
     if need_conv:

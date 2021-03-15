@@ -1333,8 +1333,12 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
     def pragmas(self):
         mem_mode = self.get_nodeattr("mem_mode")
-        self.code_gen_dict["$PRAGMAS$"] = ["#pragma HLS INTERFACE axis port=in0"]
-        self.code_gen_dict["$PRAGMAS$"].append("#pragma HLS INTERFACE axis port=out")
+        if self.get_nodeattr("fine_grained") == True:
+           self.code_gen_dict["$PRAGMAS$"] = ["#pragma HLS INTERFACE axis register off port=in0"]
+           self.code_gen_dict["$PRAGMAS$"].append("#pragma HLS INTERFACE axis register both port=out")
+        else:
+           self.code_gen_dict["$PRAGMAS$"] = ["#pragma HLS INTERFACE axis port=in0"]
+           self.code_gen_dict["$PRAGMAS$"].append("#pragma HLS INTERFACE axis port=out")
         in_fifo_depth = self.get_nodeattr("inFIFODepth")
         out_fifo_depth = self.get_nodeattr("outFIFODepth")
         # insert depth pragmas only if specified
@@ -1361,9 +1365,14 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 )
             )
         elif mem_mode == "decoupled" or mem_mode == "external":
-            self.code_gen_dict["$PRAGMAS$"].append(
-                "#pragma HLS INTERFACE axis port=weights"
-            )
+            if self.get_nodeattr("fine_grained") == True:
+               self.code_gen_dict["$PRAGMAS$"].append(
+                  "#pragma HLS INTERFACE axis register off port=weights"
+               )
+            else:
+               self.code_gen_dict["$PRAGMAS$"].append(
+                  "#pragma HLS INTERFACE axis port=weights"
+               )
             self.code_gen_dict["$PRAGMAS$"].append(
                 "#pragma HLS stream depth=8 variable=weights"
             )
