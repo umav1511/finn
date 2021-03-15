@@ -56,7 +56,6 @@ import textwrap
 # output 0 is the output tensor, shape (.., o_size) = (..., MH)
 # the ... here can be any shape (representing groups of vectors)
 
-
 class StreamingFCLayer_Batch(HLSCustomOp):
     """Class that corresponds to finn-hls StreamingFCLayer_Batch function."""
 
@@ -1338,8 +1337,12 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
     def pragmas(self):
         mem_mode = self.get_nodeattr("mem_mode")
-        self.code_gen_dict["$PRAGMAS$"] = ["#pragma HLS INTERFACE axis port=in0"]
-        self.code_gen_dict["$PRAGMAS$"].append("#pragma HLS INTERFACE axis port=out")
+        if self.get_nodeattr("fine_grained") == True:
+           self.code_gen_dict["$PRAGMAS$"] = ["#pragma HLS INTERFACE axis register off port=in0"]
+           self.code_gen_dict["$PRAGMAS$"].append("#pragma HLS INTERFACE axis register off port=out")
+        else:
+           self.code_gen_dict["$PRAGMAS$"] = ["#pragma HLS INTERFACE axis port=in0"]
+           self.code_gen_dict["$PRAGMAS$"].append("#pragma HLS INTERFACE axis port=out")
         in_fifo_depth = self.get_nodeattr("inFIFODepth")
         out_fifo_depth = self.get_nodeattr("outFIFODepth")
         # insert depth pragmas only if specified
@@ -1366,9 +1369,14 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 )
             )
         elif mem_mode == "decoupled" or mem_mode == "external":
-            self.code_gen_dict["$PRAGMAS$"].append(
-                "#pragma HLS INTERFACE axis port=weights"
-            )
+            if self.get_nodeattr("fine_grained") == True:
+               self.code_gen_dict["$PRAGMAS$"].append(
+                  "#pragma HLS INTERFACE axis register off port=weights"
+               )
+            else:
+               self.code_gen_dict["$PRAGMAS$"].append(
+                  "#pragma HLS INTERFACE axis port=weights"
+               )
             self.code_gen_dict["$PRAGMAS$"].append(
                 "#pragma HLS stream depth=8 variable=weights"
             )
@@ -1532,7 +1540,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                         cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_data_%02d" % (node_name, i))
                         df.seek((pe - 1 - i)*((simd*wp)//4), 0)
                         weight_val = df.read((simd*wp)//4)
-                        cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_data_%02d]" % (self.get_splitter_output_width_padded(), '0x'+weight_val, node_name, i))
+                        cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_data_%02d]" % (self.get_splitter_output_width_padded(), '0x' + weight_val, node_name, i))
                         cmd.append("connect_bd_net [get_bd_pins %s/xlconstant_data_%02d/dout] [get_bd_pins %s/%s_%d/weights_V_V_TDATA]" % (node_name, i, node_name, node_name, i))
 
                         cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_valid_%02d" % (node_name, i))
