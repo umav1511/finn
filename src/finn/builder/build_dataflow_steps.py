@@ -153,7 +153,6 @@ def step_convert_to_hls(model: ModelWrapper, cfg: DataflowBuildConfig):
     if cfg.standalone_thresholds:
         # doing this first causes all threshold layers to be standalone
         model = model.transform(to_hls.InferThresholdingLayer())
-
     # needed for bipolar MatMul layers
     model = model.transform(to_hls.InferBinaryStreamingFCLayer(mem_mode, set_fine_grained))
     # needed for non-bipolar MatMul layers
@@ -260,7 +259,7 @@ def step_hls_codegen(model: ModelWrapper, cfg: DataflowBuildConfig):
     model = model.transform(
         PrepareIP(cfg._resolve_fpga_part(), cfg._resolve_hls_clk_period())
     )
-   
+    model.save("new_codegen.onnx")   
     return model
 
 def step_hls_ipgen(model: ModelWrapper, cfg: DataflowBuildConfig):

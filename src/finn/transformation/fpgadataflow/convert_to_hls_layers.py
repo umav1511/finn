@@ -875,7 +875,11 @@ class InferThresholdingLayer(Transformation):
                 assert (
                     int(actval) == actval
                 ), "MultiThreshold out_bias must be integer for HLS conversion."
+
+
                 actval = int(actval)
+
+
                 assert (not odt.signed()) or (
                     actval < 0
                 ), "Signed output requres actval < 0"
