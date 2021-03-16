@@ -185,7 +185,7 @@ class CreateStitchedIP(Transformation):
         ip_dirs = ["list"]
         # add RTL streamer IP
         ip_dirs.append("/workspace/finn/finn-rtllib/memstream")
-        ip_dirs.append("/workspace/finn/finn-rtllib/inputbuf")
+        ip_dirs.append("/workspace/finn/finn-rtllib/input_buf2")
         ip_dirs.append("/workspace/finn/finn-rtllib/broadcast")
         ip_dirs.append("/workspace/finn/finn-rtllib/splitter")
         ip_dirs.append("/workspace/finn/finn-rtllib/combiner2")
