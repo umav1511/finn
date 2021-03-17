@@ -185,7 +185,7 @@ class CreateStitchedIP(Transformation):
         ip_dirs = ["list"]
         # add RTL streamer IP
         ip_dirs.append("/workspace/finn/finn-rtllib/memstream")
-        ip_dirs.append("/workspace/finn/finn-rtllib/input_buf2")
+        #ip_dirs.append("/workspace/finn/finn-rtllib/input_buf2")
         ip_dirs.append("/workspace/finn/finn-rtllib/broadcast")
         ip_dirs.append("/workspace/finn/finn-rtllib/splitter")
         ip_dirs.append("/workspace/finn/finn-rtllib/combiner2")
@@ -208,7 +208,8 @@ class CreateStitchedIP(Transformation):
             ip_dirs += [ip_dir_value]
 
             self.create_cmds += node_inst.code_generation_ipi()
-
+            if node.op_type == "StreamingFCLayer_Batch":
+                ip_dirs += [node_inst.get_nodeattr("buffer_ipgen_path")]
             my_producer = model.find_producer(node.input[0])
             self.connect_clk_rst(node)
             self.connect_axi(node)

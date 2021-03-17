@@ -123,6 +123,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             
             # to determine hls ip block sizes
             "fine_grained" : ("i", False, 0, {0, 1}),
+             "buffer_ipgen_path": ("s", False, ""),
     
         }
         my_attrs.update(super().get_nodeattr_types())
@@ -1448,6 +1449,132 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
 
             if self.get_nodeattr("fine_grained")==True:
+
+                 #----------------------------------------------------------------------------#
+                 # insert code for Input Buffer generation here
+                 buffer_ipgen_template = """
+                 #define AP_INT_MAX_W $AP_INT_MAX_W$
+                 #include "bnn-library.h"
+                 // includes for network parameters
+                 $GLOBALS$
+                 // defines for network parameters
+                 $DEFINES$
+                 $BUFFER_BLACKBOX$
+                 {
+                 $BUFFER_PRAGMAS$
+                 $BUFFER_DOCOMPUTE$
+                 }
+                 """
+                 buffer_dict={}
+                 buffer_dict["$AP_INT_MAX_W$"] = [str(self.get_ap_int_max_w())]
+                 self.global_includes()
+                 self.defines("ipgen")
+                 buffer_dict["$BUFFER_PRAGMAS$"]=["#pragma HLS INTERFACE axis port=in0"]
+                 buffer_dict["$BUFFER_PRAGMAS$"].append("#pragma HLS INTERFACE axis port=out")
+                 in_fifo_depth = self.get_nodeattr("inFIFODepth")
+                 out_fifo_depth = self.get_nodeattr("outFIFODepth")
+                 # insert depth pragmas only if specified
+                 if in_fifo_depth != 0:
+                       buffer_dict["$BUFFER_PRAGMAS$"].append(
+                       "#pragma HLS stream depth=%d variable=in0" % in_fifo_depth
+                       )
+                 if out_fifo_depth != 0:
+                       buffer_dict["$BUFFER_PRAGMAS$"].append(
+                       "#pragma HLS stream depth=%d variable=out" % out_fifo_depth
+                       )
+                 buffer_dict["$BUFFER_PRAGMAS$"].append(
+                       "#pragma HLS INTERFACE ap_ctrl_none port=return"
+                       )
+                 buffer_dict["$BUFFER_BLACKBOX$"]=["""void {}_InputBuffer(hls::stream<ap_uint<{}>> &in0,
+                                                         hls::stream<ap_uint<{}>> &out
+                                                         )""".format(
+                                                                   self.onnx_node.name,
+                                                                   self.get_instream_width(),
+                                                                   self.get_instream_width(),
+                                                                     )
+                                                  ]
+                 tmpl_args = self.get_template_param_values()
+                 buffer_dict["$BUFFER_DOCOMPUTE$"] = [
+                                                       """InputBuffer<MW1, MH1, SIMD1, PE1, {}>
+                                                       (in0, out, numReps);""".format(
+                                                       tmpl_args["TSrcI"],
+                                                                                     )
+                                                     ]
+                 template=buffer_ipgen_template
+                 for key in ["$GLOBALS$", "$DEFINES$"]:
+                    # transform list into long string separated by '\n'
+                    code_gen_line = "\n".join(self.code_gen_dict[key])
+                    template = template.replace(key, code_gen_line)
+                 self.code_gen_dict.clear()
+
+                 for key in buffer_dict:
+                    # transform list into long string separated by '\n'
+                    code_gen_line = "\n".join(buffer_dict[key])
+                    template = template.replace(key, code_gen_line)
+                 buffer_dict.clear()
+                 head, tail=os.path.split(self.get_nodeattr("code_gen_dir_ipgen"))
+                 code_gen_dir_name= str(tail) + "_inputbuffer" + "_"
+                 if not os.path.isdir(str(head)+code_gen_dir_name):
+                     code_gen_dir =make_build_dir (
+                     prefix=code_gen_dir_name
+                 )
+                 #mkdir code_gen_dir
+                 buffer_name=self.onnx_node.name+"_InputBuffer"
+                 f = open(os.path.join(code_gen_dir, "top_{}.cpp".format(buffer_name)), "w")
+                 f.write(template)
+                 f.close()
+
+
+                 ##-------STEP2
+                 buffer_dict["$PROJECTNAME$"] = ["project_{}".format(buffer_name)]
+                 buffer_dict["$HWSRCDIR$"] = [code_gen_dir]
+                 buffer_dict["$FPGAPART$"] = ["xc7z020clg400-1"]
+                 buffer_dict["$FINNHLSLIBDIR$"] = ["/workspace/finn-hlslib"]
+                 buffer_dict["$TOPFXN$"] = ["""{}_InputBuffer""".format(self.onnx_node.name)]
+                 buffer_dict["$CLKPERIOD$"] = [str(10)]
+                 buffer_dict["$EXTRA_DIRECTIVES$"] = self.ipgen_extra_directives()
+                 template=self.ipgentcl_template
+                 for key in buffer_dict:
+                    code_gen_line = "\n".join(buffer_dict[key])
+                    template = template.replace(key, code_gen_line)
+
+                 f = open(os.path.join(code_gen_dir, "hls_syn_{}.tcl".format(buffer_name)), "w")
+                 f.write(template)
+                 f.close()
+
+                 buffer_dict.clear()
+
+                 ##-------step 3
+
+
+                 buffer_ipgen_script = str(code_gen_dir) + "/ipgen.sh"
+                 working_dir = os.environ["PWD"]
+                 f = open(buffer_ipgen_script, "w")
+                 f.write("#!/bin/bash \n")
+                 f.write("cd {}\n".format(code_gen_dir))
+                 f.write("vivado_hls {}\n".format(code_gen_dir + "/hls_syn_{}.tcl".format(buffer_name)))
+                 f.write("cd {}\n".format(working_dir))
+                 f.close()
+                 bash_command = ["bash", buffer_ipgen_script]
+                 process_compile = subprocess.Popen(bash_command, stdout=subprocess.PIPE)
+                 process_compile.communicate()
+
+                 ipgen_path=code_gen_dir + "/project_{}".format(buffer_name)
+                 ip_path = ipgen_path + "/sol1/impl/ip"
+                 assert os.path.isdir(
+                     ip_path
+                 ), """no buffer ip was generated"""
+                 self.set_nodeattr("buffer_ipgen_path", ip_path)
+                 buffer_vlnv="xilinx.com:hls:{}:1.0".format(buffer_name)
+                 cmd.append( "create_bd_cell -type ip -vlnv %s /%s/%s"
+                        % (buffer_vlnv, node_name, buffer_name)
+                     )                 
+
+
+
+                 #----------------------------------------------------------------------------#
+
+
                  assert (self.get_nodeattr("mem_mode")!="const"), "mem_mode must be constant for fine_grained"
                  assert (self.get_nodeattr("noActivation")==1), "noActivation must be 1 for fine_grained"
                  # instantiate the hls ip "pe" number of times
@@ -1555,8 +1682,8 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                  
                  # INPUTS
                  # instantiate input buffer
-                 cmd.append("create_bd_cell -type ip -vlnv xilinx.com:user:inputbuf:1.0 %s/inputbuf" % (node_name))
-                 cmd.append("set_property -dict [list CONFIG.WIDTH {%d} CONFIG.DEPTH {%d} CONFIG.NFOLDS {%d} CONFIG.RAM_STYLE {%s}] [get_bd_cells %s/inputbuf]" % (self.get_instream_width_padded(), synapse_fold, neuron_fold, self.get_nodeattr("ibuf_ram_style"), node_name))
+                 #cmd.append("create_bd_cell -type ip -vlnv xilinx.com:user:inputbuf:1.0 %s/inputbuf" % (node_name))
+                 #cmd.append("set_property -dict [list CONFIG.WIDTH {%d} CONFIG.DEPTH {%d} CONFIG.NFOLDS {%d} CONFIG.RAM_STYLE {%s}] [get_bd_cells %s/inputbuf]" % (self.get_instream_width_padded(), synapse_fold, neuron_fold, self.get_nodeattr("ibuf_ram_style"), node_name))
                  
                  # instantiate input broadcaster and set number of masters
                  cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_input" % (node_name))
@@ -1564,18 +1691,28 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
 
                  # connect input of block to input of buffer
+                 #cmd.append(
+                 #    "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                 #    "[get_bd_intf_pins %s/inputbuf/s_axis]"
+                 #    % (node_name, din_name, node_name)
+                 #)
+
+                 #cmd.append(
+                 #    "connect_bd_intf_net [get_bd_intf_pins %s/inputbuf/m_axis] "
+                 #    "[get_bd_intf_pins %s/axis_broadcaster_input/s_axis]"
+                 #    % (node_name, node_name)
+                 #)
                  cmd.append(
                      "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
-                     "[get_bd_intf_pins %s/inputbuf/s_axis]"
-                     % (node_name, din_name, node_name)
+                     "[get_bd_intf_pins %s/%s/%s]"
+                     % (node_name, din_name, node_name, buffer_name, din_name )
                  )
 
                  cmd.append(
-                     "connect_bd_intf_net [get_bd_intf_pins %s/inputbuf/m_axis] "
+                     "connect_bd_intf_net [get_bd_intf_pins %s/%s/%s] "
                      "[get_bd_intf_pins %s/axis_broadcaster_input/s_axis]"
-                     % (node_name, node_name)
+                     % (node_name, buffer_name, dout_name, node_name)
                  )
-
                  for i in range(pe):
                        cmd.append(
                            "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/m_axis_%02d] "
@@ -1614,14 +1751,22 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     % (node_name, clk_name, node_name)
                  ) 
  
+                 #cmd.append(
+                 #  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/inputbuf/aresetn]"
+                 #  % (node_name, rst_name, node_name)
+                 #)
+                 #cmd.append(
+                 #  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/inputbuf/aclk]"
+                 #   % (node_name, clk_name, node_name)
+                 #)
                  cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/inputbuf/aresetn]"
-                   % (node_name, rst_name, node_name)
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
+                   % (node_name, rst_name, node_name, buffer_name, rst_name)
                  )
                  cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/inputbuf/aclk]"
-                    % (node_name, clk_name, node_name)
-                 ) 
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
+                    % (node_name, clk_name, node_name, buffer_name, clk_name)
+                 )  
                  # connect clk and reset - input broadcaster
                  cmd.append(
                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_broadcaster_input/aresetn]"
