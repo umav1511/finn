@@ -101,6 +101,39 @@ from finn.transformation.fpgadataflow.compile_cppsim import CompileCppSim
 from finn.transformation.fpgadataflow.set_exec_mode import SetExecMode
 from finn.transformation.fpgadataflow.prepare_rtlsim import PrepareRTLSim
 from finn.core.throughput_test import throughput_test_rtlsim
+from copy import deepcopy
+from finn.util.basic import get_rtlsim_trace_depth
+
+
+def verify_step(
+    model: ModelWrapper, cfg: DataflowBuildConfig, step_name: str, need_parent: bool
+):
+    print("Running verification for " + step_name)
+    verify_out_dir = cfg.output_dir + "/verification_output"
+    intermediate_models_dir = cfg.output_dir + "/intermediate_models"
+    os.makedirs(verify_out_dir, exist_ok=True)
+    (in_npy, exp_out_npy) = cfg._resolve_verification_io_pair()
+    if need_parent:
+        assert (
+            cfg.save_intermediate_models
+        ), "Enable save_intermediate_models for verification"
+        parent_model_fn = intermediate_models_dir + "/dataflow_parent.onnx"
+        child_model_fn = intermediate_models_dir + "/verify_%s.onnx" % step_name
+        model.save(child_model_fn)
+        out_npy = execute_parent(parent_model_fn, child_model_fn, in_npy)
+    else:
+        inp_tensor_name = model.graph.input[0].name
+        out_tensor_name = model.graph.output[0].name
+        inp_dict = {inp_tensor_name: in_npy}
+        out_dict = execute_onnx(model, inp_dict)
+        out_npy = out_dict[out_tensor_name]
+    res = np.isclose(exp_out_npy, out_npy, atol=1e-3).all()
+    res_to_str = {True: "SUCCESS", False: "FAIL"}
+    res_str = res_to_str[res]
+    verification_output_fn = verify_out_dir + "/verify_%s_%s.npy" % (step_name, res_str)
+    np.save(verification_output_fn, out_npy)
+    print("Verification for %s : %s" % (step_name, res_str))
+
 
 from copy import deepcopy
 set_fine_grained=True
@@ -375,10 +408,27 @@ def step_measure_rtlsim_performance(model: ModelWrapper, cfg: DataflowBuildConfi
         # run with single input to get latency
         rtlsim_perf_dict = throughput_test_rtlsim(rtlsim_model, 1)
         rtlsim_latency = rtlsim_perf_dict["cycles"]
-        # run with num inputs equal to layers to fill the whole pipeline
-        # to get the steady-state throughput
-        rtlsim_bs = len(rtlsim_model.graph.node)
-        rtlsim_perf_dict = throughput_test_rtlsim(rtlsim_model, rtlsim_bs)
+        if cfg.rtlsim_perf_n_inputs is None:
+            # run with num inputs equal to 2*nodes to fill the whole pipeline
+            # to get the steady-state throughput
+            rtlsim_bs = 2 * int(len(rtlsim_model.graph.node))
+        else:
+            rtlsim_bs = cfg.rtlsim_perf_n_inputs
+
+        if cfg.rtlsim_perf_trace_vcd is not None:
+            report_dir = cfg.output_dir + "/report"
+            os.makedirs(report_dir, exist_ok=True)
+            rtlsim_model.set_metadata_prop(
+                "rtlsim_trace", report_dir + "/" + cfg.rtlsim_perf_trace_vcd
+            )
+            print(report_dir + "/rtlsim_throughput_trace.vcd")
+            old_trace_depth = get_rtlsim_trace_depth()
+            # use trace depth 4 to see internal layers
+            os.environ["RTLSIM_TRACE_DEPTH"] = "4"
+            rtlsim_perf_dict = throughput_test_rtlsim(rtlsim_model, rtlsim_bs)
+            os.environ["RTLSIM_TRACE_DEPTH"] = str(old_trace_depth)
+        else:
+            rtlsim_perf_dict = throughput_test_rtlsim(rtlsim_model, rtlsim_bs)
         rtlsim_perf_dict["latency_cycles"] = rtlsim_latency
         report_dir = cfg.output_dir + "/report"
         os.makedirs(report_dir, exist_ok=True)

@@ -39,7 +39,7 @@ WORKDIR /workspace
 RUN apt-get update
 RUN apt-get -y upgrade
 RUN apt-get install -y build-essential libglib2.0-0 libsm6 libxext6 libxrender-dev
-RUN apt-get install -y verilator nano zsh rsync
+RUN apt-get install -y verilator nano zsh rsync g++-multilib
 RUN apt-get -y install sshpass wget unzip
 RUN echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 
@@ -55,6 +55,7 @@ RUN pip install sphinx_rtd_theme==0.5.0
 RUN pip install pytest-xdist==2.0.0
 RUN pip install pytest-parallel==0.1.0
 RUN pip install netron>=4.7.9
+RUN pip install scikit-learn==0.24.1
 RUN pip install -e git+https://github.com/fbcotter/dataset_loading.git@0.0.4#egg=dataset_loading
 
 # switch user

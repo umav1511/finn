@@ -1065,6 +1065,13 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             self.code_gen_dict["$GLOBALS$"] += ['#include "thresh.h"']
 
     def defines(self, var):
+        # pre-include defines
+        is_fully_unrolled_pe = self.get_nodeattr("PE") == self.get_nodeattr("MH")
+        is_fully_unrolled_simd = self.get_nodeattr("SIMD") == self.get_nodeattr("MW")
+        is_fully_unrolled = is_fully_unrolled_pe and is_fully_unrolled_simd
+        if is_fully_unrolled and var == "ipgen":
+            self.code_gen_dict["$PRE_INCLUDE_DEFINES$"].append("#define FREE_RUNNING")
+        # regular defines
         mem_mode = self.get_nodeattr("mem_mode")
         numInputVectors = list(self.get_nodeattr("numInputVectors"))
         numReps = np.prod(numInputVectors)
@@ -1192,11 +1199,10 @@ class StreamingFCLayer_Batch(HLSCustomOp):
         else:
             threshs = "threshs"
         if mem_mode == "const":
-            node = self.onnx_node
             self.code_gen_dict["$DOCOMPUTE$"] = [
-                """{}<MW1, MH1, SIMD1, PE1, {}, {}, {}>
+                """{}<MW1, MH1, SIMD1, PE1, 1, {}, {}, {}>
                 (in0, out, weights, {}, numReps, {});""".format(
-                    node.op_type,
+                    "Matrix_Vector_Activate_Batch",
                     tmpl_args["TSrcI"],
                     tmpl_args["TDstI"],
                     tmpl_args["TWeightI"],
@@ -1357,6 +1363,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
         self.code_gen_dict["$PRAGMAS$"].append(
             "#pragma HLS INTERFACE ap_ctrl_none port=return"
         )
+        self.code_gen_dict["$PRAGMAS$"].append("#pragma HLS DATAFLOW")
 
         if mem_mode == "const":
             self.code_gen_dict["$PRAGMAS$"].append('#include "params.h"')
@@ -1424,6 +1431,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 ), "Layer with URAM weights must have runtime_writeable_weights=1"
             node_name = self.onnx_node.name
 
+            sname = self.hls_sname()
             # create a hierarchy for this layer, with the same port names
             clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
             rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
@@ -1691,19 +1699,51 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 )
 
                 
-            # streamer reset and clock
-            #cmd.append(
-            #    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
-            #    % (node_name, rst_name, node_name, strm_inst)
-            #)
-            #cmd.append(
-            #    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aclk]"
-            #    % (node_name, clk_name, node_name, strm_inst)
-            #)
+                # streamer reset and clock
+                #cmd.append(
+                #    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
+                #    % (node_name, rst_name, node_name, strm_inst)
+                #)
+                #cmd.append(
+                #    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aclk]"
+                #    % (node_name, clk_name, node_name, strm_inst)
+                #)
 
 
 
 
+                )
+                cmd.append(
+                   "connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] "
+                   "[get_bd_intf_pins %s/%s/weights_%s]"
+                   % (node_name, strm_inst, node_name, node_name, sname)
+                )
+                cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
+                   % (node_name, rst_name, node_name, strm_inst)
+                )
+                cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aclk]"
+                   % (node_name, clk_name, node_name, strm_inst)
+                )
+                cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
+                   % (node_name, rst_name, node_name, node_name, rst_name)
+                )
+                cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
+                   % (node_name, clk_name, node_name, node_name, clk_name)
+                )
+                cmd.append(
+                   "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                   "[get_bd_intf_pins %s/%s/%s]"
+                   % (node_name, din_name, node_name, node_name, din_name)
+                )
+                cmd.append(
+                   "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                   "[get_bd_intf_pins %s/%s/%s]"
+                   % (node_name, dout_name, node_name, node_name, dout_name)
+                )
             if runtime_writable:
 
                 # expose axi lite interface for writeable weights
@@ -1731,8 +1771,9 @@ class StreamingFCLayer_Batch(HLSCustomOp):
     def get_verilog_top_module_intf_names(self):
         intf_names = super().get_verilog_top_module_intf_names()
         mem_mode = self.get_nodeattr("mem_mode")
+        sname = self.hls_sname()
         if mem_mode == "external":
-            intf_names["s_axis"] = ["in0_V_V", "weights_V_V"]
+            intf_names["s_axis"] = ["in0_" + sname, "weights_" + sname]
         if mem_mode == "decoupled":
             # only expose axilite interface if attribute is set
             runtime_writable = self.get_nodeattr("runtime_writeable_weights") == 1
