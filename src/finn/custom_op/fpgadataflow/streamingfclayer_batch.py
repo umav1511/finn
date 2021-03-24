@@ -1541,6 +1541,36 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                            % (node_name, clk_name, node_name, strm_inst, w)
                            )
 
+                       # INPUTS
+                       # instantiate input buffer
+                       cmd.append("create_bd_cell -type ip -vlnv xilinx.com:user:inputbuf:1.0 %s/inputbuf" % (node_name))
+                       cmd.append("set_property -dict [list CONFIG.WIDTH {%d} CONFIG.DEPTH {%d} CONFIG.NFOLDS {%d} CONFIG.RAM_STYLE {%s}] [get_bd_cells %s/inputbuf]" % (self.get_instream_width_padded(), synapse_fold, neuron_fold, self.get_nodeattr("ibuf_ram_style"), node_name))
+
+                       # instantiate input broadcaster and set number of masters
+                       cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_input" % (node_name))
+                       cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_NUM_MI_SLOTS {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (self.get_instream_width_padded(), pe, node_name))
+
+                       # connect input of block to input of buffer
+                       cmd.append(
+                          "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                          "[get_bd_intf_pins %s/inputbuf/s_axis]"
+                          % (node_name, din_name, node_name)
+                       )
+
+                       cmd.append(
+                          "connect_bd_intf_net [get_bd_intf_pins %s/inputbuf/m_axis] "
+                          "[get_bd_intf_pins %s/axis_broadcaster_input/s_axis]"
+                          % (node_name, node_name)
+                       )
+
+                       cmd.append(
+                         "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/inputbuf/aresetn]"
+                         % (node_name, rst_name, node_name)
+                       )
+                       cmd.append(
+                         "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/inputbuf/aclk]"
+                         % (node_name, clk_name, node_name)
+                       ) 
                  else:
                     dat_file = self.get_nodeattr("code_gen_dir_ipgen") + "/memblock_0.dat" 
                     df = open(dat_file, "r")
@@ -1556,33 +1586,20 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                         cmd.append("connect_bd_net [get_bd_pins %s/xlconstant_valid_%02d/dout] [get_bd_pins %s/%s_%d/weights_V_V_TVALID]" % (node_name, i, node_name, node_name, i))
                         cmd.append("save_bd_design")
                     df.close()
-                    
+                    # instantiate input broadcaster and set number of masters
+                    cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_input" % (node_name))
+                    cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_NUM_MI_SLOTS {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (self.get_instream_width_padded(), pe, node_name))
+
+                    cmd.append(
+                          "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                          "[get_bd_intf_pins %s/axis_broadcaster_input/s_axis]"
+                          % (node_name, din_name, node_name)
+                    )
+
                  # instantiate combiner block and set input parameters
                  cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_output" % node_name)
                  cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_AXIS_SIGNAL_SET {0x00000003} CONFIG.C_NUM_SI_SLOTS {%d}] [get_bd_cells %s/axis_combiner_output]" % (self.get_outstream_width() // self.get_nodeattr("PE"), pe, node_name)) 
                  
-                 # INPUTS
-                 # instantiate input buffer
-                 cmd.append("create_bd_cell -type ip -vlnv xilinx.com:user:inputbuf:1.0 %s/inputbuf" % (node_name))
-                 cmd.append("set_property -dict [list CONFIG.WIDTH {%d} CONFIG.DEPTH {%d} CONFIG.NFOLDS {%d} CONFIG.RAM_STYLE {%s}] [get_bd_cells %s/inputbuf]" % (self.get_instream_width_padded(), synapse_fold, neuron_fold, self.get_nodeattr("ibuf_ram_style"), node_name))
-                 
-                 # instantiate input broadcaster and set number of masters
-                 cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_input" % (node_name))
-                 cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_NUM_MI_SLOTS {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (self.get_instream_width_padded(), pe, node_name))
-
-
-                 # connect input of block to input of buffer
-                 cmd.append(
-                     "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
-                     "[get_bd_intf_pins %s/inputbuf/s_axis]"
-                     % (node_name, din_name, node_name)
-                 )
-
-                 cmd.append(
-                     "connect_bd_intf_net [get_bd_intf_pins %s/inputbuf/m_axis] "
-                     "[get_bd_intf_pins %s/axis_broadcaster_input/s_axis]"
-                     % (node_name, node_name)
-                 )
 
                  for i in range(pe):
                        cmd.append(
@@ -1590,8 +1607,6 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                            "[get_bd_intf_pins %s/%s_%d/%s]"
                            % (node_name, i, node_name, node_name, i, din_name)
                        ) 
-
-
 
 
                  for i in range(pe):
@@ -1622,14 +1637,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     % (node_name, clk_name, node_name)
                  ) 
  
-                 cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/inputbuf/aresetn]"
-                   % (node_name, rst_name, node_name)
-                 )
-                 cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/inputbuf/aclk]"
-                    % (node_name, clk_name, node_name)
-                 ) 
+
                  # connect clk and reset - input broadcaster
                  cmd.append(
                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_broadcaster_input/aresetn]"
