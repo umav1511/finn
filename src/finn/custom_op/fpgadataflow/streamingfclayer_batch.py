@@ -1555,7 +1555,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                  
                  # INPUTS
                  # instantiate input buffer
-                 cmd.append("create_bd_cell -type ip -vlnv xilinx.com:user:inputbuf:1.0 %s/inputbuf" % (node_name))
+                 cmd.append("create_bd_cell -type ip -vlnv user.org:user:inputbuf:1.0 %s/inputbuf" % (node_name))
                  cmd.append("set_property -dict [list CONFIG.WIDTH {%d} CONFIG.DEPTH {%d} CONFIG.NFOLDS {%d} CONFIG.RAM_STYLE {%s}] [get_bd_cells %s/inputbuf]" % (self.get_instream_width_padded(), synapse_fold, neuron_fold, self.get_nodeattr("ibuf_ram_style"), node_name))
                  
                  # instantiate input broadcaster and set number of masters

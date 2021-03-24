@@ -205,7 +205,7 @@ set_property STEPS.OPT_DESIGN.ARGS.DIRECTIVE Explore [get_runs impl_1]
 set_property STEPS.POST_ROUTE_PHYS_OPT_DESIGN.ARGS.DIRECTIVE AggressiveExplore [get_runs impl_1]
 set_property STEPS.PHYS_OPT_DESIGN.ARGS.DIRECTIVE AggressiveExplore [get_runs impl_1]
 set_property STEPS.POST_ROUTE_PHYS_OPT_DESIGN.IS_ENABLED true [get_runs impl_1]
-set_property STEPS.OPT_DESIGN.ARGS.VERBOSE true [get_runs impl_1]
+#set_property STEPS.OPT_DESIGN.ARGS.VERBOSE true [get_runs impl_1]
 # set_property -name {STEPS.OPT_DESIGN.ARGS.MORE OPTIONS} -value -debug_log -objects [get_runs impl_1]
 # out-of-context synth can't be used for bitstream generation
 # set_property -name {STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS} -value {-mode out_of_context} -objects [get_runs synth_1]
