@@ -39,6 +39,13 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
             "accDataType": ("s", False, "INT32"),
             # no-activation mode (produce accumulators)
             "noActivation": ("i", False, 0, {0, 1}),
+            "ram_style": (
+                "s",
+                False,
+                "auto",
+                {"auto", "block", "distributed", "ultra"},
+            ),
+            "fine_grained" : ("i", False, 0, {0, 1}),
         }
         my_attrs.update(super().get_nodeattr_types())
         return my_attrs
@@ -330,6 +337,33 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
             )
         f_weights.write(weight_hls_code)
         f_weights.close()
+
+
+        # create memblock_0 file for decoupled fine-grain mode
+        if self.get_nodeattr("fine_grained")==True:
+            export_wdt = self.get_weight_datatype()
+            pe = self.get_nodeattr("PE")
+            simd = self.get_nodeattr("SIMD")
+            weight_tensor_unflipped = np.transpose(weight_tensor, (0, 2, 1, 3))
+            # PE flip for saving weights in .dat
+            weight_tensor_pe_flipped = np.flip(weight_tensor_unflipped, axis=-2)
+            weight_tensor_pe_flipped = weight_tensor_pe_flipped.reshape(
+                1, -1, pe * simd
+            )
+            weight_tensor_pe_flipped = weight_tensor_pe_flipped.copy()
+            # convert weight values into hexstring
+            weight_width = self.get_weightstream_width()
+            weight_width_padded = roundup_to_integer_multiple(weight_width, 4)
+            weight_tensor_pe_flipped = pack_innermost_dim_as_hex_string(
+            weight_tensor_pe_flipped, export_wdt, weight_width_padded, prefix=""
+            )
+            # add zeroes to pad out file to 1024 entries
+            weight_stream = weight_tensor_pe_flipped.flatten()
+            weight_stream = weight_stream.copy()
+            weight_filename_rtl = "{}/memblock_0.dat".format(self.get_nodeattr("code_gen_dir_ipgen"))
+            with open(weight_file_name, "w") as f:
+                for val in weight_stream:
+                   f.write(val + "\n")
 
         # save thresholds in thresh.h
         if len(self.onnx_node.input) > 2:
@@ -716,3 +750,114 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
             thres_count = fm
             ret_dict[thres_param_type] = thres_count
         return ret_dict
+
+    def code_generation_ipi(self):
+        cmd = []
+        if self.get_nodeattr("fine_grained") == True:
+            assert (self.get_nodeattr("noActivation")==1), "noActivation must be 1 for fine_grained"
+            pe = self.get_nodeattr("PE")
+            neuron_fold = int(self.get_nodeattr("MH") // self.get_nodeattr("PE"))
+            synapse_fold = int(self.get_nodeattr("MW") // self.get_nodeattr("SIMD"))
+            simd = self.get_nodeattr("SIMD")
+            # create a hierarchy for this layer, with the same port names
+            clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
+            rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
+            dout_name = self.get_verilog_top_module_intf_names()["m_axis"][0]
+            din_name = self.get_verilog_top_module_intf_names()["s_axis"][0]
+            cmd.append("create_bd_cell -type hier %s" % node_name)
+            cmd.append("create_bd_pin -dir I -type clk /%s/%s" % (node_name, clk_name))
+            cmd.append("create_bd_pin -dir I -type rst /%s/%s" % (node_name, rst_name))
+            cmd.append(
+                "create_bd_intf_pin -mode Master "
+                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s"
+                % (node_name, dout_name)
+            )
+            cmd.append(
+                "create_bd_intf_pin -mode Slave "
+                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s" % (node_name, din_name)
+            )
+
+            # instantiate a streamer and connect it to the HLS IP
+            strm_vlnv = "xilinx.com:user:memstream:1.0"
+            strm_inst = node_name + "_wstrm"
+
+            cmd.append(
+                "create_bd_cell -type ip -vlnv %s /%s/%s"
+                % (strm_vlnv, node_name, strm_inst)
+            )
+            cmd.append(
+               "set_property -dict [list "
+               "CONFIG.NSTREAMS {1} "
+               "CONFIG.MEM_DEPTH {%d} "
+               "CONFIG.MEM_WIDTH {%d} "
+               "CONFIG.MEM_INIT {%s} "
+               "CONFIG.RAM_STYLE {%s} "
+               "CONFIG.STRM0_DEPTH {%d} "
+               "CONFIG.STRM0_WIDTH {%d} "
+               "CONFIG.STRM0_OFFSET {0} "
+               "] [get_bd_cells /%s/%s]"
+               % (
+                 self.calc_wmem(),
+                 self.get_weightstream_width_padded(),
+                 self.get_nodeattr("code_gen_dir_ipgen") + "/",
+                 self.get_nodeattr("ram_style"),
+                 self.calc_wmem(),
+                 self.get_weightstream_width_padded(),
+                 node_name,
+                 strm_inst,
+                 )
+            )
+
+            cmd.append(
+                "create_bd_cell -type ip -vlnv %s /%s/%s"
+                % (self.get_nodeattr("ip_vlnv"), node_name, node_name)
+            )
+            cmd.append(
+               "connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] "
+               "[get_bd_intf_pins %s/%s/weights_V_V]"
+               % (node_name, strm_inst, node_name, node_name)
+            )
+            cmd.append(
+               "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+               "[get_bd_intf_pins %s/%s/%s]"
+               % (node_name, din_name, node_name, node_name, din_name)
+            )
+            cmd.append(
+               "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+               "[get_bd_intf_pins %s/%s/%s]"
+               % (node_name, dout_name, node_name, node_name, dout_name)
+            )
+            cmd.append(
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
+               % (node_name, rst_name, node_name, node_name, rst_name)
+            )
+            cmd.append(
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
+               % (node_name, clk_name, node_name, node_name, clk_name)
+            )
+            # streamer reset and clock
+            cmd.append(
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
+               % (node_name, rst_name, node_name, strm_inst)
+            )
+            cmd.append(
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aclk]"
+               % (node_name, clk_name, node_name, strm_inst)
+            )
+            cmd.append("save_bd_design")
+        else:
+            return super().code_generation_ipi()
+        return cmd
+
+
+
+
+
+
+
+
+
+
+
+
+

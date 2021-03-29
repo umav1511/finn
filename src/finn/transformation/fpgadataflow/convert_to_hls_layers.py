@@ -679,6 +679,9 @@ class InferVVAU(Transformation):
     of the weight matrix indicates that the MatMul layer belongs to
     a depthwise convolution. Any immediately following MultiThreshold
     layers will also be absorbed into the VVAU."""
+    def __init__(self, fine_grained=False):
+        super().__init__()
+        self.fine_grained = fine_grained
 
     def apply(self, model):
         graph = model.graph
@@ -806,6 +809,7 @@ class InferVVAU(Transformation):
                             outputDataType=odt.name,
                             ActVal=0,
                             noActivation=1,
+                            fine_grained=self.fine_grained,
                         )
                         graph.node.insert(node_ind, new_node)
                         # remove old node

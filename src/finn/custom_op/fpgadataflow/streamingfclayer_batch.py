@@ -767,9 +767,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
             weight_tensor_pe_flipped = weight_tensor_pe_flipped.reshape(
                 1, -1, pe * simd
             )
-            #er=open("er_fi","a")
             weight_tensor_pe_flipped = weight_tensor_pe_flipped.copy()
-            #er.write(str(weight_tensor_pe_flipped.shape))
             weight_tensor_pe_flipped2=weight_tensor_pe_flipped
             if weight_file_mode == "decoupled_npy":
                 # save weight stream into npy for cppsim
@@ -782,7 +780,6 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 weight_tensor_pe_flipped = pack_innermost_dim_as_hex_string(
                     weight_tensor_pe_flipped, export_wdt, weight_width_padded, prefix=""
                 )
-                #er.write(str(weight_tensor_pe_flipped.shape))
                 # add zeroes to pad out file to 1024 entries
                 weight_stream = weight_tensor_pe_flipped.flatten()
                 weight_stream = weight_stream.copy()
@@ -1691,15 +1688,15 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                 )
 
                 
-            # streamer reset and clock
-            #cmd.append(
-            #    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
-            #    % (node_name, rst_name, node_name, strm_inst)
-            #)
-            #cmd.append(
-            #    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aclk]"
-            #    % (node_name, clk_name, node_name, strm_inst)
-            #)
+                # streamer reset and clock
+                cmd.append(
+                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
+                    % (node_name, rst_name, node_name, strm_inst)
+                )
+                cmd.append(
+                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aclk]"
+                    % (node_name, clk_name, node_name, strm_inst)
+                )
 
 
 

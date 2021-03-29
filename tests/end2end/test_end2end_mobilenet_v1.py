@@ -97,7 +97,7 @@ mem_mode = "decoupled"
 large_fifo_ram_style = "ultra"
 extra_fold = 1
 first_layer_res_type = "dsp"
-
+set_fine_grained = True
 
 def test_end2end_mobilenet_export():
     # export preprocessing
@@ -214,6 +214,8 @@ def test_end2end_mobilenet_lowering():
 
 def test_end2end_mobilenet_convert_to_hls_layers():
     model = load_test_checkpoint_or_skip(build_dir + "/end2end_mobilenet_lowered.onnx")
+    if set_fine_grained==True:
+        model = model.transform(to_hls.InferThresholdingLayer)
     model = model.transform(to_hls.InferPool_Batch())
     model = model.transform(to_hls.InferConvInpGen())
     model = model.transform(to_hls.InferVVAU())
