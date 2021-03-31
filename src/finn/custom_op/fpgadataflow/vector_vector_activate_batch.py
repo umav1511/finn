@@ -13,6 +13,7 @@ from finn.util.data_packing import (
     npy_to_rtlsim_input,
     numpy_to_hls_code,
     rtlsim_output_to_npy,
+    pack_innermost_dim_as_hex_string,
 )
 import warnings
 
@@ -187,6 +188,16 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
         out_width = o_bits * self.get_nodeattr("PE")
         return out_width
 
+    def get_weightstream_width(self):
+        pe = self.get_nodeattr("PE")
+        wp = self.get_weight_datatype().bitwidth()
+        w_width = pe *  wp
+        return w_width
+
+    def get_weightstream_width_padded(self):
+        weight_width = self.get_weightstream_width()
+        return roundup_to_integer_multiple(weight_width, 8)
+
     def get_folded_input_shape(self):
         k = self.get_nodeattr("Kernel")
         sf = k * k
@@ -343,12 +354,11 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
         if self.get_nodeattr("fine_grained")==True:
             export_wdt = self.get_weight_datatype()
             pe = self.get_nodeattr("PE")
-            simd = self.get_nodeattr("SIMD")
             weight_tensor_unflipped = np.transpose(weight_tensor, (0, 2, 1, 3))
             # PE flip for saving weights in .dat
             weight_tensor_pe_flipped = np.flip(weight_tensor_unflipped, axis=-2)
             weight_tensor_pe_flipped = weight_tensor_pe_flipped.reshape(
-                1, -1, pe * simd
+                1, -1, pe 
             )
             weight_tensor_pe_flipped = weight_tensor_pe_flipped.copy()
             # convert weight values into hexstring
@@ -361,7 +371,7 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
             weight_stream = weight_tensor_pe_flipped.flatten()
             weight_stream = weight_stream.copy()
             weight_filename_rtl = "{}/memblock_0.dat".format(self.get_nodeattr("code_gen_dir_ipgen"))
-            with open(weight_file_name, "w") as f:
+            with open(weight_filename_rtl, "w") as f:
                 for val in weight_stream:
                    f.write(val + "\n")
 
@@ -541,17 +551,37 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
         else:
             threshs = "threshs"
         node = self.onnx_node
-        self.code_gen_dict["$DOCOMPUTE$"] = [
-            """{}<Channels1, InnerProdDim, SIMD1, PE1, 1, {}, {}, {}>
-            (in0, out, weights, {}, numReps, {});""".format(
+        if self.get_nodeattr("fine_grained") == True:
+            wdt= self.get_weight_datatype()
+            if wdt == DataType.BIPOLAR:
+              export_wdt = DataType.Binary
+            else:
+             export_wdt = wdt
+            wdtype_hls_str = export_wdt.get_hls_datatype_str()
+            self.code_gen_dict["$DOCOMPUTE$"] = [
+              """Vector_Vector_Activate_Stream_Batch <Channels1, InnerProdDim, SIMD1, PE1, 1, {}, {}, {}, {}>
+                                                     (in0, out, weights, {}, numReps, {});""".format(
+                                                     tmpl_args["TSrcI"],
+                                                     tmpl_args["TDstI"],
+                                                     tmpl_args["TWeightI"],
+                                                     wdtype_hls_str,
+                                                     threshs,
+                                                     map_to_hls_mult_style[self.get_nodeattr("resType")],
+                                                     )
+                                                 ]
+        else:
+            self.code_gen_dict["$DOCOMPUTE$"] = [
+               """{}<Channels1, InnerProdDim, SIMD1, PE1, 1, {}, {}, {}>
+               (in0, out, weights, {}, numReps, {});""".format(
                 node.op_type,
                 tmpl_args["TSrcI"],
                 tmpl_args["TDstI"],
                 tmpl_args["TWeightI"],
                 threshs,
                 map_to_hls_mult_style[self.get_nodeattr("resType")],
-            )
-        ]
+               )
+            ]
+
 
     def dataoutstrm(self):
         code_gen_dir = self.get_nodeattr("code_gen_dir_cppsim")
@@ -582,19 +612,36 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
         self.code_gen_dict["$SAVEASCNPY$"] = []
 
     def blackboxfunction(self):
-        self.code_gen_dict["$BLACKBOXFUNCTION$"] = [
-            """void {}(hls::stream<ap_uint<{}>> &in0,
-            hls::stream<ap_uint<{}>> &out
-            )""".format(
-                self.onnx_node.name,
-                self.get_instream_width(),
-                self.get_outstream_width(),
-            )
-        ]
+        if self.get_nodeattr("fine_grained")==True:
+ 
+           self.code_gen_dict["$BLACKBOXFUNCTION$"]=[
+              """void {} (hls::stream<ap_uint<{}>> &in0,
+                          hls::stream<ap_uint<{}>> &weights,
+                          hls::stream<ap_uint<{}>> &out
+                         )""".format(
+                                 self.onnx_node.name,
+                                 self.get_instream_width(),
+                                 self.get_weightstream_width(),
+                                 self.get_outstream_width(),
+                              )
+                         ] 
+        else:
+            self.code_gen_dict["$BLACKBOXFUNCTION$"] = [
+              """void {}(hls::stream<ap_uint<{}>> &in0,
+              hls::stream<ap_uint<{}>> &out
+              )""".format(
+                 self.onnx_node.name,
+                 self.get_instream_width(),
+                 self.get_outstream_width(),
+              )
+            ]
 
     def pragmas(self):
         self.code_gen_dict["$PRAGMAS$"] = ["#pragma HLS INTERFACE axis port=in0"]
         self.code_gen_dict["$PRAGMAS$"].append("#pragma HLS INTERFACE axis port=out")
+        if self.get_nodeattr("fine_grained"):
+              self.code_gen_dict["$PRAGMAS$"].append("#pragma HLS INTERFACE axis port=weights")
+              self.code_gen_dict["$PRAGMAS$"].append("#pragma HLS stream depth=8 variable=weights")
         in_fifo_depth = self.get_nodeattr("inFIFODepth")
         out_fifo_depth = self.get_nodeattr("outFIFODepth")
         # insert depth pragmas only if specified
@@ -610,12 +657,13 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
             "#pragma HLS INTERFACE ap_ctrl_none port=return"
         )
 
-        self.code_gen_dict["$PRAGMAS$"].append('#include "params.h"')
-        # the weight tensor is ap_uint<ch*prec> [PE][WMEM]
-        # partition for parallel access along the PE dimension (dim 1)
-        self.code_gen_dict["$PRAGMAS$"].append(
-            ("#pragma HLS ARRAY_PARTITION variable=weights.m_weights " "complete dim=1")
-        )
+        if self.get_nodeattr("fine_grained") !=True:
+           self.code_gen_dict["$PRAGMAS$"].append('#include "params.h"')
+           # the weight tensor is ap_uint<ch*prec> [PE][WMEM]
+           # partition for parallel access along the PE dimension (dim 1)
+           self.code_gen_dict["$PRAGMAS$"].append(
+              ("#pragma HLS ARRAY_PARTITION variable=weights.m_weights " "complete dim=1")
+           )
         if self.calc_tmem() != 0:
             # TODO find a better way of checking for no pregenerated thresholds
             self.code_gen_dict["$PRAGMAS$"].append(
@@ -756,10 +804,8 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
         if self.get_nodeattr("fine_grained") == True:
             assert (self.get_nodeattr("noActivation")==1), "noActivation must be 1 for fine_grained"
             pe = self.get_nodeattr("PE")
-            neuron_fold = int(self.get_nodeattr("MH") // self.get_nodeattr("PE"))
-            synapse_fold = int(self.get_nodeattr("MW") // self.get_nodeattr("SIMD"))
-            simd = self.get_nodeattr("SIMD")
             # create a hierarchy for this layer, with the same port names
+            node_name = self.onnx_node.name
             clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
             rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
             dout_name = self.get_verilog_top_module_intf_names()["m_axis"][0]

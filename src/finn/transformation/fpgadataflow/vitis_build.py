@@ -418,6 +418,7 @@ class VitisBuild(Transformation):
             )
             kernel_model.set_metadata_prop("platform", "alveo")
             kernel_model.save(dataflow_model_filename)
+        model.save("before_vitis_implementation.onnx")
         # Assemble design from kernels
         model = model.transform(
             VitisLink(

@@ -77,6 +77,9 @@ from finn.transformation.fpgadataflow.compile_cppsim import CompileCppSim
 from finn.transformation.fpgadataflow.prepare_rtlsim import PrepareRTLSim
 from finn.transformation.fpgadataflow.prepare_ip import PrepareIP
 from finn.transformation.fpgadataflow.hlssynth_ip import HLSSynthIP
+from finn.transformation.fpgadataflow.create_stitched_ip import CreateStitchedIP
+from finn.transformation.fpgadataflow.insert_dwc import InsertDWC
+from finn.transformation.fpgadataflow.annotate_cycles import AnnotateCycles
 from finn.transformation.fpgadataflow.replace_verilog_relpaths import (
     ReplaceVerilogRelPaths,
 )
@@ -215,7 +218,7 @@ def test_end2end_mobilenet_lowering():
 def test_end2end_mobilenet_convert_to_hls_layers():
     model = load_test_checkpoint_or_skip(build_dir + "/end2end_mobilenet_lowered.onnx")
     if set_fine_grained==True:
-        model = model.transform(to_hls.InferThresholdingLayer)
+        model = model.transform(to_hls.InferThresholdingLayer())
     model = model.transform(to_hls.InferPool_Batch())
     model = model.transform(to_hls.InferConvInpGen())
     model = model.transform(to_hls.InferVVAU())
@@ -230,7 +233,7 @@ def test_end2end_mobilenet_convert_to_hls_layers():
 
 def test_end2end_mobilenet_folding():
     model = load_test_checkpoint_or_skip(
-        build_dir + "/end2end_mobilenet_hls_layers.onnx"
+        build_dir + "/end2end_mobilenet_hls_layers2.onnx"
     )
     # optional extra folding to use fewer resources
     # applied while setting the attributes on each node
@@ -341,12 +344,21 @@ def test_end2end_mobilenet_cppsim():
 @pytest.mark.slow
 @pytest.mark.vivado
 def test_end2end_mobilenet_gen_hls_ip():
-    model = load_test_checkpoint_or_skip(
-        build_dir + "/end2end_mobilenet_dataflow_model.onnx"
-    )
+    #model = load_test_checkpoint_or_skip(
+    #    build_dir + "/end2end_mobilenet_dataflow_model.onnx"
+    #)
+    model = load_test_checkpoint_or_skip("synth_ip.onnx")
     start = time.time()
-    model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
-    model = model.transform(HLSSynthIP())
+    #model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
+    #model.save("prep_ip.onnx")
+    #model = model.transform(HLSSynthIP())
+    #model.save("synth_ip.onnx")
+    #model = model.transform(InsertDWC())
+    #model = model.transform(GiveUniqueNodeNames())
+    #model = model.transform(AnnotateCycles())
+    #model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
+    #model = model.transform(HLSSynthIP())
+    #model = model.transform(CreateStitchedIP(test_fpga_part, target_clk_ns))
     model = model.transform(ReplaceVerilogRelPaths())
     end = time.time()
     elapsed_time = end - start
@@ -421,7 +433,7 @@ def test_end2end_mobilenet_set_fifo_depths():
 @pytest.mark.vitis
 def test_end2end_mobilenet_build():
     model = load_test_checkpoint_or_skip(
-        build_dir + "/end2end_mobilenet_fifodepth.onnx"
+        build_dir + "/end2end_mobilenet_ipgen.onnx"
     )
     model = model.transform(
         VitisBuild(
