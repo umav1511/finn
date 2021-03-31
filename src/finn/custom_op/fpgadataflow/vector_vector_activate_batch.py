@@ -503,15 +503,28 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
         numReps = 1 * dim * dim
         kernel = self.get_nodeattr("Kernel")
         innerProdDim = kernel * kernel
-        self.code_gen_dict["$DEFINES$"] = [
-            """#define Channels1 {}\n #define InnerProdDim {}\n
-            #define SIMD1 1\n #define PE1 {}\n #define numReps {}""".format(
-                self.get_nodeattr("Channels"),
-                innerProdDim,
-                self.get_nodeattr("PE"),
-                numReps,
-            )
-        ]
+        if self.get_nodeattr("fine_grained") == True:
+           PE = 1
+           Channels = self.get_nodeattr("Channels")//self.get_nodeattr("PE")
+           self.code_gen_dict["$DEFINES$"] = [
+              """#define MH1 {}\n #define MW1 {}\n
+              #define SIMD1 1\n #define PE1 {}\n #define numReps {}""".format(
+                 Channels,
+                 innerProdDim,
+                 PE,
+                 numReps,
+                 )
+              ]           
+        else:
+           self.code_gen_dict["$DEFINES$"] = [
+              """#define Channels1 {}\n #define InnerProdDim {}\n
+              #define SIMD1 1\n #define PE1 {}\n #define numReps {}""".format(
+                 self.get_nodeattr("Channels"),
+                 innerProdDim,
+                 self.get_nodeattr("PE"),
+                 numReps,
+                 )
+              ]
 
     def read_npy_data(self):
         code_gen_dir = self.get_nodeattr("code_gen_dir_cppsim")
@@ -559,16 +572,16 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
              export_wdt = wdt
             wdtype_hls_str = export_wdt.get_hls_datatype_str()
             self.code_gen_dict["$DOCOMPUTE$"] = [
-              """Vector_Vector_Activate_Stream_Batch <Channels1, InnerProdDim, SIMD1, PE1, 1, {}, {}, {}, {}>
-                                                     (in0, out, weights, {}, numReps, {});""".format(
-                                                     tmpl_args["TSrcI"],
-                                                     tmpl_args["TDstI"],
-                                                     tmpl_args["TWeightI"],
-                                                     wdtype_hls_str,
-                                                     threshs,
-                                                     map_to_hls_mult_style[self.get_nodeattr("resType")],
-                                                     )
-                                                 ]
+                """Matrix_Vector_PE_Batch<MW1, MH1, SIMD1, PE1, {}, {}, {}, {} >
+               (in0, out, weights, numReps, {});""".format(
+                    tmpl_args["TSrcI"],
+                    tmpl_args["TDstI"],
+                    tmpl_args["TWeightI"],
+                    wdtype_hls_str,
+
+                   map_to_hls_mult_style[self.get_nodeattr("resType")],
+                )
+            ]
         else:
             self.code_gen_dict["$DOCOMPUTE$"] = [
                """{}<Channels1, InnerProdDim, SIMD1, PE1, 1, {}, {}, {}>
@@ -621,8 +634,8 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
                          )""".format(
                                  self.onnx_node.name,
                                  self.get_instream_width(),
-                                 self.get_weightstream_width(),
-                                 self.get_outstream_width(),
+                                 self.get_weightstream_width()//self.get_nodeattr("PE"),
+                                 self.get_outstream_width()//self.get_nodeattr("PE"),
                               )
                          ] 
         else:
@@ -804,8 +817,10 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
         if self.get_nodeattr("fine_grained") == True:
             assert (self.get_nodeattr("noActivation")==1), "noActivation must be 1 for fine_grained"
             pe = self.get_nodeattr("PE")
+            neuron_fold = int(self.get_nodeattr("MH") // self.get_nodeattr("PE"))
+            synapse_fold = int(self.get_nodeattr("MW") // self.get_nodeattr("SIMD"))
+            simd = self.get_nodeattr("SIMD")
             # create a hierarchy for this layer, with the same port names
-            node_name = self.onnx_node.name
             clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
             rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
             dout_name = self.get_verilog_top_module_intf_names()["m_axis"][0]
@@ -854,33 +869,72 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
                  )
             )
 
+            for i in range(pe):
+               cmd.append(
+                  "create_bd_cell -type ip -vlnv %s /%s/%s_%d"
+                  % (self.get_nodeattr("ip_vlnv"), node_name, node_name, i)
+               )
+
+            split_weightstream_width=self.get_weightstream_width()
+            split_weightstream_width_padded=roundup_to_integer_multiple(split_weightstream_width, 8)
+
+            # instantiate and configure the weight splitter
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter" % (node_name))
+            cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter]" % (split_weightstream_width_padded, split_weightstream_width, self.get_splitter_output_width_padded(), pe, node_name))
+
+
+            # instantiate combiner block and set input parameters
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_output" % node_name)
+            cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_AXIS_SIGNAL_SET {0x00000003} CONFIG.C_NUM_SI_SLOTS {%d}] [get_bd_cells %s/axis_combiner_output]" % (self.get_outstream_width() // self.get_nodeattr("PE"), pe, node_name)) 
+
+            # instantiate input broadcaster and set number of masters
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_input" % (node_name))
+            cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_NUM_MI_SLOTS {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (self.get_instream_width_padded(), pe, node_name))
+
+            # connect input of block to input of broadcaster
             cmd.append(
-                "create_bd_cell -type ip -vlnv %s /%s/%s"
-                % (self.get_nodeattr("ip_vlnv"), node_name, node_name)
+                  "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                  "[get_bd_intf_pins %s/axis_broadcaster_input/s_axis]"
+                  % (node_name, din_name, node_name)
             )
-            cmd.append(
-               "connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] "
-               "[get_bd_intf_pins %s/%s/weights_V_V]"
-               % (node_name, strm_inst, node_name, node_name)
-            )
-            cmd.append(
-               "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
-               "[get_bd_intf_pins %s/%s/%s]"
-               % (node_name, din_name, node_name, node_name, din_name)
-            )
-            cmd.append(
-               "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
-               "[get_bd_intf_pins %s/%s/%s]"
-               % (node_name, dout_name, node_name, node_name, dout_name)
-            )
-            cmd.append(
-               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
-               % (node_name, rst_name, node_name, node_name, rst_name)
-            )
-            cmd.append(
-               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/%s]"
-               % (node_name, clk_name, node_name, node_name, clk_name)
-            )
+
+            # connect outputs of broadcaster to inputs of blocks
+            for i in range(pe):
+                 cmd.append(
+                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/m_axis_%02d] "
+                       "[get_bd_intf_pins %s/%s_%d/%s]"
+                       % (node_name, i, node_name, node_name, i, din_name)
+                 )
+
+            # connect output of strm to input of splitter
+            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] [get_bd_intf_pins %s/axis_splitter/s_axis]" % (node_name, strm_inst, node_name))
+
+            # connect output of splitter to weight inputs of pes
+            for i in range(pe):
+                cmd.append(
+                    "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter/m_axis_%02d] "
+                    "[get_bd_intf_pins %s/%s_%d/weights_V_V]"
+                    % (node_name, i, node_name, node_name, i)
+                )
+
+            # connect outputs of pes to combiner
+            for i in range(pe):
+                cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/s_axis_%02d]" % (node_name, node_name, i, node_name, i))
+
+            # connect output of combiner to block output
+            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output/m_axis] [get_bd_intf_pins %s/out_V_V]"  % (node_name, node_name)) 
+
+            # connect clock and reset 
+            # pes
+            for i in range(pe):
+                cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
+                   % (node_name, rst_name, node_name, node_name, i, rst_name)
+                )
+                cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
+                   % (node_name, clk_name, node_name, node_name, i, clk_name)
+                )         
             # streamer reset and clock
             cmd.append(
                "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
@@ -890,6 +944,35 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
                "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aclk]"
                % (node_name, clk_name, node_name, strm_inst)
             )
+            # axi infrastructure reset and clock
+            # connect clk and reset - input broadcaster
+            cmd.append(
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_broadcaster_input/aresetn]"
+               % (node_name, rst_name, node_name)
+            )
+            cmd.append(
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_broadcaster_input/aclk]"
+               % (node_name, clk_name, node_name)
+            ) 
+            # connect clk and reset - combiner
+            cmd.append(
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output/aresetn]"
+               % (node_name, rst_name, node_name)
+            )
+            cmd.append(
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output/aclk]"
+               % (node_name, clk_name, node_name)
+            ) 
+            # connect clk and reset - weight_splitter
+            cmd.append(
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aresetn]"
+               % (node_name, rst_name, node_name)
+            )
+            cmd.append(
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aclk]"
+               % (node_name, clk_name, node_name)
+            )
+
             cmd.append("save_bd_design")
         else:
             return super().code_generation_ipi()
