@@ -198,6 +198,18 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
         weight_width = self.get_weightstream_width()
         return roundup_to_integer_multiple(weight_width, 8)
 
+    def get_splitter_weight_output_width_padded(self):
+        weight_width = self.get_weightstream_width()
+        pe = self.get_nodeattr("PE")
+        weight_width_per_pe = (weight_width//pe)
+        return roundup_to_integer_multiple(weight_width_per_pe, 8)
+
+    def get_splitter_input_output_width_padded(self):
+        input_width = self.get_instream_width()
+        pe = self.get_nodeattr("PE")
+        ip_width_per_pe = input_width//pe
+        return roundup_to_integer_multiple(ip_width_per_pe, 8)
+
     def get_folded_input_shape(self):
         k = self.get_nodeattr("Kernel")
         sf = k * k
@@ -633,7 +645,7 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
                           hls::stream<ap_uint<{}>> &out
                          )""".format(
                                  self.onnx_node.name,
-                                 self.get_instream_width(),
+                                 self.get_instream_width()//self.get_nodeattr("PE"),
                                  self.get_weightstream_width()//self.get_nodeattr("PE"),
                                  self.get_outstream_width()//self.get_nodeattr("PE"),
                               )
@@ -817,10 +829,8 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
         if self.get_nodeattr("fine_grained") == True:
             assert (self.get_nodeattr("noActivation")==1), "noActivation must be 1 for fine_grained"
             pe = self.get_nodeattr("PE")
-            neuron_fold = int(self.get_nodeattr("MH") // self.get_nodeattr("PE"))
-            synapse_fold = int(self.get_nodeattr("MW") // self.get_nodeattr("SIMD"))
-            simd = self.get_nodeattr("SIMD")
             # create a hierarchy for this layer, with the same port names
+            node_name = self.onnx_node.name
             clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
             rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
             dout_name = self.get_verilog_top_module_intf_names()["m_axis"][0]
@@ -878,41 +888,44 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
             split_weightstream_width=self.get_weightstream_width()
             split_weightstream_width_padded=roundup_to_integer_multiple(split_weightstream_width, 8)
 
+            split_instream_width = self.get_instream_width()
+            split_instream_width_padded=roundup_to_integer_multiple(split_instream_width, 8)
+
             # instantiate and configure the weight splitter
-            cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter" % (node_name))
-            cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter]" % (split_weightstream_width_padded, split_weightstream_width, self.get_splitter_output_width_padded(), pe, node_name))
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter_weight" % (node_name))
+            cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter_weight]" % (split_weightstream_width_padded, split_weightstream_width, self.get_splitter_weight_output_width_padded(), pe, node_name))
 
 
             # instantiate combiner block and set input parameters
             cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_output" % node_name)
             cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_AXIS_SIGNAL_SET {0x00000003} CONFIG.C_NUM_SI_SLOTS {%d}] [get_bd_cells %s/axis_combiner_output]" % (self.get_outstream_width() // self.get_nodeattr("PE"), pe, node_name)) 
 
-            # instantiate input broadcaster and set number of masters
-            cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_input" % (node_name))
-            cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_NUM_MI_SLOTS {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (self.get_instream_width_padded(), pe, node_name))
+            # instantiate input splitter and set number of masters
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter_input" % (node_name))
+            cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter_input]" % (split_instream_width_padded, split_instream_width, self.get_splitter_input_output_width_padded(), pe, node_name))
 
-            # connect input of block to input of broadcaster
+            # connect input of block to input of ip splitter
             cmd.append(
                   "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
-                  "[get_bd_intf_pins %s/axis_broadcaster_input/s_axis]"
+                  "[get_bd_intf_pins %s/axis_splitter_input/s_axis]"
                   % (node_name, din_name, node_name)
             )
 
-            # connect outputs of broadcaster to inputs of blocks
+            # connect outputs of ip splitter to inputs of blocks
             for i in range(pe):
                  cmd.append(
-                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_input/m_axis_%02d] "
+                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter_input/m_axis_%02d] "
                        "[get_bd_intf_pins %s/%s_%d/%s]"
                        % (node_name, i, node_name, node_name, i, din_name)
                  )
 
             # connect output of strm to input of splitter
-            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] [get_bd_intf_pins %s/axis_splitter/s_axis]" % (node_name, strm_inst, node_name))
+            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] [get_bd_intf_pins %s/axis_splitter_weight/s_axis]" % (node_name, strm_inst, node_name))
 
             # connect output of splitter to weight inputs of pes
             for i in range(pe):
                 cmd.append(
-                    "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter/m_axis_%02d] "
+                    "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter_weight/m_axis_%02d] "
                     "[get_bd_intf_pins %s/%s_%d/weights_V_V]"
                     % (node_name, i, node_name, node_name, i)
                 )
@@ -947,11 +960,11 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
             # axi infrastructure reset and clock
             # connect clk and reset - input broadcaster
             cmd.append(
-               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_broadcaster_input/aresetn]"
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_input/aresetn]"
                % (node_name, rst_name, node_name)
             )
             cmd.append(
-               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_broadcaster_input/aclk]"
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_input/aclk]"
                % (node_name, clk_name, node_name)
             ) 
             # connect clk and reset - combiner
@@ -965,11 +978,11 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
             ) 
             # connect clk and reset - weight_splitter
             cmd.append(
-               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aresetn]"
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_weight/aresetn]"
                % (node_name, rst_name, node_name)
             )
             cmd.append(
-               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter/aclk]"
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_weight/aclk]"
                % (node_name, clk_name, node_name)
             )
 
