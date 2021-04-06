@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_shuffler_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="data_types" />
+            <top_module name="glbl" />
+            <top_module name="tb_shuffler" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="776667fs"></ZoomStartTime>
+      <ZoomEndTime time="998668fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="193"></NameColumnWidth>
+      <ValueColumnWidth column_width="85"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="9" />
+   <wvobject type="array" fp_name="/tb_shuffler/in0">
+      <obj_property name="ElementShortName">in0[31:0]</obj_property>
+      <obj_property name="ObjectShortName">in0[31:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_shuffler/out0">
+      <obj_property name="ElementShortName">out0[31:0]</obj_property>
+      <obj_property name="ObjectShortName">out0[31:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_shuffler/in0[3]">
+      <obj_property name="ElementShortName">[3]</obj_property>
+      <obj_property name="ObjectShortName">[3]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_shuffler/in0[16]">
+      <obj_property name="ElementShortName">[16]</obj_property>
+      <obj_property name="ObjectShortName">[16]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_shuffler/in0[13]">
+      <obj_property name="ElementShortName">[13]</obj_property>
+      <obj_property name="ObjectShortName">[13]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_shuffler/in0[5]">
+      <obj_property name="ElementShortName">[5]</obj_property>
+      <obj_property name="ObjectShortName">[5]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_shuffler/out0[2]">
+      <obj_property name="ElementShortName">[2]</obj_property>
+      <obj_property name="ObjectShortName">[2]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_shuffler/uut/tmp">
+      <obj_property name="ElementShortName">tmp[2:0][4:0]</obj_property>
+      <obj_property name="ObjectShortName">tmp[2:0][4:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/tb_shuffler/uut/tmp[2]">
+         <obj_property name="ElementShortName">[2][4:0]</obj_property>
+         <obj_property name="ObjectShortName">[2][4:0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_shuffler/uut/tmp[1]">
+         <obj_property name="ElementShortName">[1][4:0]</obj_property>
+         <obj_property name="ObjectShortName">[1][4:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_shuffler/uut/tmp[0]">
+         <obj_property name="ElementShortName">[0][4:0]</obj_property>
+         <obj_property name="ObjectShortName">[0][4:0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_shuffler/uut/high_positions">
+      <obj_property name="ElementShortName">high_positions[119:0]</obj_property>
+      <obj_property name="ObjectShortName">high_positions[119:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+</wave_config>
