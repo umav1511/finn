@@ -56,6 +56,59 @@ import textwrap
 # output 0 is the output tensor, shape (.., o_size) = (..., MH)
 # the ... here can be any shape (representing groups of vectors)
 
+def rearrange(input_hex):
+    input_bin = bin(int(str(input_hex), 16))[2:]
+    ones = input_bin.count('1')
+    dummy = (1 << ones) - 1
+    dummy_ones = bin(int(str(dummy), 10))[2:].count('1')
+    assert (ones==dummy_ones)
+    g = open("rearrange.txt", "a")
+    g.write(hex(dummy))
+    g.write("\n")
+    g.close()
+    return (dummy), ones
+
+def ffs(x):
+    """Returns the index, counting from 0, of the
+    least significant set bit in `x`.
+    """
+    xandminusx = (x&-x)
+    return xandminusx ^ x, bin(xandminusx.bit_length()-1)[2:]
+
+ix=0
+def shuffle(weight_val, weight_width):
+    final_str = ""
+    f = open("shuffle.txt", "a")
+    f.write("--------------------------------------------------------------------------------")
+    f.write("ix")
+    f.write("\n")
+    f.write(str(ix))
+    if weight_val == 0:
+         return final_str+"0"
+    while weight_val > 0:
+         weight_val, lsb_pos = ffs(weight_val)
+         #print(lsb_pos)
+         f.write(str(lsb_pos))
+         lsb_pos1=str(lsb_pos)
+         lsb_pos=lsb_pos1.zfill(weight_width)
+         f.write("\n")
+         f.write(str(lsb_pos))
+         #print(lsb_pos)
+         f.write("\n")
+         final_str=lsb_pos+final_str
+        
+         print(final_str)
+         f.write("...............................................................................")
+         f.write("\n")
+         f.write(final_str)
+         f.write("\n")
+         f.write("...............................................................................")
+         f.write("\n")
+
+         f.write("\n")  
+         #print(bin(weight_val))
+    return final_str 
+
 class StreamingFCLayer_Batch(HLSCustomOp):
     """Class that corresponds to finn-hls StreamingFCLayer_Batch function."""
 
@@ -1454,7 +1507,9 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                         % (self.get_nodeattr("ip_vlnv"), node_name, node_name, i)
                      )
                  # WEIGHTS
-
+                 # instantiate input broadcaster and set number of masters
+                 cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_input" % (node_name))
+                 cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_NUM_MI_SLOTS {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (self.get_instream_width_padded(), pe, node_name))
                  # Condition for split wstrms or constant blocks
                  if self.calc_wmem() != 1: 
                     if self.get_weightstream_width() > 40000:
@@ -1531,33 +1586,63 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                            )
 
                  else:
+                    num = self.get_splitter_output_width_padded()
+                    width1 = math.floor(math.log(num, 2))   
+                    width2 = math.ceil(math.log(width1, 2)) 
+
                     dat_file = self.get_nodeattr("code_gen_dir_ipgen") + "/memblock_0.dat" 
                     df = open(dat_file, "r")
+                    g=open("high_positions.txt", "a")
                     for i in range(pe):
                         cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_data_%02d" % (node_name, i))
                         df.seek((pe - 1 - i)*((simd*wp)//4), 0)
-                        weight_val = df.read((simd*wp)//4)
-                        cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_data_%02d]" % (self.get_splitter_output_width_padded(), '0x' + weight_val, node_name, i))
+                        weight_val1 = df.read((simd*wp)//4)
+                        weight_val, number_of_ones = rearrange(weight_val1, )
+                        input_bin = bin(int(str(weight_val1), 16))[2:]
+                        ones = input_bin.count('1')
+                        assert ones==number_of_ones
+                        cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_data_%02d]" % (self.get_splitter_output_width_padded(), weight_val, node_name, i))
                         cmd.append("connect_bd_net [get_bd_pins %s/xlconstant_data_%02d/dout] [get_bd_pins %s/%s_%d/weights_V_V_TDATA]" % (node_name, i, node_name, node_name, i))
 
                         cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_valid_%02d" % (node_name, i))
                         cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_valid_%02d]" % (1, 1, node_name, i))
                         cmd.append("connect_bd_net [get_bd_pins %s/xlconstant_valid_%02d/dout] [get_bd_pins %s/%s_%d/weights_V_V_TVALID]" % (node_name, i, node_name, node_name, i))
+                        #print(weight_val1)
+
+                      
+                        high_positions = shuffle(int(weight_val1,16), width2)
+                        
+                        g.write(str(high_positions))
+                        g.write("\n")
+                        #high_positions=0
+                        cmd.append("create_bd_cell -type ip -vlnv user.org:user:shuffle_verilog:1.0 %s/shuffler_ip_%02d" % (node_name, i))
+                        cmd.append("set_property -dict [list CONFIG.total_length {%d} CONFIG.length_of_ones {%d} CONFIG.digits {%d} CONFIG.high_positions {%s}] [get_bd_cells %s/shuffler_ip_%02d]" % (self.get_instream_width_padded(), number_of_ones, width2, high_positions, node_name, i))
+
+
+                        cmd.append(
+                              "connect_bd_net [get_bd_pins %s/axis_broadcaster_input/m_axis_%02d_tdata] "
+                              "[get_bd_pins %s/shuffler_ip_%02d/in0]"
+                              % (node_name, i, node_name, i)
+                        )
+                        cmd.append(
+                              "connect_bd_net [get_bd_pins %s/shuffler_ip_%02d/out0] "
+                              "[get_bd_pins %s/%s_%d/%s_tdata]"
+                              % (node_name, i, node_name, node_name, i, din_name)
+                        )
                         cmd.append("save_bd_design")
+
                     df.close()
-                    
+                    g.close()
                  # instantiate combiner block and set input parameters
                  cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_output" % node_name)
                  cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_AXIS_SIGNAL_SET {0x00000003} CONFIG.C_NUM_SI_SLOTS {%d}] [get_bd_cells %s/axis_combiner_output]" % (self.get_outstream_width() // self.get_nodeattr("PE"), pe, node_name)) 
                  
                  # INPUTS
                  # instantiate input buffer
-                 cmd.append("create_bd_cell -type ip -vlnv xilinx.com:user:inputbuf:1.0 %s/inputbuf" % (node_name))
+                 cmd.append("create_bd_cell -type ip -vlnv user.org:user:inputbuf:1.0 %s/inputbuf" % (node_name))
                  cmd.append("set_property -dict [list CONFIG.WIDTH {%d} CONFIG.DEPTH {%d} CONFIG.NFOLDS {%d} CONFIG.RAM_STYLE {%s}] [get_bd_cells %s/inputbuf]" % (self.get_instream_width_padded(), synapse_fold, neuron_fold, self.get_nodeattr("ibuf_ram_style"), node_name))
                  
-                 # instantiate input broadcaster and set number of masters
-                 cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_input" % (node_name))
-                 cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_NUM_MI_SLOTS {%s}] [get_bd_cells %s/axis_broadcaster_input]" % (self.get_instream_width_padded(), pe, node_name))
+
 
 
                  # connect input of block to input of buffer
