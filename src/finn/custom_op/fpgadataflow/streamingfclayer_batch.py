@@ -56,58 +56,33 @@ import textwrap
 # output 0 is the output tensor, shape (.., o_size) = (..., MH)
 # the ... here can be any shape (representing groups of vectors)
 
-def rearrange(input_hex):
+def rearrange(input_hex, w_bits, total_bits):
+    print(input_hex)
     input_bin = bin(int(str(input_hex), 16))[2:]
+    print(input_bin)
+    final_str=""
+    high_positions=""
+    sub_part = str(input_bin[-(w_bits*1):])
+    if "1" in sub_part:
+        final_str=sub_part+final_str
+        high_positions="0".zfill(total_bits) + high_positions
+    for i in range(1, total_bits):
+        sub_part=str(input_bin[-((i+1)*w_bits):-(i*w_bits)])
+        print(sub_part)
+        if "1" in sub_part:
+           final_str=sub_part+final_str
+           high_positions=str(bin(i)[2:]).zfill(total_bits) + high_positions
+
+
+    dummy_int = int(final_str, 2)
+    dummy = bin(int(final_str, 2))[2:]
+    dummy_ones = dummy.count('1')
     ones = input_bin.count('1')
-    dummy = (1 << ones) - 1
-    dummy_ones = bin(int(str(dummy), 10))[2:].count('1')
+    #dummy = (1 << ones) - 1
+    #dummy_ones = bin(int(str(dummy), 10))[2:].count('1')
     assert (ones==dummy_ones)
-    g = open("rearrange.txt", "a")
-    g.write(hex(dummy))
-    g.write("\n")
-    g.close()
-    return (dummy), ones
-
-def ffs(x):
-    """Returns the index, counting from 0, of the
-    least significant set bit in `x`.
-    """
-    xandminusx = (x&-x)
-    return xandminusx ^ x, bin(xandminusx.bit_length()-1)[2:]
-
-ix=0
-def shuffle(weight_val, weight_width):
-    final_str = ""
-    f = open("shuffle.txt", "a")
-    f.write("--------------------------------------------------------------------------------")
-    f.write("ix")
-    f.write("\n")
-    f.write(str(ix))
-    if weight_val == 0:
-         return final_str+"0"
-    while weight_val > 0:
-         weight_val, lsb_pos = ffs(weight_val)
-         #print(lsb_pos)
-         f.write(str(lsb_pos))
-         lsb_pos1=str(lsb_pos)
-         lsb_pos=lsb_pos1.zfill(weight_width)
-         f.write("\n")
-         f.write(str(lsb_pos))
-         #print(lsb_pos)
-         f.write("\n")
-         final_str=lsb_pos+final_str
-        
-         print(final_str)
-         f.write("...............................................................................")
-         f.write("\n")
-         f.write(final_str)
-         f.write("\n")
-         f.write("...............................................................................")
-         f.write("\n")
-
-         f.write("\n")  
-         #print(bin(weight_val))
-    return final_str 
+    print(high_positions)
+    return hex(dummy_int), ones, high_positions
 
 class StreamingFCLayer_Batch(HLSCustomOp):
     """Class that corresponds to finn-hls StreamingFCLayer_Batch function."""
@@ -1586,9 +1561,8 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                            )
 
                  else:
-                    num = self.get_splitter_output_width_padded()
-                    width1 = math.floor(math.log(num, 2))   
-                    width2 = math.ceil(math.log(width1, 2)) 
+                    width1 = math.floor(math.log(simd, 2))   
+
 
                     dat_file = self.get_nodeattr("code_gen_dir_ipgen") + "/memblock_0.dat" 
                     df = open(dat_file, "r")
@@ -1597,7 +1571,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                         cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_data_%02d" % (node_name, i))
                         df.seek((pe - 1 - i)*((simd*wp)//4), 0)
                         weight_val1 = df.read((simd*wp)//4)
-                        weight_val, number_of_ones = rearrange(weight_val1, )
+                        weight_val, number_of_ones, high_positions = rearrange(weight_val1, self.get_weight_datatype().bitwidth(), simd)
                         input_bin = bin(int(str(weight_val1), 16))[2:]
                         ones = input_bin.count('1')
                         assert ones==number_of_ones
@@ -1610,13 +1584,13 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                         #print(weight_val1)
 
                       
-                        high_positions = shuffle(int(weight_val1,16), width2)
+                        #high_positions = shuffle(int(weight_val1,16), width1)
                         
-                        g.write(str(high_positions))
+                        #g.write(str(high_positions))
                         g.write("\n")
                         #high_positions=0
                         cmd.append("create_bd_cell -type ip -vlnv user.org:user:shuffle_verilog:1.0 %s/shuffler_ip_%02d" % (node_name, i))
-                        cmd.append("set_property -dict [list CONFIG.total_length {%d} CONFIG.length_of_ones {%d} CONFIG.digits {%d} CONFIG.high_positions {%s}] [get_bd_cells %s/shuffler_ip_%02d]" % (self.get_instream_width_padded(), number_of_ones, width2, high_positions, node_name, i))
+                        cmd.append("set_property -dict [list CONFIG.total_length {%d} CONFIG.length_of_ones {%d} CONFIG.digits {%d} CONFIG.high_positions {%s} CONFIG.a_width {%d}] [get_bd_cells %s/shuffler_ip_%02d]" % (self.get_instream_width_padded(), number_of_ones, width1, high_positions, self.get_input_datatype().bitwidth(), node_name, i))
 
 
                         cmd.append(
