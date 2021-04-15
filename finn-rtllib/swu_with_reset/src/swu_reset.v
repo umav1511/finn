@@ -37,16 +37,16 @@ module swu_complete_raster_reset
 	parameter OFMHeight = 5,
 
 	//depths per stream
-	parameter IP_PRECISION = 4,
+	parameter IP_PRECISION = 8,
 	parameter MMV = 1
 )
 (
 input clk,
 input resetn,
-input [SIMD * IP_PRECISION - 1 : 0] ip_data,
+input [SIMD * IP_PRECISION - 1 : 0] ip_axis_tdata,
 input ip_axis_tvalid,
 output ip_axis_tready,
-output [MMV * SIMD * IP_PRECISION - 1 : 0] op_data,
+output [MMV * SIMD * IP_PRECISION - 1 : 0] op_axis_tdata,
 input op_axis_tready,
 output op_axis_tvalid
     );
@@ -73,7 +73,7 @@ localparam EFF_CHANNELS = IFMChannels/SIMD;
  reg [$clog2(IFMHeight * IFMWidth) - 1 : 0] input_pixel= 0;
  reg [$clog2(EFF_CHANNELS) - 1 : 0] channel_tracker;
  
- assign op_data = rdatab;  
+ assign op_axis_tdata = rdatab;  
 (* ram_style = RAM_STYLE *) reg [SIMD*IP_PRECISION-1:0] mem[BUFFER_SIZE - 1:0];  
 //((kh==0)&&(kw==PADDING_WIDTH)&&(ofm_column_tracker==PADDING_WIDTH)) ||
 
@@ -105,7 +105,7 @@ always @(posedge clk) begin
     end else begin      
     if(ip_axis_tready & ip_axis_tvalid) begin
       if ((input_pixel * BUFFER_SIZE + counter) < (IFMHeight * IFMWidth * EFF_CHANNELS)) begin
-        mem[counter] <= ip_data;
+        mem[counter] <= ip_axis_tdata;
         //counter <= counter + 1;
         if (counter < BUFFER_SIZE - 1) begin
            counter <=counter + 1;
@@ -133,11 +133,11 @@ end
 // (ofm_column_tracker != 0) && (ofm_column_tracker != OFMWidth-1)
 
 always @(posedge clk) begin
-   if (~resetn) begin
+   if (buffer_full & op_axis_tready && (channel_tracker == EFF_CHANNELS - 1)) begin
+     if (~resetn) begin
       kw <= 0;
       kh <= 0;
-   end else begin
-   if (buffer_full & op_axis_tready && (channel_tracker == EFF_CHANNELS - 1)) begin
+     end else begin
       if ((kw < KERNEL_WIDTH - 1)) begin
          kw <= kw + 1;
       end else if (kw == KERNEL_WIDTH - 1) begin
