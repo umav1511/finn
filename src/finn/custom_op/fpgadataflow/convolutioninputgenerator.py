@@ -480,3 +480,64 @@ class ConvolutionInputGenerator(HLSCustomOp):
         self.code_gen_dict["$PRAGMAS$"].append(
             "#pragma HLS INTERFACE ap_ctrl_none port=return"
         )
+
+    def code_generation_ipi(self):
+         
+        if self.onnx_node.name == "ConvolutionInputGenerator_4":
+            node_name = self.onnx_node.name
+            cmd = []
+            # create a hierarchy for this layer, with the same port names
+            clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
+            rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
+            dout_name = self.get_verilog_top_module_intf_names()["m_axis"][0]
+            din_name = self.get_verilog_top_module_intf_names()["s_axis"][0]
+            cmd.append("create_bd_cell -type hier %s" % node_name)
+            cmd.append("create_bd_pin -dir I -type clk /%s/%s" % (node_name, clk_name))
+            cmd.append("create_bd_pin -dir I -type rst /%s/%s" % (node_name, rst_name))
+            cmd.append(
+                "create_bd_intf_pin -mode Master "
+                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s"
+                % (node_name, dout_name)
+            )
+            cmd.append(
+                "create_bd_intf_pin -mode Slave "
+                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s" % (node_name, din_name)
+            )
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:swu_complete_raster_reset:1.0 %s/swu" % (node_name))
+            padding_height = (self.get_nodeattr("OFMDim") - (self.get_nodeattr("IFMDim") - 2))//2
+            padding_width = padding_height
+            cmd.append("set_property -dict [list CONFIG.SIMD {%d} \
+                                                 CONFIG.STRIDE {%d} \
+                                                 CONFIG.IFMChannels {%d} \
+                                                 CONFIG.KERNEL_HEIGHT {%d} \
+                                                 CONFIG.KERNEL_WIDTH {%d} \
+                                                 CONFIG.IFMWidth {%d} \
+                                                 CONFIG.IFMHeight {%d} \
+                                                 CONFIG.PADDING_WIDTH {%d} \
+                                                 CONFIG.PADDING_HEIGHT {%d} \
+                                                 CONFIG.OFMWidth {%d} \
+                                                 CONFIG.OFMHeight {%d} \
+                                                 CONFIG.IP_PRECISION {%d}\
+                                                 CONFIG.MMV {%d}] [get_bd_cells %s/swu]" % (self.get_nodeattr("SIMD"),
+                                                                                            self.get_nodeattr("STRIDE"),
+                                                                                            self.get_nodeattr("IFMChannels"),
+                                                                                            self.get_nodeattr("ConvKernelDim"),
+                                                                                            self.get_nodeattr("ConvKernelDim"),
+                                                                                            self.get_nodeattr("IFMDim"),
+                                                                                            self.get_nodeattr("IFMDim"),
+                                                                                            padding_width,
+                                                                                            padding_height,
+                                                                                            self.get_nodeattr("OFMDim"),
+                                                                                            self.get_nodeattr("OFMDim"),
+                                                                                            self.get_input_datatype().bitwidth(),
+                                                                                            1
+                                                                                           )
+                      )
+            cmd.append("connect_bd_net [get_bd_nets %s/%s] [get_bd_nets %s/swu/clk]" % (node_name, clk_name, node_name))
+            cmd.append("connect_bd_net [get_bd_nets %s/%s] [get_bd_nets %s/swu/resetn]" % (node_name, rst_name, node_name))
+            cmd.append("connect_bd_net [get_bd_nets %s/%s] [get_bd_nets %s/swu/ip_axis]" % (node_name, din_name, node_name))
+            cmd.append("connect_bd_net [get_bd_nets %s/%s] [get_bd_nets %s/swu/op_axis]" % (node_name, dout_name, node_name))
+            cmd.append("save_bd_design")
+            return cmd
+        else :
+           return super().code_generation_ipi()
