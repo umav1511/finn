@@ -56,17 +56,19 @@ import textwrap
 # output 0 is the output tensor, shape (.., o_size) = (..., MH)
 # the ... here can be any shape (representing groups of vectors)
 
-def rearrange(input_hex, w_bits, total_bits):
+def rearrange(input_hex, w_bits, total_bits, simd):
     print(input_hex)
     input_bin = bin(int(str(input_hex), 16))[2:]
     print(input_bin)
     final_str=""
     high_positions=""
+    if input_bin=='0':
+        return 0, 0, "0"
     sub_part = str(input_bin[-(w_bits*1):])
     if "1" in sub_part:
         final_str=sub_part+final_str
         high_positions="0".zfill(total_bits) + high_positions
-    for i in range(1, total_bits):
+    for i in range(1, simd):
         sub_part=str(input_bin[-((i+1)*w_bits):-(i*w_bits)])
         print(sub_part)
         if "1" in sub_part:
@@ -80,9 +82,9 @@ def rearrange(input_hex, w_bits, total_bits):
     ones = input_bin.count('1')
     #dummy = (1 << ones) - 1
     #dummy_ones = bin(int(str(dummy), 10))[2:].count('1')
-    assert (ones==dummy_ones)
+    assert (ones==dummy_ones), ("%d %d %s %s" % (ones, dummy_ones, final_str,  input_bin))
     print(high_positions)
-    return hex(dummy_int), ones, high_positions
+    return (dummy_int), ones, high_positions
 
 class StreamingFCLayer_Batch(HLSCustomOp):
     """Class that corresponds to finn-hls StreamingFCLayer_Batch function."""
@@ -1561,7 +1563,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                            )
 
                  else:
-                    width1 = math.floor(math.log(simd, 2))   
+                    width1 = math.ceil(math.log(simd, 2))   
 
 
                     dat_file = self.get_nodeattr("code_gen_dir_ipgen") + "/memblock_0.dat" 
@@ -1571,7 +1573,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                         cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_data_%02d" % (node_name, i))
                         df.seek((pe - 1 - i)*((simd*wp)//4), 0)
                         weight_val1 = df.read((simd*wp)//4)
-                        weight_val, number_of_ones, high_positions = rearrange(weight_val1, self.get_weight_datatype().bitwidth(), simd)
+                        weight_val, number_of_ones, high_positions = rearrange(weight_val1, self.get_weight_datatype().bitwidth(), width1, simd)
                         input_bin = bin(int(str(weight_val1), 16))[2:]
                         ones = input_bin.count('1')
                         assert ones==number_of_ones
@@ -1589,20 +1591,20 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                         #g.write(str(high_positions))
                         g.write("\n")
                         #high_positions=0
-                        cmd.append("create_bd_cell -type ip -vlnv user.org:user:shuffle_verilog:1.0 %s/shuffler_ip_%02d" % (node_name, i))
-                        cmd.append("set_property -dict [list CONFIG.total_length {%d} CONFIG.length_of_ones {%d} CONFIG.digits {%d} CONFIG.high_positions {%s} CONFIG.a_width {%d}] [get_bd_cells %s/shuffler_ip_%02d]" % (self.get_instream_width_padded(), number_of_ones, width1, high_positions, self.get_input_datatype().bitwidth(), node_name, i))
+                        #cmd.append("create_bd_cell -type ip -vlnv user.org:user:shuffle_verilog:1.0 %s/shuffler_ip_%02d" % (node_name, i))
+                        #cmd.append("set_property -dict [list CONFIG.total_length {%d} CONFIG.length_of_ones {%d} CONFIG.digits {%d} CONFIG.high_positions {%s} CONFIG.a_width {%d}] [get_bd_cells %s/shuffler_ip_%02d]" % (self.get_instream_width_padded(), number_of_ones, width1, high_positions, self.get_input_datatype().bitwidth(), node_name, i))
 
 
-                        cmd.append(
-                              "connect_bd_net [get_bd_pins %s/axis_broadcaster_input/m_axis_%02d_tdata] "
-                              "[get_bd_pins %s/shuffler_ip_%02d/in0]"
-                              % (node_name, i, node_name, i)
-                        )
-                        cmd.append(
-                              "connect_bd_net [get_bd_pins %s/shuffler_ip_%02d/out0] "
-                              "[get_bd_pins %s/%s_%d/%s_tdata]"
-                              % (node_name, i, node_name, node_name, i, din_name)
-                        )
+                        #cmd.append(
+                        #      "connect_bd_net [get_bd_pins %s/axis_broadcaster_input/m_axis_%02d_tdata] "
+                        #      "[get_bd_pins %s/shuffler_ip_%02d/in0]"
+                        #      % (node_name, i, node_name, i)
+                        #)
+                        #cmd.append(
+                        #      "connect_bd_net [get_bd_pins %s/shuffler_ip_%02d/out0] "
+                        #      "[get_bd_pins %s/%s_%d/%s_tdata]"
+                        #      % (node_name, i, node_name, node_name, i, din_name)
+                        #)
                         cmd.append("save_bd_design")
 
                     df.close()
