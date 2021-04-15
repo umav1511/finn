@@ -519,7 +519,7 @@ class ConvolutionInputGenerator(HLSCustomOp):
                                                  CONFIG.OFMHeight {%d} \
                                                  CONFIG.IP_PRECISION {%d}\
                                                  CONFIG.MMV {%d}] [get_bd_cells %s/swu]" % (self.get_nodeattr("SIMD"),
-                                                                                            self.get_nodeattr("STRIDE"),
+                                                                                            self.get_nodeattr("Stride"),
                                                                                             self.get_nodeattr("IFMChannels"),
                                                                                             self.get_nodeattr("ConvKernelDim"),
                                                                                             self.get_nodeattr("ConvKernelDim"),
@@ -530,13 +530,14 @@ class ConvolutionInputGenerator(HLSCustomOp):
                                                                                             self.get_nodeattr("OFMDim"),
                                                                                             self.get_nodeattr("OFMDim"),
                                                                                             self.get_input_datatype().bitwidth(),
-                                                                                            1
+                                                                                            1,
+                                                                                            node_name
                                                                                            )
                       )
-            cmd.append("connect_bd_net [get_bd_nets %s/%s] [get_bd_nets %s/swu/clk]" % (node_name, clk_name, node_name))
-            cmd.append("connect_bd_net [get_bd_nets %s/%s] [get_bd_nets %s/swu/resetn]" % (node_name, rst_name, node_name))
-            cmd.append("connect_bd_net [get_bd_nets %s/%s] [get_bd_nets %s/swu/ip_axis]" % (node_name, din_name, node_name))
-            cmd.append("connect_bd_net [get_bd_nets %s/%s] [get_bd_nets %s/swu/op_axis]" % (node_name, dout_name, node_name))
+            cmd.append("connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/swu/clk]" % (node_name, clk_name, node_name))
+            cmd.append("connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/swu/resetn]" % (node_name, rst_name, node_name))
+            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s] [get_bd_intf_pins %s/swu/ip_axis]" % (node_name, din_name, node_name))
+            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s] [get_bd_intf_pins %s/swu/op_axis]" % (node_name, dout_name, node_name))
             cmd.append("save_bd_design")
             return cmd
         else :
