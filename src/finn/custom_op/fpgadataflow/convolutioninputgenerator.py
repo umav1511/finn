@@ -82,6 +82,7 @@ class ConvolutionInputGenerator(HLSCustomOp):
                 "distributed",
                 {"auto", "block", "distributed", "ultra"},
             ),
+            "MMV" : ("i", False, 1),
         }
         my_attrs.update(super().get_nodeattr_types())
         return my_attrs
@@ -176,6 +177,10 @@ class ConvolutionInputGenerator(HLSCustomOp):
         """Returns stream width, input and output stream width are equal for
         the sliding window function, so the function to determine the input
         stream width can be reused."""
+        mmv = self.get_nodeattr("MMV")
+        if mmv > 1:
+           return self.get_instream_width() * mmv
+           
         return self.get_instream_width()
 
     def get_number_output_values(self):
@@ -357,7 +362,9 @@ class ConvolutionInputGenerator(HLSCustomOp):
         shape doesn't match expected shape (1, ofm_dim, ofm_dim, k*k*ifm_ch)."""
 
     def global_includes(self):
-        self.code_gen_dict["$GLOBALS$"] = ['#include "slidingwindow.h"']
+        self.code_gen_dict["$GLOBALS$"] = ['#include "slidingwindow.h"\n']
+        if self.get_nodeattr("MMV") > 1:
+             self.code_gen_dict["$GLOBALS$"].append('#include "streamtools.h"\n')
 
     def defines(self, var):
         numReps = 1
@@ -365,7 +372,7 @@ class ConvolutionInputGenerator(HLSCustomOp):
             """#define ConvKernelDim1 {}\n #define IFMChannels1 {}\n
             #define Input_precision1 {}\n #define IFMDim1 {}\n
             #define OFMDim1 {}\n #define SIMD1 {}\n
-            #define Stride1 {}\n #define numReps {}""".format(
+            #define Stride1 {}\n #define numReps {} \n #define MMV1 {}\n""".format(
                 self.get_nodeattr("ConvKernelDim"),
                 self.get_nodeattr("IFMChannels"),
                 self.get_input_datatype().bitwidth(),
@@ -374,8 +381,10 @@ class ConvolutionInputGenerator(HLSCustomOp):
                 self.get_nodeattr("SIMD"),
                 self.get_nodeattr("Stride"),
                 numReps,
+                self.get_nodeattr("MMV"),
             )
         ]
+     
 
     def read_npy_data(self):
         code_gen_dir = self.get_nodeattr("code_gen_dir_cppsim")
@@ -420,21 +429,49 @@ class ConvolutionInputGenerator(HLSCustomOp):
         stride = self.get_nodeattr("Stride")
         if k % stride != 0:
             hls_call += "_kernel_stride"
-
-        if self.get_nodeattr("depthwise") == 1:
-            self.code_gen_dict["$DOCOMPUTE$"] = [
-                """{}_dws<ConvKernelDim1, IFMChannels1, Input_precision1, IFMDim1,
+        if self.get_nodeattr("MMV") == 1:
+           if self.get_nodeattr("depthwise") == 1:
+              self.code_gen_dict["$DOCOMPUTE$"] = [
+                   """{}_dws<ConvKernelDim1, IFMChannels1, Input_precision1, IFMDim1,
+                       OFMDim1, SIMD1, Stride1> (in0, out, numReps, {});""".format(
+                       hls_call, hls_ram_style
+                   )
+               ]
+           else:
+              self.code_gen_dict["$DOCOMPUTE$"] = [
+                 """{}<ConvKernelDim1, IFMChannels1, Input_precision1, IFMDim1,
                     OFMDim1, SIMD1, Stride1> (in0, out, numReps, {});""".format(
                     hls_call, hls_ram_style
-                )
-            ]
+                 )
+              ]
         else:
-            self.code_gen_dict["$DOCOMPUTE$"] = [
-                """{}<ConvKernelDim1, IFMChannels1, Input_precision1, IFMDim1,
-                    OFMDim1, SIMD1, Stride1> (in0, out, numReps, {});""".format(
+           if self.get_nodeattr("depthwise") == 1:
+              self.code_gen_dict["$DOCOMPUTE$"] = [
+                   """{}_dws_MMV<ConvKernelDim1, IFMChannels1, Input_precision1, IFMDim1,
+                       OFMDim1, SIMD1, Stride1,MMV1> (in0, out0, numReps, {});""".format(
+                       hls_call, hls_ram_style
+                   )
+               ]
+
+              self.code_gen_dict["$DOCOMPUTE$"].append( 
+                   "FlattenMultiChanData<MMV1, SIMD1*Input_precision1> (out0, out, numReps);".format(
+                       hls_call, hls_ram_style
+                   )
+              )
+               
+           else:
+              self.code_gen_dict["$DOCOMPUTE$"] = [
+                 """{}_MMV<ConvKernelDim1, IFMChannels1, Input_precision1, IFMDim1,
+                    OFMDim1, SIMD1, Stride1, MMV1> (in0, out0, numReps, {});""".format(
                     hls_call, hls_ram_style
-                )
-            ]
+                 )
+              ]
+              self.code_gen_dict["$DOCOMPUTE$"].append(
+                 """FlattenMultiChanData <MMV1, SIMD1*Input_precision1> (out0, out, numReps);""".format(
+                    hls_call, hls_ram_style
+                 )
+              )
+        
 
     def dataoutstrm(self):
         code_gen_dir = self.get_nodeattr("code_gen_dir_cppsim")
@@ -467,12 +504,20 @@ class ConvolutionInputGenerator(HLSCustomOp):
         self.code_gen_dict["$SAVEASCNPY$"] = []
 
     def blackboxfunction(self):
-        self.code_gen_dict["$BLACKBOXFUNCTION$"] = [
+        if self.get_nodeattr("MMV") == 1:
+          self.code_gen_dict["$BLACKBOXFUNCTION$"] = [
             """void {}(hls::stream<ap_uint<SIMD1*Input_precision1>> &in0,
                 hls::stream<ap_uint<SIMD1*Input_precision1>> &out)""".format(
                 self.onnx_node.name
             )
-        ]
+          ]
+        else:
+          self.code_gen_dict["$BLACKBOXFUNCTION$"] = [
+            """void {}(hls::stream<ap_uint<SIMD1*Input_precision1>> &in0,
+                hls::stream<ap_uint<MMV1*SIMD1*Input_precision1>> &out)""".format(
+                self.onnx_node.name
+            )
+          ]          
 
     def pragmas(self):
         self.code_gen_dict["$PRAGMAS$"] = ["#pragma HLS INTERFACE axis port=in0"]
@@ -480,65 +525,6 @@ class ConvolutionInputGenerator(HLSCustomOp):
         self.code_gen_dict["$PRAGMAS$"].append(
             "#pragma HLS INTERFACE ap_ctrl_none port=return"
         )
-
-    def code_generation_ipi(self):
-         
-        if self.onnx_node.name == "ConvolutionInputGenerator_4":
-            node_name = self.onnx_node.name
-            cmd = []
-            # create a hierarchy for this layer, with the same port names
-            clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
-            rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
-            dout_name = self.get_verilog_top_module_intf_names()["m_axis"][0]
-            din_name = self.get_verilog_top_module_intf_names()["s_axis"][0]
-            cmd.append("create_bd_cell -type hier %s" % node_name)
-            cmd.append("create_bd_pin -dir I -type clk /%s/%s" % (node_name, clk_name))
-            cmd.append("create_bd_pin -dir I -type rst /%s/%s" % (node_name, rst_name))
-            cmd.append(
-                "create_bd_intf_pin -mode Master "
-                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s"
-                % (node_name, dout_name)
-            )
-            cmd.append(
-                "create_bd_intf_pin -mode Slave "
-                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s" % (node_name, din_name)
-            )
-            cmd.append("create_bd_cell -type ip -vlnv user.org:user:swu_complete_raster_reset:1.0 %s/swu" % (node_name))
-            padding_height = (self.get_nodeattr("OFMDim") - (self.get_nodeattr("IFMDim") - 2))//2
-            padding_width = padding_height
-            cmd.append("set_property -dict [list CONFIG.SIMD {%d} \
-                                                 CONFIG.STRIDE {%d} \
-                                                 CONFIG.IFMChannels {%d} \
-                                                 CONFIG.KERNEL_HEIGHT {%d} \
-                                                 CONFIG.KERNEL_WIDTH {%d} \
-                                                 CONFIG.IFMWidth {%d} \
-                                                 CONFIG.IFMHeight {%d} \
-                                                 CONFIG.PADDING_WIDTH {%d} \
-                                                 CONFIG.PADDING_HEIGHT {%d} \
-                                                 CONFIG.OFMWidth {%d} \
-                                                 CONFIG.OFMHeight {%d} \
-                                                 CONFIG.IP_PRECISION {%d}\
-                                                 CONFIG.MMV {%d}] [get_bd_cells %s/swu]" % (self.get_nodeattr("SIMD"),
-                                                                                            self.get_nodeattr("Stride"),
-                                                                                            self.get_nodeattr("IFMChannels"),
-                                                                                            self.get_nodeattr("ConvKernelDim"),
-                                                                                            self.get_nodeattr("ConvKernelDim"),
-                                                                                            self.get_nodeattr("IFMDim"),
-                                                                                            self.get_nodeattr("IFMDim"),
-                                                                                            padding_width,
-                                                                                            padding_height,
-                                                                                            self.get_nodeattr("OFMDim"),
-                                                                                            self.get_nodeattr("OFMDim"),
-                                                                                            self.get_input_datatype().bitwidth(),
-                                                                                            1,
-                                                                                            node_name
-                                                                                           )
-                      )
-            cmd.append("connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/swu/clk]" % (node_name, clk_name, node_name))
-            cmd.append("connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/swu/resetn]" % (node_name, rst_name, node_name))
-            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s] [get_bd_intf_pins %s/swu/ip_axis]" % (node_name, din_name, node_name))
-            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s] [get_bd_intf_pins %s/swu/op_axis]" % (node_name, dout_name, node_name))
-            cmd.append("save_bd_design")
-            return cmd
-        else :
-           return super().code_generation_ipi()
+        self.code_gen_dict["$PRAGMAS$"].append("#pragma HLS DATAFLOW")
+        if self.get_nodeattr("MMV") > 1:
+           self.code_gen_dict["$PRAGMAS$"].append("hls::stream <MultiChanData<MMV1, SIMD1*Input_precision1> > out0;")

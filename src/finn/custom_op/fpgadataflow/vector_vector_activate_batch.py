@@ -47,6 +47,7 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
                 {"auto", "block", "distributed", "ultra"},
             ),
             "fine_grained" : ("i", False, 0, {0, 1}),
+            "MMV" : ("i", False, 1),
         }
         my_attrs.update(super().get_nodeattr_types())
         return my_attrs

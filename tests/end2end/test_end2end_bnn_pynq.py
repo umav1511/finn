@@ -472,11 +472,14 @@ class TestEnd2End:
     def test_ipgen(self, topology, wbits, abits, kind):
         if kind == "alveo" and ("VITIS_PATH" not in os.environ):
             pytest.skip("VITIS_PATH not set")
-        prev_chkpt_name = get_checkpoint_name(topology, wbits, abits, "fold")
+        #prev_chkpt_name = get_checkpoint_name(topology, wbits, abits, "fold")
+        prev_chkpt_name = "new_mmv_config.onnx"
+        #prev_chkpt_name = "prepare_ip.onnx"
         model = load_test_checkpoint_or_skip(prev_chkpt_name)
         test_fpga_part = get_build_env(kind, target_clk_ns)["part"]
         model = model.transform(GiveUniqueNodeNames())
         model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
+        model.save("prepare_ip.onnx")
         model = model.transform(HLSSynthIP())
         model.save(get_checkpoint_name(topology, wbits, abits, "ipgen_" + kind))
 
@@ -505,18 +508,22 @@ class TestEnd2End:
         prev_chkpt_name = get_checkpoint_name(
             topology, wbits, abits, "ipgen_" + kind
         )
-        model = load_test_checkpoint_or_skip(prev_chkpt_name)
+        #model = load_test_checkpoint_or_skip(prev_chkpt_name)
+        model = load_test_checkpoint_or_skip("synth_stitch.onnx")
         test_fpga_part = get_build_env(kind, target_clk_ns)["part"]
-        model = model.transform(InsertDWC())
-        model = model.transform(GiveUniqueNodeNames())
-        model = model.transform(AnnotateCycles())
-        perf = model.analysis(dataflow_performance)
-        latency = perf["critical_path_cycles"]
-        #rtlsim only supports impl_style=rtl for StreamingFIFO, ensure that
-        for fifo_layer in model.get_nodes_by_op_type("StreamingFIFO"):
-            getCustomOp(fifo_layer).set_nodeattr("impl_style", "rtl")
-        model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
-        model = model.transform(HLSSynthIP())
+        #model = model.transform(InsertDWC())           
+        #model = model.transform(GiveUniqueNodeNames())
+        #model = model.transform(AnnotateCycles())
+        #perf = model.analysis(dataflow_performance)
+        #model.save("dwc.onnx")
+        #latency = perf["critical_path_cycles"]
+        ##rtlsim only supports impl_style=rtl for StreamingFIFO, ensure that
+        #for fifo_layer in model.get_nodes_by_op_type("StreamingFIFO"):
+        #    getCustomOp(fifo_layer).set_nodeattr("impl_style", "rtl")
+        #model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
+        #model.save("prep_stitch.onnx")
+        #model = model.transform(HLSSynthIP())
+        #model.save("synth_stitch.onnx")
         model = model.transform(CreateStitchedIP(test_fpga_part, target_clk_ns))
 
         #model = model.transform(PrepareRTLSim())
