@@ -368,11 +368,12 @@ class ConvolutionInputGenerator(HLSCustomOp):
 
     def defines(self, var):
         numReps = 1
+        numReps_flatten = (self.get_nodeattr("OFMDim") * self.get_nodeattr("OFMDim") * self.get_nodeattr("ConvKernelDim") * self.get_nodeattr("ConvKernelDim") * (self.get_nodeattr("IFMChannels")//self.get_nodeattr("SIMD")))//self.get_nodeattr("MMV")
         self.code_gen_dict["$DEFINES$"] = [
             """#define ConvKernelDim1 {}\n #define IFMChannels1 {}\n
             #define Input_precision1 {}\n #define IFMDim1 {}\n
             #define OFMDim1 {}\n #define SIMD1 {}\n
-            #define Stride1 {}\n #define numReps {} \n #define MMV1 {}\n""".format(
+            #define Stride1 {}\n #define numReps {} \n #define numReps_flatten {} \n #define MMV1 {}\n""".format(
                 self.get_nodeattr("ConvKernelDim"),
                 self.get_nodeattr("IFMChannels"),
                 self.get_input_datatype().bitwidth(),
@@ -381,6 +382,7 @@ class ConvolutionInputGenerator(HLSCustomOp):
                 self.get_nodeattr("SIMD"),
                 self.get_nodeattr("Stride"),
                 numReps,
+                numReps_flatten,
                 self.get_nodeattr("MMV"),
             )
         ]
@@ -454,7 +456,7 @@ class ConvolutionInputGenerator(HLSCustomOp):
                ]
 
               self.code_gen_dict["$DOCOMPUTE$"].append( 
-                   "FlattenMultiChanData<MMV1, SIMD1*Input_precision1> (out0, out, numReps);".format(
+                   "FlattenMultiChanData<MMV1, SIMD1*Input_precision1> (out0, out, numReps_flatten);".format(
                        hls_call, hls_ram_style
                    )
               )
@@ -467,7 +469,7 @@ class ConvolutionInputGenerator(HLSCustomOp):
                  )
               ]
               self.code_gen_dict["$DOCOMPUTE$"].append(
-                 """FlattenMultiChanData <MMV1, SIMD1*Input_precision1> (out0, out, numReps);""".format(
+                 """FlattenMultiChanData <MMV1, SIMD1*Input_precision1> (out0, out, numReps_flatten);""".format(
                     hls_call, hls_ram_style
                  )
               )
