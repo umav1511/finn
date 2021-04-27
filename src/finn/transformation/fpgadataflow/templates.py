@@ -213,7 +213,7 @@ validate_bd_design
 
 set_property SYNTH_CHECKPOINT_MODE "Hierarchical" [ get_files top.bd ]
 make_wrapper -files [get_files top.bd] -import -fileset sources_1 -top
-set_param general.maxThreads 1
+#set_param general.maxThreads 1
 #set_property strategy Flow_PerfOptimized_high [get_runs synth_1]
 #set_property STEPS.SYNTH_DESIGN.ARGS.DIRECTIVE AlternateRoutability [get_runs synth_1]
 set_property STEPS.SYNTH_DESIGN.ARGS.RETIMING true [get_runs synth_1]

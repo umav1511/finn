@@ -186,8 +186,10 @@ class CreateStitchedIP(Transformation):
         # add RTL streamer IP
         ip_dirs.append("/workspace/finn/finn-rtllib/memstream")
         ip_dirs.append("/workspace/finn/finn-rtllib/input_buf2")
-        ip_dirs.append("/workspace/finn/finn-rtllib/broadcast")
-        ip_dirs.append("/workspace/finn/finn-rtllib/splitter")
+        #ip_dirs.append("/workspace/finn/finn-rtllib/broadcast")
+        #ip_dirs.append("/workspace/finn/finn-rtllib/splitter")
+        ip_dirs.append("/workspace/finn/finn-rtllib/new_ips_renamed/new_ips_renamed/new_ip_sim_broadcast")
+        ip_dirs.append("/workspace/finn/finn-rtllib/new_ips_renamed/new_ips_renamed/new_ip_sim_split")
         ip_dirs.append("/workspace/finn/finn-rtllib/combiner2")
         ip_dirs.append("/workspace/finn/finn-rtllib/const_reg10")
         ip_dirs.append("/workspace/finn/finn-rtllib/swu_with_reset")
