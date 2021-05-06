@@ -36,7 +36,9 @@ from finn.custom_op.fpgadataflow.hlscustomop import HLSCustomOp
 from finn.custom_op.general.im2col import compute_conv_output_dim
 from onnx import TensorProto, helper
 from finn.util.data_packing import npy_to_rtlsim_input, rtlsim_output_to_npy
-
+from finn.util.basic import (
+    roundup_to_integer_multiple,
+)
 # ONNX i/o tensor shape assumptions for ConvolutionInputGenerator:
 # input 0 is the input tensor, shape NHWC = (1, IFMDim, IFMDim, IFMChannels)
 # output 0 is the output tensor, shape NHWC:
@@ -82,7 +84,8 @@ class ConvolutionInputGenerator(HLSCustomOp):
                 "distributed",
                 {"auto", "block", "distributed", "ultra"},
             ),
-            "MMV" : ("i", False, 1),
+            "MMVO" : ("i", False, 1),
+            "MMVI" : ("i", False, 1),
         }
         my_attrs.update(super().get_nodeattr_types())
         return my_attrs
@@ -177,7 +180,7 @@ class ConvolutionInputGenerator(HLSCustomOp):
         """Returns stream width, input and output stream width are equal for
         the sliding window function, so the function to determine the input
         stream width can be reused."""
-        mmv = self.get_nodeattr("MMV")
+        mmv = self.get_nodeattr("MMVO")
         if mmv > 1:
            return self.get_instream_width() * mmv
            
@@ -363,12 +366,12 @@ class ConvolutionInputGenerator(HLSCustomOp):
 
     def global_includes(self):
         self.code_gen_dict["$GLOBALS$"] = ['#include "slidingwindow.h"\n']
-        if self.get_nodeattr("MMV") > 1:
+        if self.get_nodeattr("MMVO") > 1:
              self.code_gen_dict["$GLOBALS$"].append('#include "streamtools.h"\n')
 
     def defines(self, var):
         numReps = 1
-        numReps_flatten = (self.get_nodeattr("OFMDim") * self.get_nodeattr("OFMDim") * self.get_nodeattr("ConvKernelDim") * self.get_nodeattr("ConvKernelDim") * (self.get_nodeattr("IFMChannels")//self.get_nodeattr("SIMD")))//self.get_nodeattr("MMV")
+        numReps_flatten = (self.get_nodeattr("OFMDim") * self.get_nodeattr("OFMDim") * self.get_nodeattr("ConvKernelDim") * self.get_nodeattr("ConvKernelDim") * (self.get_nodeattr("IFMChannels")//self.get_nodeattr("SIMD")))//self.get_nodeattr("MMVO")
         self.code_gen_dict["$DEFINES$"] = [
             """#define ConvKernelDim1 {}\n #define IFMChannels1 {}\n
             #define Input_precision1 {}\n #define IFMDim1 {}\n
@@ -383,7 +386,7 @@ class ConvolutionInputGenerator(HLSCustomOp):
                 self.get_nodeattr("Stride"),
                 numReps,
                 numReps_flatten,
-                self.get_nodeattr("MMV"),
+                self.get_nodeattr("MMVO"),
             )
         ]
      
@@ -431,7 +434,7 @@ class ConvolutionInputGenerator(HLSCustomOp):
         stride = self.get_nodeattr("Stride")
         if k % stride != 0:
             hls_call += "_kernel_stride"
-        if self.get_nodeattr("MMV") == 1:
+        if self.get_nodeattr("MMVO") == 1:
            if self.get_nodeattr("depthwise") == 1:
               self.code_gen_dict["$DOCOMPUTE$"] = [
                    """{}_dws<ConvKernelDim1, IFMChannels1, Input_precision1, IFMDim1,
@@ -506,7 +509,7 @@ class ConvolutionInputGenerator(HLSCustomOp):
         self.code_gen_dict["$SAVEASCNPY$"] = []
 
     def blackboxfunction(self):
-        if self.get_nodeattr("MMV") == 1:
+        if self.get_nodeattr("MMVO") == 1:
           self.code_gen_dict["$BLACKBOXFUNCTION$"] = [
             """void {}(hls::stream<ap_uint<SIMD1*Input_precision1>> &in0,
                 hls::stream<ap_uint<SIMD1*Input_precision1>> &out)""".format(
@@ -528,5 +531,72 @@ class ConvolutionInputGenerator(HLSCustomOp):
             "#pragma HLS INTERFACE ap_ctrl_none port=return"
         )
         self.code_gen_dict["$PRAGMAS$"].append("#pragma HLS DATAFLOW")
-        if self.get_nodeattr("MMV") > 1:
+        if self.get_nodeattr("MMVO") > 1:
            self.code_gen_dict["$PRAGMAS$"].append("hls::stream <MultiChanData<MMV1, SIMD1*Input_precision1> > out0;")
+
+
+    def code_generation_ipi(self):
+         
+        if self.get_nodeattr("MMVI") > 1:
+            node_name = self.onnx_node.name
+            cmd = []
+            # create a hierarchy for this layer, with the same port names
+            clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
+            rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
+            dout_name = self.get_verilog_top_module_intf_names()["m_axis"][0]
+            din_name = self.get_verilog_top_module_intf_names()["s_axis"][0]
+            cmd.append("create_bd_cell -type hier %s" % node_name)
+            cmd.append("create_bd_pin -dir I -type clk /%s/%s" % (node_name, clk_name))
+            cmd.append("create_bd_pin -dir I -type rst /%s/%s" % (node_name, rst_name))
+            cmd.append(
+                "create_bd_intf_pin -mode Master "
+                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s"
+                % (node_name, dout_name)
+            )
+            cmd.append(
+                "create_bd_intf_pin -mode Slave "
+                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s" % (node_name, din_name)
+            )
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:mmv_input_swu:1.0 %s/swu" % (node_name))
+            padding_height = (self.get_nodeattr("OFMDim") - (self.get_nodeattr("IFMDim") - 2))//2
+            padding_width = padding_height
+            buffer_size_i = (((self.get_nodeattr("ConvKernelDim") - 1) * self.get_nodeattr("IFMDim")) + self.get_nodeattr("ConvKernelDim")) * (self.get_nodeattr("IFMChannels")//self.get_nodeattr("SIMD")) 
+            buffer_size = roundup_to_integer_multiple(buffer_size_i, self.get_nodeattr("MMVI") )
+            cmd.append("set_property -dict [list CONFIG.SIMD {%d} \
+                                                 CONFIG.STRIDE {%d} \
+                                                 CONFIG.IFMChannels {%d} \
+                                                 CONFIG.KERNEL_HEIGHT {%d} \
+                                                 CONFIG.KERNEL_WIDTH {%d} \
+                                                 CONFIG.IFMWidth {%d} \
+                                                 CONFIG.IFMHeight {%d} \
+                                                 CONFIG.PADDING_WIDTH {%d} \
+                                                 CONFIG.PADDING_HEIGHT {%d} \
+                                                 CONFIG.OFMWidth {%d} \
+                                                 CONFIG.OFMHeight {%d} \
+                                                 CONFIG.IP_PRECISION {%d}\
+                                                 CONFIG.MMV {%d}\
+                                                 CONFIG.BUFFER_SIZE {%d}] [get_bd_cells %s/swu]" % (self.get_nodeattr("SIMD"),
+                                                                                            self.get_nodeattr("Stride"),
+                                                                                            self.get_nodeattr("IFMChannels"),
+                                                                                            self.get_nodeattr("ConvKernelDim"),
+                                                                                            self.get_nodeattr("ConvKernelDim"),
+                                                                                            self.get_nodeattr("IFMDim"),
+                                                                                            self.get_nodeattr("IFMDim"),
+                                                                                            padding_width,
+                                                                                            padding_height,
+                                                                                            self.get_nodeattr("OFMDim"),
+                                                                                            self.get_nodeattr("OFMDim"),
+                                                                                            self.get_input_datatype().bitwidth(),
+                                                                                            self.get_nodeattr("MMVI"),
+                                                                                            buffer_size,
+                                                                                            node_name
+                                                                                           )
+                      )
+            cmd.append("connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/swu/clk]" % (node_name, clk_name, node_name))
+            cmd.append("connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/swu/resetn]" % (node_name, rst_name, node_name))
+            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s] [get_bd_intf_pins %s/swu/ip_axis]" % (node_name, din_name, node_name))
+            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s] [get_bd_intf_pins %s/swu/op_axis]" % (node_name, dout_name, node_name))
+            cmd.append("save_bd_design")
+            return cmd
+        else :
+           return super().code_generation_ipi()

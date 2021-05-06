@@ -1487,34 +1487,34 @@ class StreamingFCLayer_Batch(HLSCustomOp):
        )
 
        if self.get_nodeattr("MMV") > 1:
-          ## create combiner before giving it to the final interconnect
-          #cmd.append(
-          #   "create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_mmv" 
-          #    % (node_name)
-          #)
-          #cmd.append(
-          #   "set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} \
-          #                             CONFIG.C_AXIS_SIGNAL_SET {0x00000003} \
-          #                             CONFIG.C_NUM_SI_SLOTS {%d} \
-          #                       ] \
-          #                       [get_bd_cells %s/axis_combiner_mmv]" 
-          #   % (self.get_outstream_width(), mmv_value, node_name)
-          #) 
-
-          # instantiate axis stream switch
+          # create combiner before giving it to the final interconnect
           cmd.append(
-             "create_bd_cell -type ip -vlnv xilinx.com:ip:axis_switch:1.1 %s/axis_switch_mmv"
+             "create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_mmv" 
               % (node_name)
           )
           cmd.append(
-             "set_property -dict [list CONFIG.NUM_SI {%d} \
-                                               CONFIG.NUM_MI {1} \
-                                               CONFIG.TDATA_NUM_BYTES {%d} \
-                                               CONFIG.ARB_ON_MAX_XFERS {%d} \
-                                               CONFIG.ARB_ALGORITHM {1} ] \
-                                         [get_bd_cells %s/axis_switch_mmv]" 
-             % (mmv_value, self.get_outstream_width()//8, self.get_nodeattr("MH")//self.get_nodeattr("PE"), node_name)
-          )
+             "set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} \
+                                       CONFIG.C_AXIS_SIGNAL_SET {0x00000003} \
+                                       CONFIG.C_NUM_SI_SLOTS {%d} \
+                                 ] \
+                                 [get_bd_cells %s/axis_combiner_mmv]" 
+             % (self.get_outstream_width(), mmv_value, node_name)
+          ) 
+
+          ## instantiate axis stream switch
+          #cmd.append(
+          #   "create_bd_cell -type ip -vlnv xilinx.com:ip:axis_switch:1.1 %s/axis_switch_mmv"
+          #    % (node_name)
+          #)
+          #cmd.append(
+          #   "set_property -dict [list CONFIG.NUM_SI {%d} \
+          #                                     CONFIG.NUM_MI {1} \
+          #                                     CONFIG.TDATA_NUM_BYTES {%d} \
+          #                                     CONFIG.ARB_ON_MAX_XFERS {%d} \
+          #                                     CONFIG.ARB_ALGORITHM {1} ] \
+          #                               [get_bd_cells %s/axis_switch_mmv]" 
+          #   % (mmv_value, self.get_outstream_width()//8, self.get_nodeattr("MH")//self.get_nodeattr("PE"), node_name)
+          #)
 
           cmd.append(
              "create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_mmv" 
@@ -1524,27 +1524,27 @@ class StreamingFCLayer_Batch(HLSCustomOp):
              "set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {0}] [get_bd_cells %s/xlconstant_mmv]"
               % (mmv_value, node_name)
           )
-          cmd.append(
-             "connect_bd_net [get_bd_pins %s/xlconstant_mmv/dout] [get_bd_pins %s/axis_switch_mmv/s_req_suppress]" 
-             % (node_name, node_name)
-          )
-          cmd.append(
-             "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_switch_mmv/aclk]" 
-             % (node_name, clk_name, node_name)
-          )
-          cmd.append(
-             "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_switch_mmv/aresetn]" 
-             % (node_name, rst_name, node_name)
-          )
-          ## 3. output combiner
           #cmd.append(
-          #   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_mmv/aresetn]"
-          #   % (node_name, rst_name, node_name)
+          #   "connect_bd_net [get_bd_pins %s/xlconstant_mmv/dout] [get_bd_pins %s/axis_switch_mmv/s_req_suppress]" 
+          #   % (node_name, node_name)
           #)
           #cmd.append(
-          #   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_mmv/aclk]"
+          #   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_switch_mmv/aclk]" 
           #   % (node_name, clk_name, node_name)
-          #) 
+          #)
+          #cmd.append(
+          #   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_switch_mmv/aresetn]" 
+          #   % (node_name, rst_name, node_name)
+          #)
+          # 3. output combiner
+          cmd.append(
+             "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_mmv/aresetn]"
+             % (node_name, rst_name, node_name)
+          )
+          cmd.append(
+             "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_mmv/aclk]"
+             % (node_name, clk_name, node_name)
+          ) 
        return cmd       
 
     def code_generation_ipi(self):
@@ -1712,9 +1712,9 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                   cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_input_%d" % (node_name, mmv))
                   cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_NUM_MI_SLOTS {%s}] [get_bd_cells %s/axis_broadcaster_input_%d]" % (self.get_instream_width_padded(), pe, node_name, mmv))
 
-                  # instantiate streamingFIFO and set depth and bitwidth
-                  cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 %s/axis_fifo_mmv_%d" % (node_name, mmv))
-                  cmd.append("set_property -dict [list CONFIG.TDATA_NUM_BYTES {%d} CONFIG.FIFO_DEPTH {16}] [get_bd_cells %s/axis_fifo_mmv_%d]" % (self.get_outstream_width()//8, node_name, mmv))
+                  ## instantiate streamingFIFO and set depth and bitwidth
+                  #cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 %s/axis_fifo_mmv_%d" % (node_name, mmv))
+                  #cmd.append("set_property -dict [list CONFIG.TDATA_NUM_BYTES {%d} CONFIG.FIFO_DEPTH {16}] [get_bd_cells %s/axis_fifo_mmv_%d]" % (self.get_outstream_width()//8, node_name, mmv))
 
 
                   # connect input splitter outputs to input buffer
@@ -1747,27 +1747,27 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
 
                   if mmv_value > 1:
-                     ## connect output of combiner to synchronising combiner 
+                     # connect output of combiner to synchronising combiner 
+                     cmd.append(
+                        "connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output_%d/m_axis] "
+                        "[get_bd_intf_pins %s/axis_combiner_mmv/s_axis_%02d]" 
+                        % (node_name, mmv, node_name, mmv)
+                     )
+
+                     ## connect output of combiner to fifos
                      #cmd.append(
-                     #   "connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output_%d/m_axis] "
-                     #   "[get_bd_intf_pins %s/axis_combiner_mmv/s_axis_%02d]" 
-                     #   % (node_name, mmv, node_name, mmv)
+                     #  "connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output_%d/m_axis] "
+                     #  "[get_bd_intf_pins %s/axis_fifo_mmv_%d/S_AXIS]"
+                     #  %(node_name, mmv, node_name, mmv)
                      #)
 
-                     # connect output of combiner to fifos
-                     cmd.append(
-                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output_%d/m_axis] "
-                       "[get_bd_intf_pins %s/axis_fifo_mmv_%d/S_AXIS]"
-                       %(node_name, mmv, node_name, mmv)
-                     )
 
-
-                     # connect output of fifos to switch
-                     cmd.append(
-                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_fifo_mmv_%d/M_AXIS] "
-                       "[get_bd_intf_pins %s/axis_switch_mmv/S%02d_AXIS]"
-                       % (node_name, mmv, node_name, mmv)
-                     )
+                     ## connect output of fifos to switch
+                     #cmd.append(
+                     #  "connect_bd_intf_net [get_bd_intf_pins %s/axis_fifo_mmv_%d/M_AXIS] "
+                     #  "[get_bd_intf_pins %s/axis_switch_mmv/S%02d_AXIS]"
+                     #  % (node_name, mmv, node_name, mmv)
+                     #)
                      ## connect output of fifos to final combiner
                      #cmd.append(
                      #  "connect_bd_intf_net [get_bd_intf_pins %s/axis_fifo_mmv_%d/M_AXIS] "
@@ -1794,7 +1794,7 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                         #   % (node_name, node_name)
                         #) 
                         cmd.append(
-                           "connect_bd_intf_net [get_bd_intf_pins %s/axis_switch_mmv/M00_AXIS] "
+                           "connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_mmv/m_axis] "
                            "[get_bd_intf_pins %s/%s] " 
                            % (node_name, node_name, dout_name)
                         )
@@ -1842,15 +1842,15 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                     % (node_name, clk_name, node_name, mmv)
                   ) 
 
-                  #connect clk and reset - fifo 
-                  cmd.append(
-                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_fifo_mmv_%d/s_axis_aresetn]"
-                    %(node_name, rst_name, node_name, mmv)
-                  )
-                  cmd.append(
-                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_fifo_mmv_%d/s_axis_aclk]"
-                    % (node_name, clk_name, node_name, mmv)
-                  )
+                  ##connect clk and reset - fifo 
+                  #cmd.append(
+                  #  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_fifo_mmv_%d/s_axis_aresetn]"
+                  #  %(node_name, rst_name, node_name, mmv)
+                  #)
+                  #cmd.append(
+                  #  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_fifo_mmv_%d/s_axis_aclk]"
+                  #  % (node_name, clk_name, node_name, mmv)
+                  #)
 
                               
 
