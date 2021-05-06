@@ -57,25 +57,33 @@ import textwrap
 # the ... here can be any shape (representing groups of vectors)
 
 def rearrange(input_hex, w_bits, total_bits, simd):
+    fi = open("rearrange.txt", "w")
+    fi.write("\n----------------------------------------------------\n")
     print(input_hex)
     input_bin = bin(int(str(input_hex), 16))[2:]
     print(input_bin)
     final_str=""
     high_positions=""
+    number_of_ones = 0
     if input_bin=='0':
         return 0, 0, "0"
     sub_part = str(input_bin[-(w_bits*1):])
     if "1" in sub_part:
         final_str=sub_part+final_str
+        number_of_ones = number_of_ones + 1
         high_positions="0".zfill(total_bits) + high_positions
+    fi.write(str(high_positions))
+    fi.write("\n")
     for i in range(1, simd):
         sub_part=str(input_bin[-((i+1)*w_bits):-(i*w_bits)])
         print(sub_part)
         if "1" in sub_part:
            final_str=sub_part+final_str
            high_positions=str(bin(i)[2:]).zfill(total_bits) + high_positions
-
-
+           number_of_ones  = number_of_ones + 1
+        fi.write(str(high_positions))
+        fi.write("\n")
+    fi.close()
     dummy_int = int(final_str, 2)
     dummy = bin(int(final_str, 2))[2:]
     dummy_ones = dummy.count('1')
@@ -84,7 +92,8 @@ def rearrange(input_hex, w_bits, total_bits, simd):
     #dummy_ones = bin(int(str(dummy), 10))[2:].count('1')
     assert (ones==dummy_ones), ("%d %d %s %s" % (ones, dummy_ones, final_str,  input_bin))
     print(high_positions)
-    return (dummy_int), ones, high_positions
+    #high_positions = '"' + high_positions + ''
+    return (dummy_int),  number_of_ones, '\"'+str(high_positions) + '\"'
 
 class StreamingFCLayer_Batch(HLSCustomOp):
     """Class that corresponds to finn-hls StreamingFCLayer_Batch function."""
@@ -1475,6 +1484,9 @@ class StreamingFCLayer_Batch(HLSCustomOp):
 
 
             if self.get_nodeattr("fine_grained")==True:
+                 fil = open("rearrange.txt", "a")
+                 fil.write("\n\n\n\n============================================================================\n=========================================================\n")
+                 fil.close()
                  assert (self.get_nodeattr("mem_mode")!="const"), "mem_mode must be constant for fine_grained"
                  assert (self.get_nodeattr("noActivation")==1), "noActivation must be 1 for fine_grained"
                  # instantiate the hls ip "pe" number of times
@@ -1573,10 +1585,13 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                         cmd.append("create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 %s/xlconstant_data_%02d" % (node_name, i))
                         df.seek((pe - 1 - i)*((simd*wp)//4), 0)
                         weight_val1 = df.read((simd*wp)//4)
+                        fil=open("rearrange.txt", "a")
+                        fil.write("\n.............new pe......................\n")
+                        fil.close()
                         weight_val, number_of_ones, high_positions = rearrange(weight_val1, self.get_weight_datatype().bitwidth(), width1, simd)
                         input_bin = bin(int(str(weight_val1), 16))[2:]
                         ones = input_bin.count('1')
-                        assert ones==number_of_ones
+                        #assert ones==number_of_ones
                         cmd.append("set_property -dict [list CONFIG.CONST_WIDTH {%d} CONFIG.CONST_VAL {%s}] [get_bd_cells %s/xlconstant_data_%02d]" % (self.get_splitter_output_width_padded(), weight_val, node_name, i))
                         cmd.append("connect_bd_net [get_bd_pins %s/xlconstant_data_%02d/dout] [get_bd_pins %s/%s_%d/weights_V_V_TDATA]" % (node_name, i, node_name, node_name, i))
 
@@ -1591,20 +1606,20 @@ class StreamingFCLayer_Batch(HLSCustomOp):
                         #g.write(str(high_positions))
                         g.write("\n")
                         #high_positions=0
-                        #cmd.append("create_bd_cell -type ip -vlnv user.org:user:shuffle_verilog:1.0 %s/shuffler_ip_%02d" % (node_name, i))
-                        #cmd.append("set_property -dict [list CONFIG.total_length {%d} CONFIG.length_of_ones {%d} CONFIG.digits {%d} CONFIG.high_positions {%s} CONFIG.a_width {%d}] [get_bd_cells %s/shuffler_ip_%02d]" % (self.get_instream_width_padded(), number_of_ones, width1, high_positions, self.get_input_datatype().bitwidth(), node_name, i))
+                        cmd.append("create_bd_cell -type ip -vlnv user.org:user:shuffle_verilog:1.0 %s/shuffler_ip_%02d" % (node_name, i))
+                        cmd.append("set_property -dict [list CONFIG.total_length {%d} CONFIG.length_of_ones {%d} CONFIG.digits {%d} CONFIG.high_positions {%s} CONFIG.a_width {%d}] [get_bd_cells %s/shuffler_ip_%02d]" % (self.get_instream_width_padded(), number_of_ones, width1, high_positions, self.get_input_datatype().bitwidth(), node_name, i))
 
 
-                        #cmd.append(
-                        #      "connect_bd_net [get_bd_pins %s/axis_broadcaster_input/m_axis_%02d_tdata] "
-                        #      "[get_bd_pins %s/shuffler_ip_%02d/in0]"
-                        #      % (node_name, i, node_name, i)
-                        #)
-                        #cmd.append(
-                        #      "connect_bd_net [get_bd_pins %s/shuffler_ip_%02d/out0] "
-                        #      "[get_bd_pins %s/%s_%d/%s_tdata]"
-                        #      % (node_name, i, node_name, node_name, i, din_name)
-                        #)
+                        cmd.append(
+                              "connect_bd_net [get_bd_pins %s/axis_broadcaster_input/m_axis_%02d_tdata] "
+                              "[get_bd_pins %s/shuffler_ip_%02d/in0]"
+                              % (node_name, i, node_name, i)
+                        )
+                        cmd.append(
+                              "connect_bd_net [get_bd_pins %s/shuffler_ip_%02d/out0] "
+                              "[get_bd_pins %s/%s_%d/%s_tdata]"
+                              % (node_name, i, node_name, node_name, i, din_name)
+                        )
                         cmd.append("save_bd_design")
 
                     df.close()
