@@ -557,11 +557,16 @@ class ConvolutionInputGenerator(HLSCustomOp):
                 "create_bd_intf_pin -mode Slave "
                 "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s" % (node_name, din_name)
             )
-            cmd.append("create_bd_cell -type ip -vlnv user.org:user:mmv_input_swu:1.0 %s/swu" % (node_name))
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:mmv_input_swu_v2:1.0 %s/swu" % (node_name))
             padding_height = (self.get_nodeattr("OFMDim") - (self.get_nodeattr("IFMDim") - 2))//2
             padding_width = padding_height
-            buffer_size_i = (((self.get_nodeattr("ConvKernelDim") - 1) * self.get_nodeattr("IFMDim")) + self.get_nodeattr("ConvKernelDim")) * (self.get_nodeattr("IFMChannels")//self.get_nodeattr("SIMD")) 
-            buffer_size = roundup_to_integer_multiple(buffer_size_i, self.get_nodeattr("MMVI") )
+            buffer_size =  self.get_nodeattr("IFMDim") * (self.get_nodeattr("IFMChannels")//self.get_nodeattr("SIMD")) * self.get_nodeattr("ConvKernelDim")
+            #buffer_size_i = (((self.get_nodeattr("ConvKernelDim") - 1) * self.get_nodeattr("IFMDim")) + self.get_nodeattr("ConvKernelDim")) * (self.get_nodeattr("IFMChannels")//self.get_nodeattr("SIMD")) 
+            #buffer_size = roundup_to_integer_multiple(buffer_size_i, self.get_nodeattr("MMVI") )
+            if self.get_nodeattr("OFMDim")//self.get_nodeattr("MMVI")==0:            
+               OFMDIM_MOD_MMV=0
+            else:
+                OFMDIM_MOD_MMV = 1 
             cmd.append("set_property -dict [list CONFIG.SIMD {%d} \
                                                  CONFIG.STRIDE {%d} \
                                                  CONFIG.IFMChannels {%d} \
@@ -575,7 +580,8 @@ class ConvolutionInputGenerator(HLSCustomOp):
                                                  CONFIG.OFMHeight {%d} \
                                                  CONFIG.IP_PRECISION {%d}\
                                                  CONFIG.MMV {%d}\
-                                                 CONFIG.BUFFER_SIZE {%d}] [get_bd_cells %s/swu]" % (self.get_nodeattr("SIMD"),
+                                                 CONFIG.BUFFER_SIZE {%d}\
+                                                 CONFIG.OFMDIM_MOD_MMV {%d}] [get_bd_cells %s/swu]" % (self.get_nodeattr("SIMD"),
                                                                                             self.get_nodeattr("Stride"),
                                                                                             self.get_nodeattr("IFMChannels"),
                                                                                             self.get_nodeattr("ConvKernelDim"),
@@ -589,7 +595,8 @@ class ConvolutionInputGenerator(HLSCustomOp):
                                                                                             self.get_input_datatype().bitwidth(),
                                                                                             self.get_nodeattr("MMVI"),
                                                                                             buffer_size,
-                                                                                            node_name
+                                                                                            OFMDIM_MOD_MMV
+                                                                                            node_name,
                                                                                            )
                       )
             cmd.append("connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/swu/clk]" % (node_name, clk_name, node_name))
