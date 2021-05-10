@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mmv_input_swu #(
+module mmv_input_swu_v3 #(
     parameter SIMD = 1,
     parameter STRIDE = 1,
     parameter IFMChannels = 2,
@@ -38,7 +38,8 @@ module mmv_input_swu #(
 	//depths per stream
 	parameter IP_PRECISION = 8,
 	parameter MMV = 2,
-	parameter BUFFER_SIZE = 20)
+	parameter BUFFER_SIZE = 20,
+	parameter OFMDIM_MOD_MMV = 0)
 
 
 (
@@ -84,8 +85,9 @@ reg [$clog2(MMV) - 1: 0] mmv_sub_tracker = 0;
 reg [$clog2(BUFFER_SIZE) : 0] starting_pos_i = 0;
 reg [$clog2(BUFFER_SIZE) - 1 : 0] starting_pos = 0;
 reg [$clog2(BUFFER_SIZE+EFF_CHANNELS*(KERNEL_WIDTH+((KERNEL_HEIGHT-1)*IFMWidth)) + EFF_CHANNELS)-1 : 0] pos = 0;
+reg mmvshift=0;
 
-assign ip_axis_tready = !buffer_full || ( (ofm_column_tracker != 0) && ((mmv_tracker == 0 && kh == 0 && kw ==0) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1));
+assign ip_axis_tready = !buffer_full || ( (ofm_column_tracker != 0) && ((mmv_tracker == 0 && kh == 0 && kw ==0) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw > OFMDIM_MOD_MMV));
 assign weA = ip_axis_tready & ip_axis_tvalid & ( (input_pixel * BUFFER_SIZE + counter) < (IFMHeight * IFMWidth * EFF_CHANNELS));
 
 
@@ -109,7 +111,7 @@ ram
    .enaB(buffer_full),
    .weA(weA)
 );
-
+//1
 assign op_axis_tvalid = buffer_full_i && !buffer_empty_i;
 always @(posedge clk) begin
 if (~resetn) begin
@@ -120,34 +122,43 @@ if (~resetn) begin
     buffer_empty_ii <= buffer_empty_i;
   end
   end
+  
+//2
 always @(posedge clk) begin
-if (~resetn) begin
+if (~resetn | buffer_empty_ii) begin
   buffer_empty <= 0;
   end
-else if (kh==KERNEL_HEIGHT-1 && kw==KERNEL_WIDTH-1 && ofm_row_tracker == OFMHeight - 1 && ofm_column_tracker == OFMWidth-1) begin 
+else if (kh==KERNEL_HEIGHT-1 && kw==KERNEL_WIDTH-1 && ofm_row_tracker == OFMHeight - 1 && ofm_column_tracker == OFMWidth-1 && channel_tracker == EFF_CHANNELS -1) begin 
   buffer_empty <= 1;
 end
 end
 // process to read data
-always @(posedge clk) begin
-   if (~resetn) begin
+//3
+always @(*) begin
+   if (~resetn | buffer_empty_ii) begin
       pos = 0;
    end else begin
-      pos = starting_pos + kw*(EFF_CHANNELS) + kh*(IFMWidth * EFF_CHANNELS) + channel_tracker ; 
+      //if(mmv_sub_tracker == 0 && EFF_CHANNELS > 1) begin
+      //pos = starting_pos + kw + MMV+ kh*(IFMWidth * EFF_CHANNELS) + (channel_tracker*MMV) ; 
+      //end else begin
+      pos = starting_pos + kw + MMV*mmvshift+kh*(IFMWidth * EFF_CHANNELS) + (channel_tracker*MMV) ; 
+      //end
       if(pos >=BUFFER_SIZE) begin
          pos = pos - BUFFER_SIZE;
       end
    end
 end
 
+//4
 always @(posedge clk) begin
-   if (~resetn) begin
+   if (~resetn | buffer_empty_ii) begin
       buffer_full_i <= 0;
    end else begin
       buffer_full_i <= buffer_full;
    end
 end
   
+//5
 // process to write data
 always @(posedge clk) begin
    if (~resetn) begin
@@ -156,6 +167,10 @@ always @(posedge clk) begin
       input_pixel <= 0;
       //pos <= 0;
       //rdatab <= 0;
+   end else if(buffer_empty_ii == 1) begin
+      counter <= 0;
+      buffer_full <= 0;
+      input_pixel <= 0;   
    end else begin      
       if(weA ) begin
        
@@ -172,12 +187,14 @@ always @(posedge clk) begin
       end
    end
 end
-
+//6
 always @(posedge clk) begin
    if (~resetn) begin
       channel_tracker <= 0;
+   end else if (buffer_empty_ii == 1) begin
+      channel_tracker <= 0;   
    end else begin
-      if ((buffer_full || counter == BUFFER_SIZE - 1  ) & op_axis_tready) begin
+      if ((buffer_full || counter == (BUFFER_SIZE/MMV) - 1  ) & op_axis_tready) begin
          if ((channel_tracker < EFF_CHANNELS - 1)) begin
             channel_tracker <= channel_tracker + 1;
          end else begin
@@ -188,13 +205,17 @@ always @(posedge clk) begin
 end
 
 
-
+//7
 always @(posedge clk) begin
    if (~resetn) begin
       kw <= 0;
       kh <= 0;
       mmv_sub_tracker <= 0;
-   end else 
+   end else if (buffer_empty_ii == 1) begin
+      kw <= 0;
+      kh <= 0;
+      mmv_sub_tracker <= 0;    
+   end else
    if (buffer_full & op_axis_tready && (channel_tracker == EFF_CHANNELS - 1)) begin
       if ((kw < KERNEL_WIDTH - 1)) begin
          kw <= kw + 1;
@@ -215,8 +236,9 @@ always @(posedge clk) begin
    end
 end
 
+//8
 always @(posedge clk) begin
-   if(~resetn) begin
+   if(~resetn | buffer_empty_ii) begin
        ofm_column_tracker <= 0;
        ofm_row_tracker <= 0;
    end else begin
@@ -243,8 +265,9 @@ always @(posedge clk) begin
    end            
 end
 
+//9
 always @(posedge clk) begin
-   if(~resetn) begin
+   if(~resetn | buffer_empty_ii) begin
       mmv_tracker_advance <= 0;
    end else begin
       if (buffer_full && op_axis_tready ) begin
@@ -265,8 +288,9 @@ always @(posedge clk) begin
    end            
 end
 
+//10
 always @(posedge clk) begin
-   if (~resetn) begin
+   if (~resetn | buffer_empty_ii) begin
       starting_pos <= 0;
    end else begin
    if(starting_pos_i >= BUFFER_SIZE) begin
@@ -277,14 +301,19 @@ always @(posedge clk) begin
    end
 end
 
+//11
 always @(posedge clk) begin
-   if (~resetn) begin
+   if (~resetn | buffer_empty_ii) begin
       starting_pos_i <= 0;
    end else begin
    if (buffer_full & op_axis_tready) begin
       if(kh*KERNEL_WIDTH*EFF_CHANNELS+kw*EFF_CHANNELS+channel_tracker+1==KERNEL_WIDTH*KERNEL_HEIGHT*EFF_CHANNELS - 1) begin
          if ((ofm_column_tracker < (OFMWidth - 1 )) && (ofm_column_tracker >= PADDING_WIDTH)) begin //should not increment by one if it's less than padding_width or greater than End-width - padding-width
-            starting_pos_i <= starting_pos+(EFF_CHANNELS*STRIDE);
+            if (mmv_tracker != MMV - 1) begin
+            starting_pos_i <= starting_pos+(STRIDE);
+            end else begin
+            starting_pos_i <= starting_pos+(STRIDE)+MMV;
+            end
          end
          else if (ofm_column_tracker == OFMWidth - 1) begin
             if ((ofm_row_tracker >= PADDING_HEIGHT)) begin
@@ -298,6 +327,19 @@ always @(posedge clk) begin
          end 
       end
    end
+   end
+end
+
+//12
+always @(posedge clk) begin
+   if (~resetn | buffer_empty_ii) begin 
+      mmvshift <= 0;
+   end else begin
+      if (mmv_sub_tracker==MMV-1 && channel_tracker == EFF_CHANNELS - 1 && EFF_CHANNELS > 1 && kw!=MMV-1) begin
+          mmvshift <= 1;
+      end else if (kw == MMV - 1 && channel_tracker == EFF_CHANNELS - 1)begin
+          mmvshift <= 0;
+      end
    end
 end
 endmodule
