@@ -595,8 +595,8 @@ class ConvolutionInputGenerator(HLSCustomOp):
                                                                                             self.get_input_datatype().bitwidth(),
                                                                                             self.get_nodeattr("MMVI"),
                                                                                             buffer_size,
-                                                                                            OFMDIM_MOD_MMV
-                                                                                            node_name,
+                                                                                            OFMDIM_MOD_MMV,
+                                                                                            node_name
                                                                                            )
                       )
             cmd.append("connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/swu/clk]" % (node_name, clk_name, node_name))

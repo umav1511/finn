@@ -34,7 +34,7 @@ from finn.custom_op.fpgadataflow.hlscustomop import HLSCustomOp
 from finn.core.datatype import DataType
 from onnx import TensorProto, helper
 from finn.util.data_packing import npy_to_rtlsim_input, rtlsim_output_to_npy
-
+from finn.util.basic import roundup_to_integer_multiple
 # does not do anything at the ONNX node-by-node level, and input-output
 # tensor shapes are the same. performs data width conversion at the rtlsim level
 
@@ -391,6 +391,8 @@ class StreamingDataWidthConverter_Batch(HLSCustomOp):
         shape doesn't match expected shape, should be same as input shape"""
 
     def code_generation_ipi(self):
+        if "Batch_11" in self.onnx_node.name:
+            self.set_nodeattr("MMV", 3)
         if self.get_nodeattr("MMV") > 1:
             self.set_nodeattr("impl_style", "vivado")
         impl_style = self.get_nodeattr("impl_style")
@@ -446,11 +448,11 @@ class StreamingDataWidthConverter_Batch(HLSCustomOp):
                  
                   cmd.append(
                     "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/dwc_%d/aresetn]"
-                    % (node_name, rst_name, node_name, m, rst_name)
+                    % (node_name, rst_name, node_name, m)
                   )
                   cmd.append(
                     "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/dwc_%d/aclk]"
-                    % (node_name, clk_name, node_name, m, clk_name)
+                    % (node_name, clk_name, node_name, m)
                   )
                # instantiate splitter inputs
                cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter_input" % (node_name))
