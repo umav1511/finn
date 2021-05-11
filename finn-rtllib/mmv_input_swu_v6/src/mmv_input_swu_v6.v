@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mmv_input_swu_v3 #(
+module mmv_input_swu_v6 #(
     parameter SIMD = 1,
     parameter STRIDE = 1,
     parameter IFMChannels = 2,
@@ -70,7 +70,9 @@ reg buffer_full_i=0;
   reg buffer_empty_i = 0;
     reg buffer_empty_ii = 0;
 
-
+reg r_valid, q_valid;
+wire enaB, enaB_q, enaB_r;
+reg op_axis_tready_del;
 reg [$clog2(IFMHeight * IFMWidth) - 1 : 0] input_pixel= 0;
 reg [$clog2(KERNEL_HEIGHT) - 1: 0] kh = 0;
 reg [$clog2(KERNEL_WIDTH) - 1 : 0] kw= 0;
@@ -89,8 +91,11 @@ reg mmvshift=0;
 
 assign ip_axis_tready = !buffer_full || ( (ofm_column_tracker != 0) && ((mmv_tracker == 0 && kh == 0 && kw ==0) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw > OFMDIM_MOD_MMV));
 assign weA = ip_axis_tready & ip_axis_tvalid & ( (input_pixel * BUFFER_SIZE + counter) < (IFMHeight * IFMWidth * EFF_CHANNELS));
-
-
+assign ram_enq = op_axis_tready | ~q_valid;
+assign op_axis_tvalid = q_valid;
+assign enaB = buffer_full & !buffer_empty_i & (enaB_q | ~r_valid);
+assign enaB_q = (op_axis_tready | ~q_valid);
+assign enaB_r = buffer_full & !buffer_empty_i & (op_axis_tready | ~r_valid);
 asymmetrc_ram  #(
    .SIZEA(SIZEA),
    .SIZEB(SIZEB),
@@ -108,11 +113,24 @@ ram
    .diA(ip_axis_tdata),
    .doB(op_axis_tdata),
    .enaA(1),
-   .enaB(buffer_full),
+   .enaB(enaB),
+   .enaB_q(enaB_q),
    .weA(weA)
 );
+
+always @(posedge clk)
+    if(~resetn)
+        q_valid <= 0;
+    else if(enaB_q)
+        q_valid <= r_valid & ~buffer_empty_i;
+        
+always @(posedge clk)
+    if(~resetn)
+        r_valid <= 0;
+    else if(enaB_q | ~r_valid)
+        r_valid <=  enaB;        
 //1
-assign op_axis_tvalid = buffer_full_i && !buffer_empty_i;
+//assign op_axis_tvalid = buffer_full_i && !buffer_empty_i;
 always @(posedge clk) begin
 if (~resetn) begin
   buffer_empty_i <= 0;
@@ -122,10 +140,18 @@ if (~resetn) begin
     buffer_empty_ii <= buffer_empty_i;
   end
   end
+
+always @(posedge clk) begin
+if (~resetn) begin
+  op_axis_tready_del <= 0;
+  end else begin
+    op_axis_tready_del <= op_axis_tready;
+  end
+  end
   
 //2
 always @(posedge clk) begin
-if (~resetn | buffer_empty_ii) begin
+if (~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
   buffer_empty <= 0;
   end
 else if (kh==KERNEL_HEIGHT-1 && kw==KERNEL_WIDTH-1 && ofm_row_tracker == OFMHeight - 1 && ofm_column_tracker == OFMWidth-1 && channel_tracker == EFF_CHANNELS -1) begin 
@@ -135,7 +161,7 @@ end
 // process to read data
 //3
 always @(*) begin
-   if (~resetn | buffer_empty_ii) begin
+   if (~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
       pos = 0;
    end else begin
       //if(mmv_sub_tracker == 0 && EFF_CHANNELS > 1) begin
@@ -151,7 +177,7 @@ end
 
 //4
 always @(posedge clk) begin
-   if (~resetn | buffer_empty_ii) begin
+   if (~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
       buffer_full_i <= 0;
    end else begin
       buffer_full_i <= buffer_full;
@@ -167,7 +193,7 @@ always @(posedge clk) begin
       input_pixel <= 0;
       //pos <= 0;
       //rdatab <= 0;
-   end else if(buffer_empty_ii == 1) begin
+   end else if((buffer_empty && op_axis_tready && op_axis_tvalid)) begin
       counter <= 0;
       buffer_full <= 0;
       input_pixel <= 0;   
@@ -191,10 +217,10 @@ end
 always @(posedge clk) begin
    if (~resetn) begin
       channel_tracker <= 0;
-   end else if (buffer_empty_ii == 1) begin
+   end else if ((buffer_empty && op_axis_tready && op_axis_tvalid)) begin
       channel_tracker <= 0;   
    end else begin
-      if ((buffer_full || counter == (BUFFER_SIZE/MMV) - 1  ) & op_axis_tready) begin
+      if ((buffer_full || counter == (BUFFER_SIZE/MMV) - 1  ) & enaB_r) begin
          if ((channel_tracker < EFF_CHANNELS - 1)) begin
             channel_tracker <= channel_tracker + 1;
          end else begin
@@ -211,12 +237,12 @@ always @(posedge clk) begin
       kw <= 0;
       kh <= 0;
       mmv_sub_tracker <= 0;
-   end else if (buffer_empty_ii == 1) begin
+   end else if ((buffer_empty && op_axis_tready && op_axis_tvalid)) begin
       kw <= 0;
       kh <= 0;
       mmv_sub_tracker <= 0;    
    end else
-   if (buffer_full & op_axis_tready && (channel_tracker == EFF_CHANNELS - 1)) begin
+   if (buffer_full & enaB_r && (channel_tracker == EFF_CHANNELS - 1)) begin
       if ((kw < KERNEL_WIDTH - 1)) begin
          kw <= kw + 1;
          if (mmv_sub_tracker < MMV - 1) begin
@@ -238,11 +264,11 @@ end
 
 //8
 always @(posedge clk) begin
-   if(~resetn | buffer_empty_ii) begin
+   if(~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
        ofm_column_tracker <= 0;
        ofm_row_tracker <= 0;
    end else begin
-   if (buffer_full && op_axis_tready && (channel_tracker == EFF_CHANNELS - 1 )) begin
+   if (buffer_full && enaB_r && (channel_tracker == EFF_CHANNELS - 1 )) begin
       if(kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) begin
          if(ofm_column_tracker < (OFMWidth - 1)) begin
             ofm_column_tracker <= ofm_column_tracker + 1;
@@ -267,10 +293,10 @@ end
 
 //9
 always @(posedge clk) begin
-   if(~resetn | buffer_empty_ii) begin
+   if(~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
       mmv_tracker_advance <= 0;
    end else begin
-      if (buffer_full && op_axis_tready ) begin
+      if (buffer_full && enaB_r ) begin
          if ((kw+1)*EFF_CHANNELS+channel_tracker == KERNEL_WIDTH * EFF_CHANNELS - 1) begin
             if (kh == KERNEL_HEIGHT - 1) begin
                if(ofm_column_tracker < (OFMWidth - 1)) begin
@@ -290,7 +316,7 @@ end
 
 //10
 always @(posedge clk) begin
-   if (~resetn | buffer_empty_ii) begin
+   if (~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
       starting_pos <= 0;
    end else begin
    if(starting_pos_i >= BUFFER_SIZE) begin
@@ -303,10 +329,10 @@ end
 
 //11
 always @(posedge clk) begin
-   if (~resetn | buffer_empty_ii) begin
+   if (~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
       starting_pos_i <= 0;
    end else begin
-   if (buffer_full & op_axis_tready) begin
+   if (buffer_full & enaB_r) begin
       if(kh*KERNEL_WIDTH*EFF_CHANNELS+kw*EFF_CHANNELS+channel_tracker+1==KERNEL_WIDTH*KERNEL_HEIGHT*EFF_CHANNELS - 1) begin
          if ((ofm_column_tracker < (OFMWidth - 1 )) && (ofm_column_tracker >= PADDING_WIDTH)) begin //should not increment by one if it's less than padding_width or greater than End-width - padding-width
             if (mmv_tracker != MMV - 1) begin
@@ -332,7 +358,7 @@ end
 
 //12
 always @(posedge clk) begin
-   if (~resetn | buffer_empty_ii) begin 
+   if (~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin 
       mmvshift <= 0;
    end else begin
       if (mmv_sub_tracker==MMV-1 && channel_tracker == EFF_CHANNELS - 1 && EFF_CHANNELS > 1 && kw!=MMV-1) begin

@@ -2,7 +2,7 @@
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <spirit:vendor>user.org</spirit:vendor>
   <spirit:library>user</spirit:library>
-  <spirit:name>mmv_input_swu_v5</spirit:name>
+  <spirit:name>mmv_input_swu_v6</spirit:name>
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
@@ -125,14 +125,14 @@
         <spirit:displayName>Synthesis</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:synthesis</spirit:envIdentifier>
         <spirit:language>Verilog</spirit:language>
-        <spirit:modelName>mmv_input_swu_v5</spirit:modelName>
+        <spirit:modelName>mmv_input_swu_v6</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagesynthesis_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>8b934a73</spirit:value>
+            <spirit:value>b5ed54f7</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -141,14 +141,14 @@
         <spirit:displayName>Simulation</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:simulation</spirit:envIdentifier>
         <spirit:language>Verilog</spirit:language>
-        <spirit:modelName>mmv_input_swu_v5</spirit:modelName>
+        <spirit:modelName>mmv_input_swu_v6</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>8b934a73</spirit:value>
+            <spirit:value>b5ed54f7</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -386,9 +386,9 @@
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/mmv_swu_ip_v5.v</spirit:name>
+        <spirit:name>src/mmv_input_swu_v6.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_55ce0b99</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_bfce56bb</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -400,7 +400,7 @@
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/mmv_swu_ip_v5.v</spirit:name>
+        <spirit:name>src/mmv_input_swu_v6.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
       </spirit:file>
@@ -408,14 +408,14 @@
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/mmv_input_swu_v5_v1_0.tcl</spirit:name>
+        <spirit:name>xgui/mmv_input_swu_v6_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_9e9a95ad</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
   </spirit:fileSets>
-  <spirit:description>mmv_input_swu_v5_v1_0</spirit:description>
+  <spirit:description>mmv_input_swu_v6_v1_0</spirit:description>
   <spirit:parameters>
     <spirit:parameter>
       <spirit:name>SIMD</spirit:name>
@@ -499,7 +499,7 @@
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">mmv_input_swu_v5_v1_0</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">mmv_input_swu_v6_v1_0</spirit:value>
     </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
@@ -532,27 +532,25 @@
       <xilinx:taxonomies>
         <xilinx:taxonomy>/UserIP</xilinx:taxonomy>
       </xilinx:taxonomies>
-      <xilinx:displayName>mmv_input_swu_v5_v1_0</xilinx:displayName>
+      <xilinx:displayName>mmv_input_swu_v6_v1_0</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>3</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-05-11T12:13:53Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-05-11T20:58:32Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1dc63b60_ARCHIVE_LOCATION">/home/uma/generic_ips/mmv_input_swu_v5</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@a100ac9_ARCHIVE_LOCATION">/home/uma/generic_ips/mmv_input_swu_v5</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@69661a52_ARCHIVE_LOCATION">/home/uma/generic_ips/mmv_input_swu_v5</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@149ad88e_ARCHIVE_LOCATION">/home/uma/generic_ips/mmv_input_swu_v5</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@287d7f94_ARCHIVE_LOCATION">/home/uma/generic_ips/mmv_input_swu_v5</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@470c5d35_ARCHIVE_LOCATION">/home/uma/generic_ips/mmv_input_swu_v5</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1e9ca7e6_ARCHIVE_LOCATION">/home/uma/generic_ips/mmv_input_swu_v5</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d4b9078_ARCHIVE_LOCATION">/home/uma/generic_ips/mmv_input_swu_v6</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@224584e1_ARCHIVE_LOCATION">/home/uma/generic_ips/mmv_input_swu_v6</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6c9acef0_ARCHIVE_LOCATION">/home/uma/generic_ips/mmv_input_swu_v6</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@33c1daec_ARCHIVE_LOCATION">/home/uma/generic_ips/mmv_input_swu_v6</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6217710e_ARCHIVE_LOCATION">/home/uma/generic_ips/mmv_input_swu_v6</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="2fedc2b3"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="8ae8edc1"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="588ccbe6"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="961db9d1"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="24122289"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="50bd0be3"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="166f3e87"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>
