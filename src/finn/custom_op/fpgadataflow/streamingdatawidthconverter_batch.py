@@ -394,65 +394,27 @@ class StreamingDataWidthConverter_Batch(HLSCustomOp):
         if "Batch_11" in self.onnx_node.name:
             self.set_nodeattr("MMV", 3)
         if self.get_nodeattr("MMV") > 1:
-            self.set_nodeattr("impl_style", "vivado")
+            self.set_nodeattr("impl_style", "hls")
         impl_style = self.get_nodeattr("impl_style")
 
         if impl_style == "hls":
-
-                       
-            return super().code_generation_ipi()
-        elif impl_style == "vivado":
-            cmd = []
-            node_name = self.onnx_node.name
-            # create a hierarchy for this layer, with the same port names
-            clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
-            rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
-            dout_name = self.get_verilog_top_module_intf_names()["m_axis"][0]
-            din_name = self.get_verilog_top_module_intf_names()["s_axis"][0]
-            cmd.append("create_bd_cell -type hier %s" % node_name)
-            cmd.append("create_bd_pin -dir I -type clk /%s/%s" % (node_name, clk_name))
-            cmd.append("create_bd_pin -dir I -type rst /%s/%s" % (node_name, rst_name))
-            cmd.append(
-                "create_bd_intf_pin -mode Master "
-                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s"
-                % (node_name, dout_name)
-            )
-            cmd.append(
-                "create_bd_intf_pin -mode Slave "
-                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s" % (node_name, din_name)
-            )
-
-            mmv_value = self.get_nodeattr("MMV")
+            if self.get_nodeattr("MMV") == 1:                       
+               return super().code_generation_ipi()
+            else:
             if mmv_value > 1:
                node_name = self.onnx_node.name
-               for m in range(mmv_value):
+               for m in range(mmv_value): 
                   cmd.append(
-                     "create_bd_cell -type ip "
-                     "-vlnv xilinx.com:ip:axis_dwidth_converter:1.1 /%s/dwc_%d" % (node_name, m)
-                  ) 
+                     "create_bd_cell -type ip -vlnv %s /%s/%s_%d"
+                     % (self.get_nodeattr("ip_vlnv"), node_name, node_name, m)
+                  )               
                   cmd.append(
-                     "set_property -dict "
-                     "[list CONFIG.S_TDATA_NUM_BYTES.VALUE_SRC USER] "
-                     "[get_bd_cells /%s/dwc_%d]" % (node_name, m)
+                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
+                    % (node_name, rst_name, node_name, node_name, m, rst_name)
                   )
                   cmd.append(
-                     "set_property -dict "
-                     "[list CONFIG.S_TDATA_NUM_BYTES {%d}] [get_bd_cells /%s/dwc_%d]"
-                     % (np.ceil(self.get_instream_width() / 8), node_name, m)
-                  )
-                  cmd.append(
-                     "set_property -dict "
-                     "[list CONFIG.M_TDATA_NUM_BYTES {%d}] [get_bd_cells /%s/dwc_%d]"
-                     % (np.ceil(self.get_outstream_width() / 8), node_name, m)
-                  )
-                 
-                  cmd.append(
-                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/dwc_%d/aresetn]"
-                    % (node_name, rst_name, node_name, m)
-                  )
-                  cmd.append(
-                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/dwc_%d/aclk]"
-                    % (node_name, clk_name, node_name, m)
+                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
+                    % (node_name, clk_name, node_name, node_name, m, clk_name)
                   )
                # instantiate splitter inputs
                cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter_input" % (node_name))
@@ -500,6 +462,29 @@ class StreamingDataWidthConverter_Batch(HLSCustomOp):
                     "connect_bd_intf_net [get_bd_intf_pins %s/dwc_%d/M_AXIS] "
                     "[get_bd_intf_pins %s/axis_combiner_output/s_axis_%02d]" % (node_name, m, node_name, m)
                   )   
+        elif impl_style == "vivado":
+            cmd = []
+            node_name = self.onnx_node.name
+            # create a hierarchy for this layer, with the same port names
+            clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
+            rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
+            dout_name = self.get_verilog_top_module_intf_names()["m_axis"][0]
+            din_name = self.get_verilog_top_module_intf_names()["s_axis"][0]
+            cmd.append("create_bd_cell -type hier %s" % node_name)
+            cmd.append("create_bd_pin -dir I -type clk /%s/%s" % (node_name, clk_name))
+            cmd.append("create_bd_pin -dir I -type rst /%s/%s" % (node_name, rst_name))
+            cmd.append(
+                "create_bd_intf_pin -mode Master "
+                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s"
+                % (node_name, dout_name)
+            )
+            cmd.append(
+                "create_bd_intf_pin -mode Slave "
+                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s" % (node_name, din_name)
+            )
+
+            mmv_value = self.get_nodeattr("MMV")
+ 
 
             else: 
                # instantiate and configure DWC
