@@ -821,7 +821,7 @@ class Thresholding_Batch(HLSCustomOp):
 
         mmv_value = self.get_nodeattr("MMV")
         if mmv_value > 1:
-           self.set_nodeattr("mem_mode", "decoupled")
+           self.set_nodeattr("mem_mode", "const")
            #assert mem_mode == "decoupled"
         mem_mode = self.get_nodeattr("mem_mode")
         if mem_mode == "decoupled":
@@ -1021,8 +1021,91 @@ class Thresholding_Batch(HLSCustomOp):
                 cmd.append("assign_bd_address")
             cmd.append("save_bd_design")
         elif mem_mode == "const":
-            # base class impl sufficient for const mode
-            return super().code_generation_ipi()
+            if mmv_value > 1 :
+
+               # create a hierarchy for this layer, with the same port names
+               clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
+               rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
+               dout_name = self.get_verilog_top_module_intf_names()["m_axis"][0]
+               din_name = self.get_verilog_top_module_intf_names()["s_axis"][0]
+               cmd.append("create_bd_cell -type hier %s" % node_name)
+               cmd.append("create_bd_pin -dir I -type clk /%s/%s" % (node_name, clk_name))
+               cmd.append("create_bd_pin -dir I -type rst /%s/%s" % (node_name, rst_name))
+               cmd.append(
+                 "create_bd_intf_pin -mode Master "
+                 "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s"
+                 % (node_name, dout_name)
+               )
+               cmd.append(
+                "create_bd_intf_pin -mode Slave "
+                "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s" % (node_name, din_name)
+               )
+
+               # instantiate HLS IPs
+               for i in range(mmv_value):
+                  cmd.append(
+                    "create_bd_cell -type ip -vlnv %s /%s/%s_%d"
+                    % (self.get_nodeattr("ip_vlnv"), node_name, node_name, i)
+                  )
+                  cmd.append(
+                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
+                    % (node_name, rst_name, node_name, node_name, i, rst_name)
+                  )
+                  cmd.append(
+                    "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
+                    % (node_name, clk_name, node_name, node_name, i, clk_name)
+                  )
+               # instantiate splitter inputs
+               cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter_input" % (node_name))
+               cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter_input]" % (roundup_to_integer_multiple(self.get_instream_width() * mmv_value, 8), self.get_instream_width() * mmv_value, self.get_instream_width(), mmv_value, node_name))
+
+               # instantiate combiner
+               cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_output" % (node_name))
+               cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_AXIS_SIGNAL_SET {0x00000003} CONFIG.C_NUM_SI_SLOTS {%d}] [get_bd_cells %s/axis_combiner_output]" % (self.get_outstream_width(), mmv_value, node_name)) 
+
+               # connect input of block to splitter
+               cmd.append(
+                  "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
+                  "[get_bd_intf_pins %s/axis_splitter_input/s_axis]"
+                  % (node_name, din_name, node_name)
+               )
+                # connect splitter to PEs
+               for i in range(mmv_value):
+                  cmd.append(
+                     "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter_input/m_axis_%02d] "
+                     "[get_bd_intf_pins %s/%s_%d/%s]"
+                     % (node_name, i, node_name, node_name, i, din_name)
+                  )
+               # connect PEs to combiner
+               for i in range(mmv_value):
+                  cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/s_axis_%02d]" % (node_name, node_name, i, node_name, i))
+
+               # connect combiner to output of block
+               cmd.append(
+                   "connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output/m_axis] "
+                   "[get_bd_intf_pins %s/%s]"
+                   %(node_name, node_name, dout_name)
+               )
+               # connect clk and resets
+               cmd.append(
+                  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output/aresetn]"
+                  % (node_name, rst_name, node_name)
+               )
+               cmd.append(
+                 "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output/aclk]"
+                  % (node_name, clk_name, node_name)
+               ) 
+               cmd.append(
+                  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_input/aresetn]"
+                  % (node_name, rst_name, node_name)
+               )
+               cmd.append(
+                  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_input/aclk]"
+                   % (node_name, clk_name, node_name)
+               )
+            else: 
+               # base class impl sufficient for const mode
+               return super().code_generation_ipi()
         else:
             raise Exception("Unrecognized mem_mode for Thresholding_Batch")
         return cmd
