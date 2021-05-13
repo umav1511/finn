@@ -557,7 +557,7 @@ class ConvolutionInputGenerator(HLSCustomOp):
                 "create_bd_intf_pin -mode Slave "
                 "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s" % (node_name, din_name)
             )
-            cmd.append("create_bd_cell -type ip -vlnv user.org:user:mmv_input_swu_v2:1.0 %s/swu" % (node_name))
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:mmv_input_swu_v7:1.0 %s/swu" % (node_name))
             padding_height = (self.get_nodeattr("OFMDim") - (self.get_nodeattr("IFMDim") - 2))//2
             padding_width = padding_height
             buffer_size =  self.get_nodeattr("IFMDim") * (self.get_nodeattr("IFMChannels")//self.get_nodeattr("SIMD")) * self.get_nodeattr("ConvKernelDim")

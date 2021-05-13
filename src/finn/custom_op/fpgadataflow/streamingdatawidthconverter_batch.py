@@ -396,13 +396,31 @@ class StreamingDataWidthConverter_Batch(HLSCustomOp):
         if self.get_nodeattr("MMV") > 1:
             self.set_nodeattr("impl_style", "hls")
         impl_style = self.get_nodeattr("impl_style")
-
+        mmv_value = self.get_nodeattr("MMV")
         if impl_style == "hls":
             if self.get_nodeattr("MMV") == 1:                       
                return super().code_generation_ipi()
-            else:
-            if mmv_value > 1:
+            
+            elif mmv_value > 1:
+               cmd = []
                node_name = self.onnx_node.name
+               clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
+               rst_name = self.get_verilog_top_module_intf_names()["rst"][0]
+               dout_name = self.get_verilog_top_module_intf_names()["m_axis"][0]
+               din_name = self.get_verilog_top_module_intf_names()["s_axis"][0]
+               cmd.append("create_bd_cell -type hier %s" % node_name)
+               cmd.append("create_bd_pin -dir I -type clk /%s/%s" % (node_name, clk_name))
+               cmd.append("create_bd_pin -dir I -type rst /%s/%s" % (node_name, rst_name))
+               cmd.append(
+                     "create_bd_intf_pin -mode Master "
+                     "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s"
+                     % (node_name, dout_name)
+               )
+               cmd.append(
+                     "create_bd_intf_pin -mode Slave "
+                     "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s"
+                     % (node_name,  din_name)
+               )
                for m in range(mmv_value): 
                   cmd.append(
                      "create_bd_cell -type ip -vlnv %s /%s/%s_%d"
@@ -455,13 +473,14 @@ class StreamingDataWidthConverter_Batch(HLSCustomOp):
                )
                for m in range(mmv_value):
                   cmd.append(
-                    "connect_bd_intf_net [get_bd_intf_pins %s/dwc_%d/S_AXIS] "
-                    "[get_bd_intf_pins %s/axis_splitter_input/m_axis_%02d]" % (node_name, m, node_name, m)
+                    "connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/%s] "
+                    "[get_bd_intf_pins %s/axis_splitter_input/m_axis_%02d]" % (node_name, node_name, m, din_name, node_name, m)
                   ) 
                   cmd.append(
-                    "connect_bd_intf_net [get_bd_intf_pins %s/dwc_%d/M_AXIS] "
-                    "[get_bd_intf_pins %s/axis_combiner_output/s_axis_%02d]" % (node_name, m, node_name, m)
-                  )   
+                    "connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/%s] "
+                    "[get_bd_intf_pins %s/axis_combiner_output/s_axis_%02d]" % (node_name, node_name, m, dout_name, node_name, m)
+                  ) 
+               return cmd  
         elif impl_style == "vivado":
             cmd = []
             node_name = self.onnx_node.name
@@ -486,43 +505,43 @@ class StreamingDataWidthConverter_Batch(HLSCustomOp):
             mmv_value = self.get_nodeattr("MMV")
  
 
-            else: 
-               # instantiate and configure DWC
-               cmd.append(
-                  "create_bd_cell -type ip "
-                  "-vlnv xilinx.com:ip:axis_dwidth_converter:1.1 /%s/dwc" % node_name
-               )
-               cmd.append(
-                  "set_property -dict "
-                  "[list CONFIG.S_TDATA_NUM_BYTES.VALUE_SRC USER] "
-                  "[get_bd_cells /%s/dwc]" % node_name
-               )
-               cmd.append(
-                  "set_property -dict "
-                  "[list CONFIG.S_TDATA_NUM_BYTES {%d}] [get_bd_cells /%s/dwc]"
-                  % (np.ceil(self.get_instream_width() / 8), node_name)
-               )
-               cmd.append(
-                  "set_property -dict "
-                  "[list CONFIG.M_TDATA_NUM_BYTES {%d}] [get_bd_cells /%s/dwc]"
-                  % (np.ceil(self.get_outstream_width() / 8), node_name)
-               )
-               cmd.append(
-                  "connect_bd_intf_net [get_bd_intf_pins %s/dwc/M_AXIS] "
-                  "[get_bd_intf_pins %s/%s]" % (node_name, node_name, dout_name)
-               )
-               cmd.append(
-                  "connect_bd_intf_net [get_bd_intf_pins %s/dwc/S_AXIS] "
-                  "[get_bd_intf_pins %s/%s]" % (node_name, node_name, din_name)
-               )
-               cmd.append(
-                  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/dwc/aresetn]"
-                  % (node_name, rst_name, node_name)
-               )
-               cmd.append(
-                  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/dwc/aclk]"
-                  % (node_name, clk_name, node_name)
-               )
+            
+            # instantiate and configure DWC
+            cmd.append(
+               "create_bd_cell -type ip "
+               "-vlnv xilinx.com:ip:axis_dwidth_converter:1.1 /%s/dwc" % node_name
+            )
+            cmd.append(
+               "set_property -dict "
+               "[list CONFIG.S_TDATA_NUM_BYTES.VALUE_SRC USER] "
+               "[get_bd_cells /%s/dwc]" % node_name
+            )
+            cmd.append(
+               "set_property -dict "
+               "[list CONFIG.S_TDATA_NUM_BYTES {%d}] [get_bd_cells /%s/dwc]"
+               % (np.ceil(self.get_instream_width() / 8), node_name)
+            )
+            cmd.append(
+               "set_property -dict "
+               "[list CONFIG.M_TDATA_NUM_BYTES {%d}] [get_bd_cells /%s/dwc]"
+               % (np.ceil(self.get_outstream_width() / 8), node_name)
+            )
+            cmd.append(
+               "connect_bd_intf_net [get_bd_intf_pins %s/dwc/M_AXIS] "
+               "[get_bd_intf_pins %s/%s]" % (node_name, node_name, dout_name)
+            )
+            cmd.append(
+               "connect_bd_intf_net [get_bd_intf_pins %s/dwc/S_AXIS] "
+               "[get_bd_intf_pins %s/%s]" % (node_name, node_name, din_name)
+            )
+            cmd.append(
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/dwc/aresetn]"
+               % (node_name, rst_name, node_name)
+            )
+            cmd.append(
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/dwc/aclk]"
+               % (node_name, clk_name, node_name)
+            )
             return cmd
         else:
             raise Exception(
