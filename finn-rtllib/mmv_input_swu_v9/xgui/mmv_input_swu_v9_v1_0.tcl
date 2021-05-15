@@ -10,7 +10,8 @@ proc init_gui { IPINST } {
   ipgui::add_param $IPINST -name "IP_PRECISION" -parent ${Page_0}
   ipgui::add_param $IPINST -name "KERNEL_HEIGHT" -parent ${Page_0}
   ipgui::add_param $IPINST -name "KERNEL_WIDTH" -parent ${Page_0}
-  ipgui::add_param $IPINST -name "MMV" -parent ${Page_0}
+  ipgui::add_param $IPINST -name "MMV_IN" -parent ${Page_0}
+  ipgui::add_param $IPINST -name "MMV_OUT" -parent ${Page_0}
   ipgui::add_param $IPINST -name "OFMDIM_MOD_MMV" -parent ${Page_0}
   ipgui::add_param $IPINST -name "OFMHeight" -parent ${Page_0}
   ipgui::add_param $IPINST -name "OFMWidth" -parent ${Page_0}
@@ -86,12 +87,21 @@ proc validate_PARAM_VALUE.KERNEL_WIDTH { PARAM_VALUE.KERNEL_WIDTH } {
 	return true
 }
 
-proc update_PARAM_VALUE.MMV { PARAM_VALUE.MMV } {
-	# Procedure called to update MMV when any of the dependent parameters in the arguments change
+proc update_PARAM_VALUE.MMV_IN { PARAM_VALUE.MMV_IN } {
+	# Procedure called to update MMV_IN when any of the dependent parameters in the arguments change
 }
 
-proc validate_PARAM_VALUE.MMV { PARAM_VALUE.MMV } {
-	# Procedure called to validate MMV
+proc validate_PARAM_VALUE.MMV_IN { PARAM_VALUE.MMV_IN } {
+	# Procedure called to validate MMV_IN
+	return true
+}
+
+proc update_PARAM_VALUE.MMV_OUT { PARAM_VALUE.MMV_OUT } {
+	# Procedure called to update MMV_OUT when any of the dependent parameters in the arguments change
+}
+
+proc validate_PARAM_VALUE.MMV_OUT { PARAM_VALUE.MMV_OUT } {
+	# Procedure called to validate MMV_OUT
 	return true
 }
 
@@ -233,9 +243,14 @@ proc update_MODELPARAM_VALUE.IP_PRECISION { MODELPARAM_VALUE.IP_PRECISION PARAM_
 	set_property value [get_property value ${PARAM_VALUE.IP_PRECISION}] ${MODELPARAM_VALUE.IP_PRECISION}
 }
 
-proc update_MODELPARAM_VALUE.MMV { MODELPARAM_VALUE.MMV PARAM_VALUE.MMV } {
+proc update_MODELPARAM_VALUE.MMV_IN { MODELPARAM_VALUE.MMV_IN PARAM_VALUE.MMV_IN } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
-	set_property value [get_property value ${PARAM_VALUE.MMV}] ${MODELPARAM_VALUE.MMV}
+	set_property value [get_property value ${PARAM_VALUE.MMV_IN}] ${MODELPARAM_VALUE.MMV_IN}
+}
+
+proc update_MODELPARAM_VALUE.MMV_OUT { MODELPARAM_VALUE.MMV_OUT PARAM_VALUE.MMV_OUT } {
+	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
+	set_property value [get_property value ${PARAM_VALUE.MMV_OUT}] ${MODELPARAM_VALUE.MMV_OUT}
 }
 
 proc update_MODELPARAM_VALUE.BUFFER_SIZE { MODELPARAM_VALUE.BUFFER_SIZE PARAM_VALUE.BUFFER_SIZE } {
