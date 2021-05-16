@@ -81,11 +81,14 @@ reg [$clog2(OFMWidth) - 1: 0] ofm_column_tracker = 0;
 reg [$clog2(OFMHeight) - 1: 0]ofm_row_tracker = 0;
 reg [$clog2(EFF_CHANNELS) : 0] channel_tracker = 0;
 wire weA;
-reg [$clog2(MMV_IN) - 1: 0] mmv_tracker = 0;
-reg [$clog2(MMV_IN) - 1: 0] mmv_tracker_advance = 0;
+reg [$clog2(MMV_IN) - 1: 0] mmv_col_tracker = 0;
+reg [$clog2(MMV_IN) - 1: 0] mmv_row_tracker = 0;
+
+reg [$clog2(MMV_IN) - 1: 0] mmv_col_tracker_advance = 0;
+reg [$clog2(MMV_IN) - 1: 0] mmv_row_tracker_advance = 0;
 
 reg [$clog2(MMV_IN) - 1: 0] mmv_sub_tracker = 0;
-reg [$clog2(BUFFER_SIZE) : 0] starting_pos_i = 0;
+reg [$clog2(OFMHeight *  IFMWidth * EFF_CHANNELS) : 0] starting_pos_i = 0;
 reg [$clog2(BUFFER_SIZE) - 1 : 0] starting_pos = 0;
 reg [$clog2(BUFFER_SIZE+EFF_CHANNELS*(KERNEL_WIDTH+((KERNEL_HEIGHT-1)*IFMWidth)) + EFF_CHANNELS)-1 : 0] pos = 0;
 reg mmvshift=0;
@@ -124,9 +127,9 @@ if (MMV_IN > 1) begin
 always @(posedge clk)
     if(~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
         pending_rd_cntr <= BUFFER_SIZE/MMV_IN;
-    end else if(ip_axis_tready & ip_axis_tvalid & !((ofm_column_tracker != 0) && ((mmv_tracker == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0)))
+    end else if(ip_axis_tready & ip_axis_tvalid & !((ofm_column_tracker != 0) && ((mmv_col_tracker == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0)))
         pending_rd_cntr <= pending_rd_cntr - 1;
-    else if( !(ip_axis_tready & ip_axis_tvalid) & (ofm_column_tracker != 0) && ((mmv_tracker == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0))
+    else if( !(ip_axis_tready & ip_axis_tvalid) & (ofm_column_tracker != 0) && ((mmv_col_tracker == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0))
         pending_rd_cntr <= pending_rd_cntr + 1;        
 end else begin
 always @(posedge clk)
@@ -272,7 +275,7 @@ always @(posedge clk) begin
          end
       end else if (kw == KERNEL_WIDTH - 1) begin
          kw <= 0;
-         mmv_sub_tracker <= mmv_tracker_advance;
+         mmv_sub_tracker <= mmv_col_tracker_advance;
          if (kh < (KERNEL_HEIGHT - 1) )begin
             kh <= kh + 1;
          end else begin
@@ -292,18 +295,24 @@ always @(posedge clk) begin
       if(kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) begin
          if(ofm_column_tracker < (OFMWidth - 1)) begin
             ofm_column_tracker <= ofm_column_tracker + 1;
-            if (mmv_tracker < MMV_IN - 1) begin
-               mmv_tracker <= mmv_tracker + 1;
+            if (mmv_col_tracker < MMV_IN - 1) begin
+               mmv_col_tracker <= mmv_col_tracker + 1;
             end else begin
-               mmv_tracker <= 0;
+               mmv_col_tracker <= 0;
             end
          end else begin
             ofm_column_tracker <= 0;
-            mmv_tracker <= 0;
+            mmv_col_tracker <= 0;
             if (ofm_row_tracker < (OFMHeight - 1)) begin
                ofm_row_tracker <= ofm_row_tracker + 1;
+               if (mmv_row_tracker < MMV_IN - 1) begin
+                  mmv_row_tracker <= mmv_row_tracker + 1;
+               end else begin
+                  mmv_row_tracker <= 0;
+               end
             end else begin
                ofm_row_tracker <= 0;
+               mmv_row_tracker <= 0;
             end
          end
       end
@@ -314,19 +323,19 @@ end
 //9
 always @(posedge clk) begin
    if(~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
-      mmv_tracker_advance <= 0;
+      mmv_col_tracker_advance <= 0;
    end else begin
       if (buffer_full && enaB ) begin
          if ((kw+1)*EFF_CHANNELS+channel_tracker == KERNEL_WIDTH * EFF_CHANNELS - 1) begin
             if (kh == KERNEL_HEIGHT - 1) begin
                if(ofm_column_tracker < (OFMWidth - 1)) begin
-                  if (mmv_tracker < MMV_IN - 1) begin
-                     mmv_tracker_advance <= mmv_tracker_advance + 1;
+                  if (mmv_col_tracker < MMV_IN - 1) begin
+                     mmv_col_tracker_advance <= mmv_col_tracker_advance + 1;
                   end else begin
-                     mmv_tracker_advance <= 0;
+                     mmv_col_tracker_advance <= 0;
                   end
                end else begin
-                  mmv_tracker_advance <= 0;
+                  mmv_col_tracker_advance <= 0;
             end
          end
       end
@@ -334,6 +343,27 @@ always @(posedge clk) begin
    end            
 end
 
+always @(posedge clk) begin
+   if(~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
+      mmv_row_tracker_advance <= 0;
+   end else begin
+      if (buffer_full && enaB ) begin
+         if ((kw+1)*EFF_CHANNELS+channel_tracker == KERNEL_WIDTH * EFF_CHANNELS - 1) begin
+            if (kh == KERNEL_HEIGHT - 1) begin
+               if(ofm_column_tracker < (OFMWidth - 1)) begin
+                  if (mmv_col_tracker < MMV_IN - 1) begin
+                     mmv_row_tracker_advance <= mmv_col_tracker_advance + 1;
+                  end else begin
+                     mmv_row_tracker_advance <= 0;
+                  end
+               end else begin
+                  mmv_row_tracker_advance <= 0;
+            end
+         end
+      end
+   end  
+   end            
+end
 //10
 always @(posedge clk) begin
    if (~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
@@ -356,7 +386,7 @@ always @(posedge clk) begin
       if(kh*KERNEL_WIDTH*EFF_CHANNELS+kw*EFF_CHANNELS+channel_tracker+1==KERNEL_WIDTH*KERNEL_HEIGHT*EFF_CHANNELS - 1) begin
          if ((ofm_column_tracker < (OFMWidth - 1 )) && (ofm_column_tracker >= PADDING_WIDTH)) begin //should not increment by one if it's less than padding_width or greater than End-width - padding-width
             if (MMV_IN > 1) begin
-               if (mmv_tracker != MMV_IN - 1 || EFF_CHANNELS == 1) begin
+               if (mmv_col_tracker != MMV_IN - 1 || EFF_CHANNELS == 1) begin
                   starting_pos_i <= starting_pos+(STRIDE);
                end else begin
                   starting_pos_i <= starting_pos+(STRIDE)+MMV_IN;
@@ -367,9 +397,10 @@ always @(posedge clk) begin
          end
          else if (ofm_column_tracker == OFMWidth - 1) begin
             if ((ofm_row_tracker >= PADDING_HEIGHT)) begin
-               starting_pos_i <= starting_pos + (KERNEL_WIDTH-PADDING_WIDTH)*(EFF_CHANNELS) + (STRIDE - 1) * (IFMWidth * EFF_CHANNELS);
+               //starting_pos_i <= starting_pos + (KERNEL_WIDTH-PADDING_WIDTH)*(EFF_CHANNELS) + (STRIDE - 1) * (IFMWidth * EFF_CHANNELS);
+               starting_pos_i <= (ofm_row_tracker + 1) * STRIDE * IFMWidth * EFF_CHANNELS; 
             end else begin
-               starting_pos_i <= starting_pos - (OFMWidth- 1 - PADDING_WIDTH)*(EFF_CHANNELS);
+               starting_pos_i <= 0;
             end               
          end
          else if(ofm_column_tracker < PADDING_WIDTH) begin
@@ -385,9 +416,9 @@ always @(posedge clk) begin
    if (~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin 
       mmvshift <= 0;
    end else begin
-      if (mmv_sub_tracker==MMV_IN-1 && channel_tracker == EFF_CHANNELS - 1 && EFF_CHANNELS > 1 && kw!=MMV_IN-1) begin
+      if (mmv_sub_tracker==MMV_IN-1 && channel_tracker == EFF_CHANNELS - 1 && EFF_CHANNELS > 1) begin
           mmvshift <= 1;
-      end else if (kw == MMV_IN - 1 && channel_tracker == EFF_CHANNELS - 1)begin
+      end else if (kw == KERNEL_WIDTH - 1 && channel_tracker == EFF_CHANNELS - 1)begin
           mmvshift <= 0;
       end
    end
