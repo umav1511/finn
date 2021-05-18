@@ -28,5 +28,7 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-iverilog ../hdl/*.v tb_memstream_writes.v -o sim
-./sim
+xvlog -prj sim.prj
+xelab -debug all -relax --mt 8 -L xil_defaultlib xil_defaultlib.tb
+xsim xil_defaultlib.tb -gui -view wave.wcfg
+

@@ -41,13 +41,12 @@ module wr_control #(
     output ready,
     input handshake,
     input restart,
-    output full,
+    output reg full,
 
-    output [$clog2(BUFFER_DEPTH/MMV_IN)-1:0] addr
+    output reg [$clog2(BUFFER_DEPTH/MMV_IN)-1:0] addr
 );
 
 //buffer write logic
-reg full=0;
 reg [$clog2(NPIXELS) - 1 : 0] input_pixel= 0;
 reg [$clog2(BUFFER_DEPTH/MMV_IN) - 1 : 0] pending_rd_cntr = BUFFER_DEPTH/MMV_IN;
 
@@ -59,7 +58,7 @@ always @(posedge aclk) begin
         addr <= 0;
         full <= 0;
         input_pixel <= 0;
-    end else if(rd_done) begin
+    end else if(restart) begin
         addr <= 0;
         full <= 0;
         input_pixel <= 0;   

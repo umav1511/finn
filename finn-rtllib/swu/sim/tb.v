@@ -77,14 +77,14 @@ swu #(
     .BUFFER_SIZE(BUFFER_SIZE),
     .OFMDIM_MOD_MMV(OFMDIM_MOD_MMV)
 ) uut (
-    .clk(clk),
-    .resetn(resetn),
-    .ip_axis_tdata(ip_axis_tdata),
-    .ip_axis_tvalid(ip_axis_tvalid),
-    .ip_axis_tready(ip_axis_tready),
-    .op_axis_tdata(op_axis_tdata),
-    .op_axis_tready(op_axis_tready),
-    .op_axis_tvalid(op_axis_tvalid)
+    .aclk(clk),
+    .aresetn(resetn),
+    .s_axis_tdata(ip_axis_tdata),
+    .s_axis_tvalid(ip_axis_tvalid),
+    .s_axis_tready(ip_axis_tready),
+    .m_axis_tdata(op_axis_tdata),
+    .m_axis_tready(op_axis_tready),
+    .m_axis_tvalid(op_axis_tvalid)
 );
 
 integer i=0;

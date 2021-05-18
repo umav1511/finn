@@ -31,19 +31,30 @@
 module rd_control #(
     parameter NPIXELS = 1024,
     parameter WORDS_PER_PX = 1,
+    parameter IFMWidth = 8,
+    parameter STRIDE = 1,
     parameter MMV_IN = 2,
+    parameter KERNEL_HEIGHT = 3,
+    parameter KERNEL_WIDTH = 3,
+    parameter OFMWidth = 6,
+    parameter OFMHeight = 6,
+    parameter PADDING_WIDTH = 0,
+    parameter PADDING_HEIGHT =0,
     parameter BUFFER_DEPTH = 20
 )
 (
     input aclk,
     input aresetn,
 
+    input wr_handshake,
+    input [$clog2(BUFFER_DEPTH/MMV_IN)-1:0] wr_addr,
+
     output ready,
     input handshake,
     output done,
     input full,
 
-    output [$clog2(BUFFER_DEPTH)-1:0] addr,
+    output reg [$clog2(BUFFER_DEPTH)-1:0] addr,
     output en,
     output enq,
     output valid
@@ -72,7 +83,8 @@ reg [$clog2(MMV_IN) - 1: 0] mmv_row_tracker_advance = 0;
 reg [$clog2(MMV_IN) - 1: 0] mmv_sub_tracker = 0;
 reg [$clog2(OFMHeight *  IFMWidth * WORDS_PER_PX) : 0] starting_pos_i = 0;
 reg [$clog2(BUFFER_DEPTH) - 1 : 0] starting_pos = 0;
-reg [$clog2(BUFFER_DEPTH+WORDS_PER_PX*(KERNEL_WIDTH+((KERNEL_HEIGHT-1)*IFMWidth)) + WORDS_PER_PX)-1 : 0] addr = 0;
+reg [$clog2(BUFFER_DEPTH) - 1 : 0] pending_rd_cntr = 0;
+//reg [$clog2(BUFFER_DEPTH+WORDS_PER_PX*(KERNEL_WIDTH+((KERNEL_HEIGHT-1)*IFMWidth)) + WORDS_PER_PX)-1 : 0] addr = 0;
 reg mmvshift=0;
 
 assign done = (buffer_empty && handshake);
@@ -92,11 +104,11 @@ end
 endgenerate
 
 always @(posedge aclk)
-    if(~aresetn | rd_done) begin
+    if(~aresetn | done) begin
         pending_rd_cntr <= BUFFER_DEPTH/MMV_IN;
-    end else if(s_axis_hs & !rd_cntr_incdec)
+    end else if(wr_handshake & !rd_cntr_incdec)
         pending_rd_cntr <= pending_rd_cntr - 1;
-    else if( !s_axis_hs & rd_cntr_incdec)
+    else if( !wr_handshake & rd_cntr_incdec)
         pending_rd_cntr <= pending_rd_cntr + 1;  
 
 always @(posedge aclk)
@@ -131,7 +143,7 @@ end
   
 //2
 always @(posedge aclk) begin
-    if (~aresetn | rd_done) begin
+    if (~aresetn | done) begin
         buffer_empty <= 0;
     end else if (kh==KERNEL_HEIGHT-1 && kw==KERNEL_WIDTH-1 && ofm_row_tracker == OFMHeight - 1 && ofm_column_tracker == OFMWidth-1 && channel_tracker == WORDS_PER_PX -1) begin 
         buffer_empty <= 1;
@@ -140,7 +152,7 @@ end
 // process to read data
 //3
 always @(*) begin
-    if (~aresetn | rd_done) begin
+    if (~aresetn | done) begin
         addr = 0;
     end else begin
         if(MMV_IN == 1) begin
@@ -158,10 +170,10 @@ end
 always @(posedge aclk) begin
     if (~aresetn) begin
         channel_tracker <= 0;
-    end else if (rd_done) begin
+    end else if (done) begin
         channel_tracker <= 0;   
     end else begin
-        if ((full || counter == (BUFFER_DEPTH/MMV_IN) - 1  ) & enaB) begin
+        if ((full || wr_addr == (BUFFER_DEPTH/MMV_IN) - 1  ) & enaB) begin
             if ((channel_tracker < WORDS_PER_PX - 1)) begin
                 channel_tracker <= channel_tracker + 1;
             end else begin
@@ -178,7 +190,7 @@ always @(posedge aclk) begin
         kw <= 0;
         kh <= 0;
         mmv_sub_tracker <= 0;
-    end else if (rd_done) begin
+    end else if (done) begin
         kw <= 0;
         kh <= 0;
         mmv_sub_tracker <= 0;    
@@ -205,7 +217,7 @@ end
 
 //8
 always @(posedge aclk) begin
-    if(~aresetn | rd_done) begin
+    if(~aresetn | done) begin
         ofm_column_tracker <= 0;
         ofm_row_tracker <= 0;
     end else begin
@@ -240,7 +252,7 @@ end
 
 //9
 always @(posedge aclk) begin
-    if(~aresetn | rd_done) begin
+    if(~aresetn | done) begin
         mmv_col_tracker_advance <= 0;
     end else begin
         if (full && enaB ) begin
@@ -262,7 +274,7 @@ always @(posedge aclk) begin
 end
 
 always @(posedge aclk) begin
-    if(~aresetn | rd_done) begin
+    if(~aresetn | done) begin
         mmv_row_tracker_advance <= 0;
     end else begin
         if (full && enaB ) begin
@@ -284,7 +296,7 @@ always @(posedge aclk) begin
 end
 //10
 always @(posedge aclk) begin
-    if (~aresetn | rd_done) begin
+    if (~aresetn | done) begin
         starting_pos <= 0;
     end else begin
         if(starting_pos_i >= BUFFER_DEPTH) begin
@@ -297,7 +309,7 @@ end
 
 //11
 always @(posedge aclk) begin
-    if (~aresetn | rd_done) begin
+    if (~aresetn | done) begin
         starting_pos_i <= 0;
     end else begin
         if (full & enaB) begin
@@ -330,7 +342,7 @@ end
 
 //12
 always @(posedge aclk) begin
-    if (~aresetn | rd_done) begin 
+    if (~aresetn | done) begin 
         mmvshift <= 0;
     end else begin
         if (mmv_sub_tracker==MMV_IN-1 && channel_tracker == WORDS_PER_PX - 1 && WORDS_PER_PX > 1) begin

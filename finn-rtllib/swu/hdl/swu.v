@@ -61,10 +61,10 @@ module swu #(
     output m_axis_tvalid
 );
 
-localparam BUFFER_SIZE = KERNEL_HEIGHT * IFMWidth * (IFMChannels/SIMD) + KERNEL_WIDTH;
+localparam BUFFER_DEPTH = KERNEL_HEIGHT * IFMWidth * (IFMChannels/SIMD) + KERNEL_WIDTH;
 localparam EFF_CHANNELS = IFMChannels/SIMD;
-localparam SIZEA = BUFFER_SIZE/MMV_IN;
-localparam SIZEB = BUFFER_SIZE;
+localparam SIZEA = BUFFER_DEPTH/MMV_IN;
+localparam SIZEB = BUFFER_DEPTH;
 localparam ADDRWIDTHA = $clog2(SIZEA);
 localparam ADDRWIDTHB = $clog2(SIZEB);
 localparam WIDTHA = MMV_IN * SIMD * PRECISION ;
@@ -86,7 +86,7 @@ wire buffer_full;
 
 wr_control #(
     .NPIXELS(IFMWidth * IFMHeight),
-    .WORDS_PER_PX(IFMChannels/SIMD),
+    .WORDS_PER_PX(EFF_CHANNELS),
     .MMV_IN(MMV_IN),
     .BUFFER_DEPTH(SIZEA)
 )
@@ -107,14 +107,25 @@ genvar i;
 generate for(i=0; i<MMV_OUT; i=i+1) begin: mmv_output
     rd_control #(
         .NPIXELS(IFMWidth * IFMHeight),
-        .WORDS_PER_PX(IFMChannels/SIMD),
+        .WORDS_PER_PX(EFF_CHANNELS),
         .MMV_IN(MMV_IN),
+        .IFMWidth(IFMWidth),
+        .STRIDE(STRIDE),
+        .KERNEL_HEIGHT(KERNEL_HEIGHT),
+        .KERNEL_WIDTH(KERNEL_WIDTH),
+        .OFMWidth(OFMWidth),
+        .OFMHeight(OFMHeight),
+        .PADDING_WIDTH(PADDING_WIDTH),
+        .PADDING_HEIGHT(PADDING_HEIGHT),
         .BUFFER_DEPTH(SIZEB)
     )
     rdctrl
     (
         .aclk(aclk),
         .aresetn(aresetn),
+
+        .wr_handshake(s_axis_hs),
+        .wr_addr(wr_addr),
 
         .ready(m_axis_tready),
         .handshake(m_axis_hs),
