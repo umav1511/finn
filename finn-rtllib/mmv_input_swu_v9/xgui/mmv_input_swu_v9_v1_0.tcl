@@ -20,6 +20,7 @@ proc init_gui { IPINST } {
   ipgui::add_param $IPINST -name "RAM_STYLE" -parent ${Page_0}
   ipgui::add_param $IPINST -name "SIMD" -parent ${Page_0}
   ipgui::add_param $IPINST -name "STRIDE" -parent ${Page_0}
+  ipgui::add_param $IPINST -name "S_BY_M" -parent ${Page_0}
 
 
 }
@@ -177,6 +178,15 @@ proc validate_PARAM_VALUE.STRIDE { PARAM_VALUE.STRIDE } {
 	return true
 }
 
+proc update_PARAM_VALUE.S_BY_M { PARAM_VALUE.S_BY_M } {
+	# Procedure called to update S_BY_M when any of the dependent parameters in the arguments change
+}
+
+proc validate_PARAM_VALUE.S_BY_M { PARAM_VALUE.S_BY_M } {
+	# Procedure called to validate S_BY_M
+	return true
+}
+
 
 proc update_MODELPARAM_VALUE.SIMD { MODELPARAM_VALUE.SIMD PARAM_VALUE.SIMD } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
@@ -261,5 +271,10 @@ proc update_MODELPARAM_VALUE.BUFFER_SIZE { MODELPARAM_VALUE.BUFFER_SIZE PARAM_VA
 proc update_MODELPARAM_VALUE.OFMDIM_MOD_MMV { MODELPARAM_VALUE.OFMDIM_MOD_MMV PARAM_VALUE.OFMDIM_MOD_MMV } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
 	set_property value [get_property value ${PARAM_VALUE.OFMDIM_MOD_MMV}] ${MODELPARAM_VALUE.OFMDIM_MOD_MMV}
+}
+
+proc update_MODELPARAM_VALUE.S_BY_M { MODELPARAM_VALUE.S_BY_M PARAM_VALUE.S_BY_M } {
+	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
+	set_property value [get_property value ${PARAM_VALUE.S_BY_M}] ${MODELPARAM_VALUE.S_BY_M}
 }
 

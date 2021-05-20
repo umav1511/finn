@@ -27,7 +27,8 @@ parameter SIZEB = 1024,
 parameter ADDRWIDTHB = 10,
 parameter WIDTHA = 16,
 parameter SIZEA = 256,
-parameter ADDRWIDTHA = 8)
+parameter ADDRWIDTHA = 8,
+parameter RAM_STYLE = "auto")
 
 
 (
@@ -51,7 +52,7 @@ localparam minWIDTH = `min(WIDTHA, WIDTHB);
 localparam RATIO = maxWIDTH / minWIDTH;
 localparam log2RATIO = log2(RATIO);
 
-reg [minWIDTH-1:0] RAM [0:maxSIZE-1];
+(* ram_style = RAM_STYLE *) reg [minWIDTH-1:0] RAM [0:maxSIZE-1];
 reg [WIDTHB-1:0] readB;
 
 always @(posedge clkB) begin 
