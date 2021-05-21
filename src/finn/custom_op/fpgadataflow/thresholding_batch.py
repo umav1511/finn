@@ -602,6 +602,8 @@ class Thresholding_Batch(HLSCustomOp):
     def defines(self, var):
         numInputVectors = list(self.get_nodeattr("numInputVectors"))
         numReps = numInputVectors[0]
+        if self.get_nodeattr("MMV") > 1:
+           numReps = 1
         self.code_gen_dict["$DEFINES$"] = [
             """#define NumChannels1 {}\n #define PE1 {}\n #define numReps {}""".format(
                 self.get_nodeattr("NumChannels"), self.get_nodeattr("PE"), numReps,
@@ -682,22 +684,25 @@ class Thresholding_Batch(HLSCustomOp):
         else:
             raise Exception("""Unexpeted input shape""")
         mem_mode = self.get_nodeattr("mem_mode")
+
+        if self.get_nodeattr("MMV") > 1:
+            imgdim = 1
         if mem_mode == "const":
             self.code_gen_dict["$DOCOMPUTE$"] = [
                 """{}<{}, NumChannels1, PE1, {}, {}>
                 (in0, out, threshs, numReps);""".format(
-                    node.op_type, imgdim, tmpl_args["TSrcI"], tmpl_args["TDstI"],
+                node.op_type, imgdim, tmpl_args["TSrcI"], tmpl_args["TDstI"],
                 )
             ]
         elif mem_mode == "decoupled":
             self.code_gen_dict["$DOCOMPUTE$"] = [
                 """{}<{}, NumChannels1, PE1, {}, {}, ActVal1, ThresType1, NumSteps1>
                 (in0, out, weights, numReps);""".format(
-                    "Thresholding_Stream_Batch",
-                    imgdim,
-                    tmpl_args["TSrcI"],
-                    tmpl_args["TDstI"],
-                )
+                "Thresholding_Stream_Batch",
+                  imgdim,
+                  tmpl_args["TSrcI"],
+                  tmpl_args["TDstI"],
+                 )
             ]
         else:
             raise Exception("Unrecognized mem_mode")
@@ -1022,7 +1027,7 @@ class Thresholding_Batch(HLSCustomOp):
             cmd.append("save_bd_design")
         elif mem_mode == "const":
             if mmv_value > 1 :
-
+               node_name = self.onnx_node.name
                # create a hierarchy for this layer, with the same port names
                clk_name = self.get_verilog_top_module_intf_names()["clk"][0]
                rst_name = self.get_verilog_top_module_intf_names()["rst"][0]

@@ -391,10 +391,13 @@ class StreamingDataWidthConverter_Batch(HLSCustomOp):
         shape doesn't match expected shape, should be same as input shape"""
 
     def code_generation_ipi(self):
-        if "Batch_11" in self.onnx_node.name:
-            self.set_nodeattr("MMV", 3)
-        if self.get_nodeattr("MMV") > 1:
+        #if "Batch_6" in self.onnx_node.name:
+        #if "Batch_11" in self.onnx_node.name or "Batch_12" in self.onnx_node.name:
+        #    self.set_nodeattr("MMV", 3)
+        if self.get_instream_width()/8 != np.ceil(self.get_instream_width()/ 8):
             self.set_nodeattr("impl_style", "hls")
+        #if self.get_nodeattr("MMV") > 1:
+        #    self.set_nodeattr("impl_style", "hls")
         impl_style = self.get_nodeattr("impl_style")
         mmv_value = self.get_nodeattr("MMV")
         if impl_style == "hls":

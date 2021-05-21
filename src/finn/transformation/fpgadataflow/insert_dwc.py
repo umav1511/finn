@@ -75,7 +75,7 @@ class InsertDWC(Transformation):
 
                             # determine dtype for dwc
                             dtype = n0.get_output_datatype()
-
+                            mmv = n0.get_nodeattr("MMV")
                             dwc_output_tensor = oh.make_tensor_value_info(
                                 model.make_new_valueinfo_name(),
                                 TensorProto.FLOAT,
@@ -93,6 +93,7 @@ class InsertDWC(Transformation):
                                 inWidth=dwc_in_width,
                                 outWidth=dwc_out_width,
                                 dataType=str(dtype.name),
+                                MMV = mmv,
                             )
                             # insert dwc
                             graph.node.insert(node_ind + 1, dwc_node)
