@@ -75,7 +75,10 @@ class InsertDWC(Transformation):
 
                             # determine dtype for dwc
                             dtype = n0.get_output_datatype()
-                            mmv = n0.get_nodeattr("MMV")
+                            if n0.onnx_node.op_type == "Thresholding_Batch" or n0.onnx_node.op_type == "StreamingFCLayer_Batch":
+                                mmv = n0.get_nodeattr("MMV")
+                            else :
+                                mmv = 1
                             dwc_output_tensor = oh.make_tensor_value_info(
                                 model.make_new_valueinfo_name(),
                                 TensorProto.FLOAT,

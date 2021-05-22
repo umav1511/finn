@@ -473,8 +473,8 @@ class TestEnd2End:
         if kind == "alveo" and ("VITIS_PATH" not in os.environ):
             pytest.skip("VITIS_PATH not set")
         #prev_chkpt_name = get_checkpoint_name(topology, wbits, abits, "fold")
-        #prev_chkpt_name = "new_mmv_config.onnx"
-        prev_chkpt_name = "end2end_cnv_w1a1_fold.onnx"
+        prev_chkpt_name = "new_mmv_config.onnx"
+        #prev_chkpt_name = "end2end_cnv_w1a1_fold.onnx"
         model = load_test_checkpoint_or_skip(prev_chkpt_name)
         test_fpga_part = get_build_env(kind, target_clk_ns)["part"]
         model = model.transform(GiveUniqueNodeNames())

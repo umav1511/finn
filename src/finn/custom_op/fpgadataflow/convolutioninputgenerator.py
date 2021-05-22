@@ -537,8 +537,9 @@ class ConvolutionInputGenerator(HLSCustomOp):
 
     def code_generation_ipi(self):
         #if "Generator_5" in self.onnx_node.name or "Generator_4" in self.onnx_node.name or self.get_nodeattr("MMVI") > 1: 
-        #if self.get_nodeattr("MMVI") > 1:
-        if "Generator_5" in self.onnx_node.name or "Generator_4" in self.onnx_node.name or "Generator_3" in self.onnx_node.name or "Generator_0" in self.onnx_node.name:
+        if self.get_nodeattr("MMVI") > 1 : 
+        #if "Generator_1" in self.onnx_node.name :
+        #if "Generator_5" in self.onnx_node.name or "Generator_4" in self.onnx_node.name or "Generator_3" in self.onnx_node.name or "Generator_0" in self.onnx_node.name or "Generator_2" in self.onnx_node.name:
         #if 1:
             node_name = self.onnx_node.name
             cmd = []
