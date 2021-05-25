@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mmv_input_swu_v9 #(
+module mmv_input_swu_v11 #(
     parameter SIMD = 32,
     parameter STRIDE = 1,
     parameter IFMChannels = 128,
@@ -94,6 +94,8 @@ reg [$clog2(BUFFER_SIZE) - 1 : 0] starting_pos = 0;
 reg [$clog2(BUFFER_SIZE+EFF_CHANNELS*(KERNEL_WIDTH+((KERNEL_HEIGHT-1)*IFMWidth)) + EFF_CHANNELS)-1 : 0] pos [MMV_OUT - 1:0];
 reg mmvshift=0;
 reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] pending_rd_cntr = BUFFER_SIZE/MMV_IN;
+reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] crtcl_rd_cntr = BUFFER_SIZE/MMV_IN;
+
 //reg [log2(MMV_OUT) - 1:0] m;
 //reg [log2(MMV_OUT) - 1:0] n;
 //reg [log2(MMV_OUT) - 1:0] o;
@@ -102,7 +104,8 @@ assign ip_axis_tready = !buffer_full || (pending_rd_cntr > 0);
 assign weA = ip_axis_tready & ip_axis_tvalid & ( (input_pixel * BUFFER_SIZE + counter) < (IFMHeight * IFMWidth * EFF_CHANNELS));
 assign ram_enq = op_axis_tready | ~q_valid;
 assign op_axis_tvalid = q_valid;
-assign enaB = buffer_full & !buffer_empty_i & (enaB_q | ~r_valid) & (!(ofm_row_tracker != 0 && ofm_column_tracker == 0 && kh == 0 && kw == 0 && channel_tracker == 0) || (pending_rd_cntr == 0));
+assign enaB = buffer_full & !buffer_empty_i & (enaB_q | ~r_valid) & (!(ofm_row_tracker != 0 && ofm_column_tracker > 0 && kh == KERNEL_HEIGHT - 1 && kw == KERNEL_WIDTH - 1 && channel_tracker == 0) || (crtcl_rd_cntr <= (IFMWidth * EFF_CHANNELS - KERNEL_WIDTH * EFF_CHANNELS - (ofm_column_tracker * STRIDE)))) &
+(!(ofm_row_tracker != 0 && ofm_column_tracker == 0 && kh == KERNEL_HEIGHT - 1  && channel_tracker == 0) || (crtcl_rd_cntr < (IFMWidth * EFF_CHANNELS - kw * EFF_CHANNELS - ofm_column_tracker)));
 assign enaB_q = (op_axis_tready | ~q_valid);
 assign enaB_r = buffer_full & !buffer_empty_i & (op_axis_tready | ~r_valid);
 
@@ -139,23 +142,41 @@ if (MMV_IN > 1) begin
 always @(posedge clk)
     if(~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
         pending_rd_cntr <= BUFFER_SIZE/MMV_IN;
-    end else if(ip_axis_tready & ip_axis_tvalid & !(((ofm_column_tracker != 0) && ((mmv_col_tracker[0] == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0))&& enaB_reg) )
+    end else if(ip_axis_tready & ip_axis_tvalid & !((ofm_column_tracker != 0) && ((mmv_col_tracker[0] == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0)))
         pending_rd_cntr <= pending_rd_cntr - 1;
-    else if( !(ip_axis_tready & ip_axis_tvalid) & ((ofm_column_tracker != 0) && ((mmv_col_tracker[0] == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0) && enaB_reg) )
+    else if( !(ip_axis_tready & ip_axis_tvalid) & (ofm_column_tracker != 0) && ((mmv_col_tracker[0] == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0))
         pending_rd_cntr <= pending_rd_cntr + MMV_OUT*STRIDE;  
-    else if (ip_axis_tready & ip_axis_tvalid & (((ofm_column_tracker != 0) && ((mmv_col_tracker[0] == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0)) && enaB_reg))  
+    else if (ip_axis_tready & ip_axis_tvalid & ((ofm_column_tracker != 0) && ((mmv_col_tracker[0] == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0)))  
         pending_rd_cntr <= pending_rd_cntr + MMV_OUT*STRIDE - 1;   
 end else begin
 always @(posedge clk)
     if(~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
         pending_rd_cntr <= BUFFER_SIZE/MMV_IN;
-    end else if(ip_axis_tready & ip_axis_tvalid & !( (((kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1)) && enaB_reg) )
+    end else if(ip_axis_tready & ip_axis_tvalid & !( ((kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1)))
         pending_rd_cntr <= pending_rd_cntr - 1;
-    else if( !(ip_axis_tready & ip_axis_tvalid) & (((kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1) && enaB_reg))
+    else if( !(ip_axis_tready & ip_axis_tvalid) & ((kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1))
         pending_rd_cntr <= pending_rd_cntr + MMV_OUT*STRIDE;  
-    else if((ip_axis_tready & ip_axis_tvalid) & ( ( (kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1 ) && enaB_reg) )
+    else if((ip_axis_tready & ip_axis_tvalid) & ((kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1))
         pending_rd_cntr <= pending_rd_cntr + MMV_OUT*STRIDE - 1;      
 end    
+
+//8
+always @(posedge clk) begin : crtcl_cntr
+   //reg [$clog2(MMV_OUT) - 1:0] i;
+   if(~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
+      crtcl_rd_cntr <= 0;
+   end else begin
+      if (buffer_full && enaB && (channel_tracker == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && ofm_column_tracker >= (OFMWidth - MMV_OUT)) begin
+         //if(kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) begin
+         //   if(ofm_column_tracker >= (OFMWidth - MMV_OUT)) begin
+               crtcl_rd_cntr <= pending_rd_cntr;
+         //   end
+         //end
+      end else if (crtcl_rd_cntr > 0 && ip_axis_tready && ip_axis_tvalid) begin
+         crtcl_rd_cntr <= crtcl_rd_cntr - 1;
+      end            
+   end
+end
 
 always @(posedge clk)
     if(~resetn)
@@ -167,13 +188,13 @@ always @(posedge clk)
     if(~resetn)
         r_valid <= 0;
     else if(enaB_q | ~r_valid)
-        r_valid <=  enaB;        
-
+        r_valid <=  enaB;
+        
 always @(posedge clk)
     if(~resetn)
         enaB_reg <= 0;
     else 
-        enaB_reg <=  enaB;
+        enaB_reg <=  enaB;        
 //1
 //assign op_axis_tvalid = buffer_full_i && !buffer_empty_i;
 always @(posedge clk) begin
