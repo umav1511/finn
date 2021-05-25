@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mmv_input_swu #(
+module mmv_input_swu_v11 #(
     parameter SIMD = 32,
     parameter STRIDE = 1,
     parameter IFMChannels = 128,
