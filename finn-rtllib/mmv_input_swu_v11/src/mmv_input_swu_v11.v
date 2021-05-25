@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mmv_input_swu_v11 #(
+module mmv_input_swu #(
     parameter SIMD = 32,
     parameter STRIDE = 1,
     parameter IFMChannels = 128,
@@ -142,21 +142,21 @@ if (MMV_IN > 1) begin
 always @(posedge clk)
     if(~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
         pending_rd_cntr <= BUFFER_SIZE/MMV_IN;
-    end else if(ip_axis_tready & ip_axis_tvalid & !((ofm_column_tracker != 0) && ((mmv_col_tracker[0] == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0)))
+    end else if(ip_axis_tready & ip_axis_tvalid & !((ofm_column_tracker != 0) && ((mmv_col_tracker[0] == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0) && enaB_reg))
         pending_rd_cntr <= pending_rd_cntr - 1;
-    else if( !(ip_axis_tready & ip_axis_tvalid) & (ofm_column_tracker != 0) && ((mmv_col_tracker[0] == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0))
+    else if( !(ip_axis_tready & ip_axis_tvalid) & ((ofm_column_tracker != 0) && ((mmv_col_tracker[0] == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0) && enaB_reg))
         pending_rd_cntr <= pending_rd_cntr + MMV_OUT*STRIDE;  
-    else if (ip_axis_tready & ip_axis_tvalid & ((ofm_column_tracker != 0) && ((mmv_col_tracker[0] == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0)))  
+    else if (ip_axis_tready & ip_axis_tvalid & ((ofm_column_tracker != 0) && ((mmv_col_tracker[0] == MMV_IN - 1 && kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw == 0) && enaB_reg))  
         pending_rd_cntr <= pending_rd_cntr + MMV_OUT*STRIDE - 1;   
 end else begin
 always @(posedge clk)
     if(~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
         pending_rd_cntr <= BUFFER_SIZE/MMV_IN;
-    end else if(ip_axis_tready & ip_axis_tvalid & !( ((kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1)))
+    end else if(ip_axis_tready & ip_axis_tvalid & !( ((kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1) && enaB_reg))
         pending_rd_cntr <= pending_rd_cntr - 1;
-    else if( !(ip_axis_tready & ip_axis_tvalid) & ((kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1))
+    else if( !(ip_axis_tready & ip_axis_tvalid) & (((kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1) && enaB_reg))
         pending_rd_cntr <= pending_rd_cntr + MMV_OUT*STRIDE;  
-    else if((ip_axis_tready & ip_axis_tvalid) & ((kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1))
+    else if((ip_axis_tready & ip_axis_tvalid) & (((kh == 0 && kw == KERNEL_WIDTH - 1) || ofm_column_tracker == OFMWidth - 1 && kh == KERNEL_HEIGHT - 1 && kw < KERNEL_WIDTH - 1) && enaB_reg))
         pending_rd_cntr <= pending_rd_cntr + MMV_OUT*STRIDE - 1;      
 end    
 
