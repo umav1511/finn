@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mmv_input_swu #(
+module mmv_input_swu_v11 #(
     parameter SIMD = 32,
     parameter STRIDE = 1,
     parameter IFMChannels = 128,
@@ -429,7 +429,7 @@ always @(posedge clk) begin : starting_pos_blk
       //for (i = 0; i < MMV_OUT; i = i + 1) begin
          starting_pos <= 0;
       //end
-   end else begin
+   end else if (buffer_full & enaB) begin
       //for (i = 0; i < MMV_OUT; i = i + 1) begin
          if(starting_pos_i >= BUFFER_SIZE) begin
             starting_pos <= starting_pos_i - BUFFER_SIZE;
