@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mmv_input_swu_v11 #(
+module mmv_input_swu #(
     parameter SIMD = 32,
     parameter STRIDE = 1,
     parameter IFMChannels = 128,
@@ -83,7 +83,7 @@ reg [$clog2(OFMHeight) - 1: 0]ofm_row_tracker = 0;
 reg [$clog2(EFF_CHANNELS) : 0] channel_tracker = 0;
 wire weA;
 reg [$clog2(MMV_IN) - 1: 0] mmv_col_tracker = 0;
-reg [$clog2(MMV_IN) - 1: 0] mmv_row_tracker = 0;
+reg [$clog2(KERNEL_HEIGHT) - 1: 0] kernel_row_tracker = 0;
 
 reg [$clog2(MMV_IN) - 1: 0] mmv_col_tracker_advance ;
 reg [$clog2(MMV_IN) - 1: 0] mmv_row_tracker_advance ;
@@ -369,14 +369,14 @@ always @(posedge clk) begin : column_trackers
             //end
             if (ofm_row_tracker < (OFMHeight - 1)) begin
                ofm_row_tracker <= ofm_row_tracker + 1;
-               if (mmv_row_tracker < MMV_IN - 1) begin
-                  mmv_row_tracker <= mmv_row_tracker + 1;
+               if (kernel_row_tracker < KERNEL_HEIGHT - 1) begin
+                  kernel_row_tracker <= kernel_row_tracker + 1;
                end else begin
-                  mmv_row_tracker <= 0;
+                  kernel_row_tracker <= 0;
                end
             end else begin
                ofm_row_tracker <= 0;
-               mmv_row_tracker <= 0;
+               kernel_row_tracker <= 0;
             end
          end
       end
@@ -465,7 +465,7 @@ always @(posedge clk) begin
          else if (ofm_column_tracker + MMV_OUT == OFMWidth) begin
             if ((ofm_row_tracker >= PADDING_HEIGHT)) begin
                //starting_pos_i <= starting_pos + (KERNEL_WIDTH-PADDING_WIDTH)*(EFF_CHANNELS) + (STRIDE - 1) * (IFMWidth * EFF_CHANNELS);
-               starting_pos_i <= (ofm_row_tracker + 1) * STRIDE * IFMWidth * EFF_CHANNELS; 
+               starting_pos_i <= (kernel_row_tracker + 1) * STRIDE * IFMWidth * EFF_CHANNELS; 
             end else begin
                starting_pos_i <= 0;
             end               
