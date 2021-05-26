@@ -109,7 +109,11 @@ assign enaB = buffer_full & !buffer_empty_i & (enaB_q | ~r_valid) & (!(ofm_row_t
 assign enaB_q = (op_axis_tready | ~q_valid);
 assign enaB_r = buffer_full & !buffer_empty_i & (op_axis_tready | ~r_valid);
 
+wire[31:0] limit1;
+wire[31:0] limit2;
 
+assign limit1 = (IFMWidth * EFF_CHANNELS - kw * EFF_CHANNELS - ofm_column_tracker);
+assign limit2 = (crtcl_rd_cntr <= (IFMWidth * EFF_CHANNELS - KERNEL_WIDTH * EFF_CHANNELS - (ofm_column_tracker * STRIDE)));
 genvar mi;
 generate
   for (mi = 0; mi < MMV_OUT; mi = mi + 1) begin : MI_SLOT
@@ -166,12 +170,14 @@ always @(posedge clk) begin : crtcl_cntr
    if(~resetn | (buffer_empty && op_axis_tready && op_axis_tvalid)) begin
       crtcl_rd_cntr <= 0;
    end else begin
-      if (buffer_full && enaB && (channel_tracker == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && ofm_column_tracker >= (OFMWidth - MMV_OUT)) begin
+      if (buffer_full && enaB && (channel_tracker == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && ofm_column_tracker >= (OFMWidth - MMV_OUT) && !(ip_axis_tready & ip_axis_tvalid)) begin
          //if(kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) begin
          //   if(ofm_column_tracker >= (OFMWidth - MMV_OUT)) begin
                crtcl_rd_cntr <= pending_rd_cntr;
          //   end
          //end
+      end else if (buffer_full && enaB && (channel_tracker == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && ofm_column_tracker >= (OFMWidth - MMV_OUT) && (ip_axis_tready & ip_axis_tvalid)) begin
+           crtcl_rd_cntr <= pending_rd_cntr - 1;
       end else if (crtcl_rd_cntr > 0 && ip_axis_tready && ip_axis_tvalid) begin
          crtcl_rd_cntr <= crtcl_rd_cntr - 1;
       end            
