@@ -825,6 +825,50 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
             ret_dict[thres_param_type] = thres_count
         return ret_dict
 
+    def clk_and_rsts(self, cmd):
+         pe = self.get_nodeattr("PE")
+         mmv_value = self.get_nodeattr("MMV")
+         # connect clock and reset 
+         # pes
+         for m in range(mmv_value):
+            for i in range(pe):
+                cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d_%d/%s]"
+                   % (node_name, rst_name, node_name, node_name, m, i, rst_name)
+                )
+                cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d_%d/%s]"
+                   % (node_name, clk_name, node_name, node_name, m, i, clk_name)
+                ) 
+
+                # axi infrastructure reset and clock
+                # connect clk and reset - input broadcaster
+                cmd.append(
+                  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_input_%d/aresetn]"
+                  % (node_name, rst_name, node_name, m)
+                )
+                cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_input_%d/aclk]"
+                   % (node_name, clk_name, node_name,m)
+                ) 
+                # connect clk and reset - combiner
+                cmd.append(
+                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output_%d/aresetn]"
+                   % (node_name, rst_name, node_name, m)
+                )
+                cmd.append(
+                  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output_%d/aclk]"
+                  % (node_name, clk_name, node_name, m )
+                ) 
+                # connect clk and reset - weight_splitter
+                cmd.append(
+                  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_weight_%d/aresetn]"
+                  % (node_name, rst_name, node_name, m)
+                )
+                cmd.append(
+                  "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_weight_%d/aclk]"
+                 % (node_name, clk_name, node_name, m)
+                ) 
     def code_generation_ipi(self):
         cmd = []
         if self.get_nodeattr("fine_grained") == True:
@@ -880,11 +924,7 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
                  )
             )
 
-            for i in range(pe):
-               cmd.append(
-                  "create_bd_cell -type ip -vlnv %s /%s/%s_%d"
-                  % (self.get_nodeattr("ip_vlnv"), node_name, node_name, i)
-               )
+
 
             split_weightstream_width=self.get_weightstream_width()
             split_weightstream_width_padded=roundup_to_integer_multiple(split_weightstream_width, 8)
@@ -892,63 +932,128 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
             split_instream_width = self.get_instream_width()
             split_instream_width_padded=roundup_to_integer_multiple(split_instream_width, 8)
 
-            # instantiate and configure the weight splitter
-            cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter_weight" % (node_name))
-            cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter_weight]" % (split_weightstream_width_padded, split_weightstream_width, self.get_splitter_weight_output_width_padded(), pe, node_name))
+            mmv_value = self.get_nodeattr("MMV")
+
+            # instantiate input splitters for mmv
+            cmd.append(
+               "create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter_inputs_mmv" 
+               % (node_name)
+            )
+            cmd.append(
+               "set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} \
+                                     CONFIG.C_AXIS_TDATA_WIDTH {%d} \
+                                     CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} \
+                                     CONFIG.C_NUM_MI_SLOTS {%d} \
+                ]\
+                [get_bd_cells %s/axis_splitter_inputs_mmv]" 
+                % (roundup_to_integer_multiple(self.get_instream_width() * mmv_value, 8), 
+                   self.get_instream_width() * mmv_value, 
+                   self.get_instream_width(), 
+                   mmv_value, 
+                   node_name)
+            ) 
+        
+            # broadcast weights to mmv splitters
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:extend_broadcaster2:1.0 %s/axis_broadcaster_weight_mmv" % (node_name))
+            cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_NUM_MI_SLOTS {%s}] [get_bd_cells %s/axis_broadcaster_weight_mmv]" % (split_weightstream_width_padded, mmv_value, node_name))   
+
+            # create mmv combiner
+            cmd.append(
+              "create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_mmv" 
+               % (node_name)
+            )
+            cmd.append(
+              "set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} \
+                                       CONFIG.C_AXIS_SIGNAL_SET {0x00000003} \
+                                       CONFIG.C_NUM_SI_SLOTS {%d} \
+                                  ] \
+                                  [get_bd_cells %s/axis_combiner_mmv]" 
+                                  % (self.get_outstream_width(), mmv_value, node_name)
+            ) 
+ 
 
 
-            # instantiate combiner block and set input parameters
-            cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_output" % node_name)
-            cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_AXIS_SIGNAL_SET {0x00000003} CONFIG.C_NUM_SI_SLOTS {%d}] [get_bd_cells %s/axis_combiner_output]" % (self.get_outstream_width() // self.get_nodeattr("PE"), pe, node_name)) 
+            for m in range(mmv_value):
 
-            # instantiate input splitter and set number of masters
-            cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter_input" % (node_name))
-            cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter_input]" % (split_instream_width_padded, split_instream_width, self.get_splitter_input_output_width_padded(), pe, node_name))
+               for i in range(pe):
+                  cmd.append(
+                     "create_bd_cell -type ip -vlnv %s /%s/%s_%d_%d"
+                     % (self.get_nodeattr("ip_vlnv"), node_name, node_name, m, i)
+                  )
+ 
+               # instantiate configure the weight splitter
+               cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter_weight_%d" % (node_name, m))
+               cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter_weight_%d]" % (split_weightstream_width_padded, split_weightstream_width, self.get_splitter_weight_output_width_padded(), pe, node_name, m))
 
-            # connect input of block to input of ip splitter
+               # instantiate input splitter and set number of masters
+               cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_split_core:1.0 %s/axis_splitter_input_%d" % (node_name, m))
+               cmd.append("set_property -dict [list CONFIG.S_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.M_AXIS_TDATA_WIDTH_PAD {%d} CONFIG.C_NUM_MI_SLOTS {%d}] [get_bd_cells %s/axis_splitter_input_%d]" % (split_instream_width_padded, split_instream_width, self.get_splitter_input_output_width_padded(), pe, node_name, m))
+
+               # instantiate combiner block and set input parameters
+               cmd.append("create_bd_cell -type ip -vlnv user.org:user:axis_combiner_v1_1_19_top:1.0 %s/axis_combiner_output_%d" % (node_name, m))
+               cmd.append("set_property -dict [list CONFIG.C_AXIS_TDATA_WIDTH {%d} CONFIG.C_AXIS_SIGNAL_SET {0x00000003} CONFIG.C_NUM_SI_SLOTS {%d}] [get_bd_cells %s/axis_combiner_output_%d]" % (self.get_outstream_width() // self.get_nodeattr("PE"), pe, node_name, m)) 
+
+               # connect mmv splitter to individual splitters
+               cmd.append(
+                    "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter_inputs_mmv/m_axis_%02d] "
+                    "[get_bd_intf_pins %s/axis_splitter_input_%d/s_axis]"
+                    % (node_name, m, node_name, m)
+               )
+
+               # connect outputs of ip splitter to inputs of blocks
+               for i in range(pe):
+                  cmd.append(
+                        "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter_input_%d/m_axis_%02d] "
+                        "[get_bd_intf_pins %s/%s_%d_%d/%s]"
+                        % (node_name, m, i, node_name, node_name, m, i, din_name)
+                  )          
+
+               # connect output of mmv broadcaster to input of weight splitter
+               cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/axis_broadcaster_weight_mmv/m_axis_%02d] [get_bd_intf_pins %s/axis_splitter_weight_%d/s_axis]" % (node_name, m, node_name, m))
+
+               # connect outputs of weight splitter to inputs of blocks
+               for i in range(pe):
+                  cmd.append(
+                        "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter_weight_%d/m_axis_%02d] "
+                        "[get_bd_intf_pins %s/%s_%d_%d/weights_V_V]"
+                        % (node_name, m, i, node_name, node_name, m, i)
+                  )
+
+               #connect outputs of blocks to combiner
+               for i in range(pe):
+                  cmd.append(
+                        "connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output_%d/s_axis_%02d] "
+                        "[get_bd_intf_pins %s/%s_%d_%d/out_V_V]"
+                        % (node_name, m, i, node_name, node_name, m, i, dout_name)
+                  )
+
+               # connect outputs of combiner to the final combiner
+               cmd.append(
+                        "connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output_%d/m_axis] "
+                        "[get_bd_intf_pins %s/axis_combiner_output_mmv/s_axis_%02d]"
+                        % (node_name, m, node_name, node_name, m)
+                  )
+
+               cmd = self.clk_and_rsts(cmd)
+               
+            # connect input of block to input of mmv splitter
             cmd.append(
                   "connect_bd_intf_net [get_bd_intf_pins %s/%s] "
-                  "[get_bd_intf_pins %s/axis_splitter_input/s_axis]"
+                  "[get_bd_intf_pins %s/axis_splitter_inputs_mmv/s_axis]"
                   % (node_name, din_name, node_name)
             )
 
-            # connect outputs of ip splitter to inputs of blocks
-            for i in range(pe):
-                 cmd.append(
-                       "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter_input/m_axis_%02d] "
-                       "[get_bd_intf_pins %s/%s_%d/%s]"
-                       % (node_name, i, node_name, node_name, i, din_name)
-                 )
 
-            # connect output of strm to input of splitter
-            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] [get_bd_intf_pins %s/axis_splitter_weight/s_axis]" % (node_name, strm_inst, node_name))
 
-            # connect output of splitter to weight inputs of pes
-            for i in range(pe):
-                cmd.append(
-                    "connect_bd_intf_net [get_bd_intf_pins %s/axis_splitter_weight/m_axis_%02d] "
-                    "[get_bd_intf_pins %s/%s_%d/weights_V_V]"
-                    % (node_name, i, node_name, node_name, i)
-                )
 
-            # connect outputs of pes to combiner
-            for i in range(pe):
-                cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s_%d/out_V_V] [get_bd_intf_pins %s/axis_combiner_output/s_axis_%02d]" % (node_name, node_name, i, node_name, i))
+            # connect output of strm to input of mmv broadcaster
+            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/%s/m_axis_0] [get_bd_intf_pins %s/axis_broadcaster_weight_mmv/s_axis]" % (node_name, strm_inst, node_name))
+
 
             # connect output of combiner to block output
-            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output/m_axis] [get_bd_intf_pins %s/out_V_V]"  % (node_name, node_name)) 
+            cmd.append("connect_bd_intf_net [get_bd_intf_pins %s/axis_combiner_output_mmv/m_axis] [get_bd_intf_pins %s/out_V_V]"  % (node_name, node_name)) 
 
-            # connect clock and reset 
-            # pes
-            for i in range(pe):
-                cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
-                   % (node_name, rst_name, node_name, node_name, i, rst_name)
-                )
-                cmd.append(
-                   "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s_%d/%s]"
-                   % (node_name, clk_name, node_name, node_name, i, clk_name)
-                )         
+       
             # streamer reset and clock
             cmd.append(
                "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/%s/aresetn]"
@@ -961,29 +1066,29 @@ class Vector_Vector_Activate_Batch(HLSCustomOp):
             # axi infrastructure reset and clock
             # connect clk and reset - input broadcaster
             cmd.append(
-               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_input/aresetn]"
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_input_mmv/aresetn]"
                % (node_name, rst_name, node_name)
             )
             cmd.append(
-               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_input/aclk]"
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_input_mmv/aclk]"
                % (node_name, clk_name, node_name)
             ) 
             # connect clk and reset - combiner
             cmd.append(
-               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output/aresetn]"
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output_mmv/aresetn]"
                % (node_name, rst_name, node_name)
             )
             cmd.append(
-               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output/aclk]"
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_combiner_output_mmv/aclk]"
                % (node_name, clk_name, node_name)
             ) 
             # connect clk and reset - weight_splitter
             cmd.append(
-               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_weight/aresetn]"
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_weight_mmv/aresetn]"
                % (node_name, rst_name, node_name)
             )
             cmd.append(
-               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_weight/aclk]"
+               "connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/axis_splitter_weight_mmv/aclk]"
                % (node_name, clk_name, node_name)
             )
 
