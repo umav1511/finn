@@ -38,7 +38,7 @@ input weA,
 input enaA, 
 input enaB,
 input enaB_q, 
- 
+input zeropad,
 input [ADDRWIDTHA - 1 : 0] addrA, 
 input [ADDRWIDTHB - 1 : 0] addrB, 
 input [WIDTHA - 1 : 0] diA, 
@@ -60,7 +60,10 @@ always @(posedge clkB) begin
      readB <= RAM[addrB]; 
   end 
   if (enaB_q) begin
-     doB <= readB;
+     if (zeropad)
+       doB <= 0;
+     else
+       doB <= readB;
   end
 end
 
