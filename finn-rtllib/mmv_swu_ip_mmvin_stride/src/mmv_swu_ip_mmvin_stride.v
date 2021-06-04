@@ -175,7 +175,7 @@ generate if (ZEROPAD == 0) begin : zeropad_gen
    assign zeropad = 0;
 end else begin : self_pad
    for( z = 0; z < MMV_OUT; z = z + 1) begin
-   assign zeropad[z] = (ofm_row_tracker[z] < PADDING_HEIGHT && kh < PADDING_HEIGHT) || (ofm_row_tracker[z] >= OFMHeight - PADDING_HEIGHT && kh >= KERNEL_HEIGHT - PADDING_HEIGHT) || (ofm_column_tracker[z] < PADDING_WIDTH && kw < KERNEL_WIDTH) || (ofm_column_tracker[z] >= OFMWidth - PADDING_WIDTH && kw >= KERNEL_WIDTH - PADDING_WIDTH);
+   assign zeropad[z] = (ofm_row_tracker[z] < PADDING_HEIGHT && kh < PADDING_HEIGHT) || (ofm_row_tracker[z] >= OFMHeight - PADDING_HEIGHT && kh >= KERNEL_HEIGHT - PADDING_HEIGHT) || (ofm_column_tracker[z] < PADDING_WIDTH && kw < PADDING_WIDTH) || (ofm_column_tracker[z] >= OFMWidth - PADDING_WIDTH && kw >= KERNEL_WIDTH - PADDING_WIDTH);
    end
 end
 endgenerate
