@@ -121,6 +121,7 @@ assign enaB_r = buffer_full & !buffer_empty_i & (op_axis_tready | ~r_valid);
 
 
 wire[MMV_OUT - 1 : 0] zeropad;
+reg[MMV_OUT - 1 : 0] zeropad_reg;
 genvar mi;
 generate
   for (mi = 0; mi < MMV_OUT; mi = mi + 1) begin : MI_SLOT
@@ -144,7 +145,7 @@ generate
    .enaB(enaB),
    .enaB_q(enaB_q),
    .weA(weA),
-   .zeropad(zeropad)
+   .zeropad(zeropad_reg)
 );
   end
 endgenerate
@@ -257,8 +258,13 @@ always @(posedge clk)
     else if ( !(s_axis_hs) & inc_pending_rd_last)
         pending_rd_cntr <=  pending_rd_cntr + 1;
  
+ 
          
-      
+always @(posedge clk)
+   if(~resetn | restart)
+      zeropad_reg <= 0;
+   else
+      zeropad_reg <= zeropad;
 
 //8
 always @(posedge clk) begin : crtcl_cntr
