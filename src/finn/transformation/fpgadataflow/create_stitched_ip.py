@@ -185,15 +185,21 @@ class CreateStitchedIP(Transformation):
         ip_dirs = ["list"]
         # add RTL streamer IP
         #ip_dirs.append("/scra
-        ip_dirs.append("/workspace/finn/finn-rtllib/memstream")
-        ip_dirs.append("/workspace/finn/finn-rtllib/input_buf2")
+        #ip_dirs.append("/workspace/finn/finn-rtllib/memstream")
+        #ip_dirs.append("/workspace/finn/finn-rtllib/input_buf2")
         #ip_dirs.append("/workspace/finn/finn-rtllib/broadcast")
         #ip_dirs.append("/workspace/finn/finn-rtllib/splitter")
-        ip_dirs.append("/workspace/finn/finn-rtllib/new_ips_renamed/new_ips_renamed/new_ip_sim_broadcast")
-        ip_dirs.append("/workspace/finn/finn-rtllib/new_ips_renamed/new_ips_renamed/new_ip_sim_split")
-        ip_dirs.append("/workspace/finn/finn-rtllib/combiner2")
+        #ip_dirs.append("/workspace/finn/finn-rtllib/new_ips_renamed/new_ips_renamed/new_ip_sim_broadcast")
+        #ip_dirs.append("/workspace/finn/finn-rtllib/new_ips_renamed/new_ips_renamed/new_ip_sim_split")
+        #ip_dirs.append("/workspace/finn/finn-rtllib/combiner2")
         ip_dirs.append("/workspace/finn/finn-rtllib/const_reg10")
-        ip_dirs.append("/workspace/finn/finn-rtllib/mmv_input_swu_v11")
+        ip_dirs.append("/proj/xlabs_t3/users/umaheshw/3000.check_layer2_with_mmv/mmv_swu_ip_mmvin_stride")
+        ip_dirs.append("/proj/xlabs_t3/users/umaheshw/3000.check_layer2_with_mmv/memstream")
+        ip_dirs.append("/proj/xlabs_t3/users/umaheshw/3000.check_layer2_with_mmv/input_buf2")
+        ip_dirs.append("/proj/xlabs_t3/users/umaheshw/3000.check_layer2_with_mmv/sim_axis_files/new_ips_renamed/new_ip_sim_split")
+        ip_dirs.append("/proj/xlabs_t3/users/umaheshw/3000.check_layer2_with_mmv/sim_axis_files/new_ips_renamed/new_ip_sim_combine")
+        ip_dirs.append("/proj/xlabs_t3/users/umaheshw/3000.check_layer2_with_mmv/sim_axis_files/new_ips_renamed/new_ip_sim_broadcast")
+ 
         # ensure that all nodes are fpgadataflow, and that IPs are generated
         for node in model.graph.node:
             assert is_finn_op(node.domain), "Found non-FINN node"

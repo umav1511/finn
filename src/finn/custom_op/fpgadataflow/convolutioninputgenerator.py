@@ -538,7 +538,7 @@ class ConvolutionInputGenerator(HLSCustomOp):
     def code_generation_ipi(self):
         #if "Generator_5" in self.onnx_node.name or "Generator_4" in self.onnx_node.name or self.get_nodeattr("MMVI") > 1: 
         if self.get_nodeattr("MMVI") > 1 : 
-        #if "Generator_1" in self.onnx_node.name :
+        #if "Generator_13" in self.onnx_node.name or "Generator_1" in self.onnx_node.name:
         #if "Generator_5" in self.onnx_node.name or "Generator_4" in self.onnx_node.name or "Generator_3" in self.onnx_node.name or "Generator_0" in self.onnx_node.name or "Generator_2" in self.onnx_node.name:
         #if 1:
             node_name = self.onnx_node.name
@@ -560,16 +560,22 @@ class ConvolutionInputGenerator(HLSCustomOp):
                 "create_bd_intf_pin -mode Slave "
                 "-vlnv xilinx.com:interface:axis_rtl:1.0 /%s/%s" % (node_name, din_name)
             )
-            cmd.append("create_bd_cell -type ip -vlnv user.org:user:mmv_input_swu_v11:1.0 %s/swu" % (node_name))
+            cmd.append("create_bd_cell -type ip -vlnv user.org:user:mmv_swu_ip_mmvin_stride:1.0 %s/swu" % (node_name))
             padding_height = (self.get_nodeattr("OFMDim") - (self.get_nodeattr("IFMDim") - 2))//2
             padding_width = padding_height
-            buffer_size =  self.get_nodeattr("IFMDim") * (self.get_nodeattr("IFMChannels")//self.get_nodeattr("SIMD")) * self.get_nodeattr("ConvKernelDim")
+            buffer_size = self.get_nodeattr("Stride") *  self.get_nodeattr("IFMDim") * (self.get_nodeattr("IFMChannels")//self.get_nodeattr("SIMD")) * self.get_nodeattr("ConvKernelDim")
             #buffer_size_i = (((self.get_nodeattr("ConvKernelDim") - 1) * self.get_nodeattr("IFMDim")) + self.get_nodeattr("ConvKernelDim")) * (self.get_nodeattr("IFMChannels")//self.get_nodeattr("SIMD")) 
             #buffer_size = roundup_to_integer_multiple(buffer_size_i, self.get_nodeattr("MMVI") )
             if self.get_nodeattr("OFMDim")//self.get_nodeattr("MMVI")==0:            
                OFMDIM_MOD_MMV=0
             else:
                 OFMDIM_MOD_MMV = 1 
+            if self.get_nodeattr("depthwise") == 1:
+                dws = 1
+            else:
+                dws = 0
+            floor_O_BY_I = self.get_nodeattr("MMVO")//self.get_nodeattr("MMVI")
+            ceil_O_BY_I =  np.ceil(self.get_nodeattr("MMVO")/self.get_nodeattr("MMVI"))
             cmd.append("set_property -dict [list CONFIG.SIMD {%d} \
                                                  CONFIG.STRIDE {%d} \
                                                  CONFIG.IFMChannels {%d} \
@@ -585,23 +591,30 @@ class ConvolutionInputGenerator(HLSCustomOp):
                                                  CONFIG.MMV_IN {%d}\
                                                  CONFIG.MMV_OUT {%d}\
                                                  CONFIG.BUFFER_SIZE {%d}\
-                                                 CONFIG.OFMDIM_MOD_MMV {%d}] [get_bd_cells %s/swu]" % (self.get_nodeattr("SIMD"),
-                                                                                            self.get_nodeattr("Stride"),
-                                                                                            self.get_nodeattr("IFMChannels"),
-                                                                                            self.get_nodeattr("ConvKernelDim"),
-                                                                                            self.get_nodeattr("ConvKernelDim"),
-                                                                                            self.get_nodeattr("IFMDim"),
-                                                                                            self.get_nodeattr("IFMDim"),
-                                                                                            padding_width,
-                                                                                            padding_height,
-                                                                                            self.get_nodeattr("OFMDim"),
-                                                                                            self.get_nodeattr("OFMDim"),
-                                                                                            self.get_input_datatype().bitwidth(),
-                                                                                            self.get_nodeattr("MMVI"),
-                                                                                            self.get_nodeattr("MMVO"),
-                                                                                            buffer_size,
-                                                                                            OFMDIM_MOD_MMV,
-                                                                                            node_name
+                                                 CONFIG.OFMDIM_MOD_MMV {%d}\
+                                                 CONFIG.DWS {%d}\
+                                                 CONFIG.ZEROPAD {1}\
+                                                 CONFIG.floor_O_BY_I {%d}\
+                                                 CONFIG.ceil_O_BY_I {%d}] [get_bd_cells %s/swu]" % (self.get_nodeattr("SIMD"),\
+                                                                                            self.get_nodeattr("Stride"),\
+                                                                                            self.get_nodeattr("IFMChannels"),\
+                                                                                            self.get_nodeattr("ConvKernelDim"),\
+                                                                                            self.get_nodeattr("ConvKernelDim"),\
+                                                                                            self.get_nodeattr("IFMDim"),\
+                                                                                            self.get_nodeattr("IFMDim"),\
+                                                                                            padding_width,\
+                                                                                            padding_height,\
+                                                                                            self.get_nodeattr("OFMDim"),\
+                                                                                            self.get_nodeattr("OFMDim"),\
+                                                                                            self.get_input_datatype().bitwidth(),\
+                                                                                            self.get_nodeattr("MMVI"),\
+                                                                                            self.get_nodeattr("MMVO"),\
+                                                                                            buffer_size,\
+                                                                                            OFMDIM_MOD_MMV,\
+                                                                                            dws,\
+                                                                                            floor_O_BY_I,\
+                                                                                            ceil_O_BY_I,\
+                                                                                            node_name\
                                                                                            )
                       )
             cmd.append("connect_bd_net [get_bd_pins %s/%s] [get_bd_pins %s/swu/clk]" % (node_name, clk_name, node_name))

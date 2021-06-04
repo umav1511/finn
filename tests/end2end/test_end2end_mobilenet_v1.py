@@ -101,7 +101,7 @@ large_fifo_ram_style = "ultra"
 extra_fold = 1
 first_layer_res_type = "dsp"
 set_fine_grained = True
-
+#set_fine_grained = False
 def test_end2end_mobilenet_export():
     # export preprocessing
     preproc_onnx = build_dir + "/end2end_mobilenet_preproc.onnx"
@@ -233,7 +233,7 @@ def test_end2end_mobilenet_convert_to_hls_layers():
 
 def test_end2end_mobilenet_folding():
     model = load_test_checkpoint_or_skip(
-        build_dir + "/end2end_mobilenet_hls_layers2.onnx"
+        "end2end_mobilenet_hls_layers.onnx"
     )
     # optional extra folding to use fewer resources
     # applied while setting the attributes on each node
@@ -270,7 +270,7 @@ def test_end2end_mobilenet_folding():
     # set up folding for the depthwise conv layers impl'd by VVAUs
     # each value is PE for a layer
     vvau_layers = model.get_nodes_by_op_type("Vector_Vector_Activate_Batch")
-    folding = [32, 32, 64, 16, 32, 8, 16, 16, 16, 16, 16, 4, 8]
+    folding = [32, 32, 64, 16, 32, 8, 16, 16, 16, 16, 16, 4, 1024]
     for vvau, pe in zip(vvau_layers, folding):
         vvau_inst = getCustomOp(vvau)
         vvau_inst.set_nodeattr("PE", pe // extra_fold)
@@ -295,7 +295,8 @@ def test_end2end_mobilenet_folding():
 
 
 def test_end2end_mobilenet_create_dataflow_partition():
-    model = load_test_checkpoint_or_skip(build_dir + "/end2end_mobilenet_folded.onnx")
+    model = load_test_checkpoint_or_skip("new_mmv_config2.onnx")
+    #model = load_test_checkpoint_or_skip(build_dir + "/end2end_mobilenet_folded.onnx")
     parent_model = model.transform(CreateDataflowPartition())
     parent_model.save(build_dir + "/end2end_mobilenet_dataflow_parent.onnx")
     sdp_node = parent_model.get_nodes_by_op_type("StreamingDataflowPartition")[0]
@@ -347,18 +348,22 @@ def test_end2end_mobilenet_gen_hls_ip():
     #model = load_test_checkpoint_or_skip(
     #    build_dir + "/end2end_mobilenet_dataflow_model.onnx"
     #)
-    model = load_test_checkpoint_or_skip("synth_ip.onnx")
+    #model = load_test_checkpoint_or_skip("df_model.onnx")
+    #model = load_test_checkpoint_or_skip("synth_ip.onnx")
+    #model = load_test_checkpoint_or_skip("golden.onnx")
+    model = load_test_checkpoint_or_skip("simulate_test1_half_onnx.onnx")
     start = time.time()
-    #model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
-    #model.save("prep_ip.onnx")
-    #model = model.transform(HLSSynthIP())
-    #model.save("synth_ip.onnx")
-    #model = model.transform(InsertDWC())
-    #model = model.transform(GiveUniqueNodeNames())
-    #model = model.transform(AnnotateCycles())
-    #model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
-    #model = model.transform(HLSSynthIP())
-    #model = model.transform(CreateStitchedIP(test_fpga_part, target_clk_ns))
+    model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
+    model.save("prep_ip.onnx")
+    model = model.transform(HLSSynthIP())
+    model.save("synth_ip.onnx")
+    model = model.transform(InsertDWC())
+    model = model.transform(GiveUniqueNodeNames())
+    model = model.transform(AnnotateCycles())
+    model = model.transform(PrepareIP(test_fpga_part, target_clk_ns))
+    model = model.transform(HLSSynthIP())
+    model.save("dwc.onnx")
+    model = model.transform(CreateStitchedIP(test_fpga_part, target_clk_ns))
     model = model.transform(ReplaceVerilogRelPaths())
     end = time.time()
     elapsed_time = end - start
