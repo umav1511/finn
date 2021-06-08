@@ -90,7 +90,7 @@ reg [$clog2(OFMHeight) - 1: 0]ofm_row_tracker[MMV_OUT - 1 :0];
 reg [$clog2(EFF_CHANNELS) : 0] ch_ptr = 0;
 wire weA;
 reg [$clog2(MMV_IN) - 1: 0] mmv_col_tracker[MMV_OUT - 1 :0];
-reg [$clog2(KERNEL_HEIGHT) - 1: 0] kernel_row_tracker = 0;
+reg [$clog2(KERNEL_HEIGHT*STRIDE) - 1: 0] kernel_row_tracker = 0;
 
 reg [$clog2(MMV_IN) - 1: 0] mmv_col_tracker_advance[MMV_OUT - 1 : 0] ;
 reg [$clog2(MMV_IN) - 1: 0] mmv_row_tracker_advance ;
@@ -511,7 +511,6 @@ always @(posedge clk) begin : column_trackers
    end else begin
    if (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1)) begin
    for(t = 0; t < MMV_OUT; t = t + 1) begin
-  
        if(ofm_column_tracker[0] < (OFMWidth - MMV_OUT)) begin
           ofm_column_tracker[t] <= ofm_column_tracker[t] + MMV_OUT;
           mmv_col_tracker[t] <= mmv_col_tracker_advance[t];
@@ -520,18 +519,8 @@ always @(posedge clk) begin : column_trackers
           mmv_col_tracker[t] <= mmv_col_tracker_advance[t];
           if (ofm_row_tracker[t] < (OFMHeight - 1)) begin
              ofm_row_tracker[t] <= ofm_row_tracker[t] + 1;
-             stride_toggle <= STRIDE - 1 - stride_toggle;
-                if (kernel_row_tracker < (KERNEL_HEIGHT - 1) * STRIDE) begin
-                   if(ofm_row_tracker[t] < PADDING_HEIGHT)
-                      kernel_row_tracker <= kernel_row_tracker + STRIDE - PADDING_HEIGHT;
-                   else 
-                      kernel_row_tracker <= kernel_row_tracker + STRIDE;
-                end else begin
-                   kernel_row_tracker <= 0;
-                end
           end else begin
              ofm_row_tracker[t] <= 0;
-             kernel_row_tracker <= 0;
           end
        end
    end
@@ -539,6 +528,29 @@ always @(posedge clk) begin : column_trackers
    end            
 end
 
+always @(posedge clk) begin : kernel_row_trackers
+   //reg [$clog2(MMV_OUT) - 1:0] i;
+   integer t;
+   if(~resetn | restart) begin
+      kernel_row_tracker <= 0;
+   end else begin
+   if (valid_ptr_vals && inc_start_pos == KERNEL_WIDTH*KERNEL_HEIGHT*EFF_CHANNELS - 2) begin
+       if(ofm_column_tracker[0] >= OFMWidth - MMV_OUT) begin
+          if (ofm_row_tracker[MMV_OUT - 1] < (OFMHeight - 1)) begin
+                  if(ofm_row_tracker[0] < PADDING_HEIGHT)
+                      kernel_row_tracker <= kernel_row_tracker + STRIDE - PADDING_HEIGHT;
+                  else if(kernel_row_tracker + STRIDE > KERNEL_HEIGHT * STRIDE - 1) 
+                      kernel_row_tracker <= kernel_row_tracker + STRIDE - KERNEL_HEIGHT*STRIDE;
+                  else if (kernel_row_tracker + STRIDE <= KERNEL_HEIGHT * STRIDE - 1) 
+                      kernel_row_tracker <= kernel_row_tracker + STRIDE;
+          end else begin
+             kernel_row_tracker <= 0;
+          end
+       end
+   end
+   end
+               
+end
 //9
 //DWS CAREFUL)
 always @(posedge clk) begin : col_tracker_adv
@@ -666,29 +678,29 @@ always @(posedge clk) begin : start_pos_i_blk
                if(MMV_IN == 1 || EFF_CHANNELS == 1) begin          
                   for(i = 0; i < MMV_OUT; i = i + 1) begin
                      if(i < PADDING_WIDTH)
-                        starting_pos_i[i] <= (kernel_row_tracker + STRIDE ) * IFMWidth * EFF_CHANNELS;
+                        starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS;
                      else 
-                        starting_pos_i[i] <= (kernel_row_tracker + STRIDE ) * IFMWidth * EFF_CHANNELS + (i-PADDING_WIDTH) * EFF_CHANNELS;                        
+                        starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + (i-PADDING_WIDTH) * EFF_CHANNELS;                        
                   end
                end else begin
                   for(i = 0 ; i < MMV_OUT; i = i + 1) begin
-                     starting_pos_i[i] <= (kernel_row_tracker + STRIDE) * IFMWidth * EFF_CHANNELS + mmv_mul_idx[(i+1) * $clog2(ceil_O_BY_I) -: $clog2(ceil_O_BY_I)] * MMV_IN * EFF_CHANNELS + mmv_add_idx[(i+1) * $clog2(MMV_OUT)-1 -: $clog2(MMV_OUT)];
+                     starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + mmv_mul_idx[(i+1) * $clog2(ceil_O_BY_I) -: $clog2(ceil_O_BY_I)] * MMV_IN * EFF_CHANNELS + mmv_add_idx[(i+1) * $clog2(MMV_OUT)-1 -: $clog2(MMV_OUT)];
                   end
                end
             end else begin
                if(MMV_IN == 1 || EFF_CHANNELS == 1) begin
                   for(i = 0 ; i < MMV_OUT; i = i + 1) begin
                      if(i <= PADDING_WIDTH)
-                     starting_pos_i[i] <=  (kernel_row_tracker + STRIDE - PADDING_HEIGHT) * IFMWidth * EFF_CHANNELS;
+                     starting_pos_i[i] <=  (kernel_row_tracker) * IFMWidth * EFF_CHANNELS;
                      else
-                     starting_pos_i[i] <= (kernel_row_tracker + STRIDE - PADDING_HEIGHT) * IFMWidth * EFF_CHANNELS + (i-PADDING_WIDTH) * EFF_CHANNELS; 
+                     starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + (i-PADDING_WIDTH) * EFF_CHANNELS; 
                   end
                end else begin
                   for(i = 0 ; i < MMV_OUT; i = i + 1) begin
                      if(i <= PADDING_WIDTH)
-                     starting_pos_i[i] <= (kernel_row_tracker + STRIDE - PADDING_HEIGHT) * IFMWidth * EFF_CHANNELS + mmv_mul_idx[(i+1) * $clog2(ceil_O_BY_I)-1 -: $clog2(ceil_O_BY_I)] * MMV_IN * EFF_CHANNELS + mmv_add_idx[(i+1) * $clog2(MMV_OUT)-1 -: $clog2(MMV_OUT)];
+                     starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + mmv_mul_idx[(i+1) * $clog2(ceil_O_BY_I)-1 -: $clog2(ceil_O_BY_I)] * MMV_IN * EFF_CHANNELS + mmv_add_idx[(i+1) * $clog2(MMV_OUT)-1 -: $clog2(MMV_OUT)];
                      else
-                     starting_pos_i[i] <= (kernel_row_tracker + STRIDE - PADDING_HEIGHT) * IFMWidth * EFF_CHANNELS + mmv_mul_idx[(i+1) * $clog2(ceil_O_BY_I)-1 -: $clog2(ceil_O_BY_I)] * MMV_IN * EFF_CHANNELS + mmv_add_idx[(i+1) * $clog2(MMV_OUT)-1 -: $clog2(MMV_OUT)] + (i - PADDING_WIDTH); 
+                     starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + mmv_mul_idx[(i+1) * $clog2(ceil_O_BY_I)-1 -: $clog2(ceil_O_BY_I)] * MMV_IN * EFF_CHANNELS + mmv_add_idx[(i+1) * $clog2(MMV_OUT)-1 -: $clog2(MMV_OUT)] + (i - PADDING_WIDTH); 
                   end
                end
             end
