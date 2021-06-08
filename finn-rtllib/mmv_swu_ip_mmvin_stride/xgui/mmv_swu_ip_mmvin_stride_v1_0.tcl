@@ -16,6 +16,7 @@ proc init_gui { IPINST } {
   ipgui::add_param $IPINST -name "OFMDIM_MOD_MMV" -parent ${Page_0}
   ipgui::add_param $IPINST -name "OFMHeight" -parent ${Page_0}
   ipgui::add_param $IPINST -name "OFMWidth" -parent ${Page_0}
+  ipgui::add_param $IPINST -name "O_MOD_MMVI" -parent ${Page_0}
   ipgui::add_param $IPINST -name "PADDING_HEIGHT" -parent ${Page_0}
   ipgui::add_param $IPINST -name "PADDING_WIDTH" -parent ${Page_0}
   ipgui::add_param $IPINST -name "RAM_STYLE" -parent ${Page_0}
@@ -143,6 +144,15 @@ proc update_PARAM_VALUE.OFMWidth { PARAM_VALUE.OFMWidth } {
 
 proc validate_PARAM_VALUE.OFMWidth { PARAM_VALUE.OFMWidth } {
 	# Procedure called to validate OFMWidth
+	return true
+}
+
+proc update_PARAM_VALUE.O_MOD_MMVI { PARAM_VALUE.O_MOD_MMVI } {
+	# Procedure called to update O_MOD_MMVI when any of the dependent parameters in the arguments change
+}
+
+proc validate_PARAM_VALUE.O_MOD_MMVI { PARAM_VALUE.O_MOD_MMVI } {
+	# Procedure called to validate O_MOD_MMVI
 	return true
 }
 
@@ -336,5 +346,10 @@ proc update_MODELPARAM_VALUE.ceil_O_BY_I { MODELPARAM_VALUE.ceil_O_BY_I PARAM_VA
 proc update_MODELPARAM_VALUE.ZEROPAD { MODELPARAM_VALUE.ZEROPAD PARAM_VALUE.ZEROPAD } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
 	set_property value [get_property value ${PARAM_VALUE.ZEROPAD}] ${MODELPARAM_VALUE.ZEROPAD}
+}
+
+proc update_MODELPARAM_VALUE.O_MOD_MMVI { MODELPARAM_VALUE.O_MOD_MMVI PARAM_VALUE.O_MOD_MMVI } {
+	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
+	set_property value [get_property value ${PARAM_VALUE.O_MOD_MMVI}] ${MODELPARAM_VALUE.O_MOD_MMVI}
 }
 
