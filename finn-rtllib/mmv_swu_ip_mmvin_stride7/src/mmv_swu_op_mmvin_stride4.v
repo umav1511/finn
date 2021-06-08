@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mmv_swu_ip_mmvin_stride #(
+module mmv_swu_ip_mmvin_stride4 #(
     parameter SIMD = 32,
     parameter STRIDE = 1,
     parameter IFMChannels = 128,
@@ -167,16 +167,9 @@ wire inc_ch_ptr;
 wire valid_ptr_vals;
 wire inc_kw;
 wire inc_pending_rd_stride;
-reg extra_row;
 assign valid_ptr_vals = buffer_full & enaB;
 
-if(STRIDE == 2)
-always @(posedge clk) begin
-   if(ofm_row_tracker[0] == 0)
-      extra_row <= 0;
-   else
-      extra_row <= 1;
-end
+
 generate if (MMV_IN > 1) begin : inc_immv
    assign inc_rd_amt = 1;
 end else begin : inc_noimmv
@@ -196,7 +189,7 @@ generate if (ZEROPAD == 0) begin : zeropad_gen
    assign zeropad = 0;
 end else begin : self_pad
    for( z = 0; z < MMV_OUT; z = z + 1) begin
-   assign zeropad[z] = (ofm_row_tracker[z] < PADDING_HEIGHT && kh < PADDING_HEIGHT) || (ofm_row_tracker[z] >= OFMHeight - PADDING_HEIGHT && kh >= KERNEL_HEIGHT - PADDING_HEIGHT) || (ofm_column_tracker[z] < PADDING_WIDTH && kw < PADDING_WIDTH) || (ofm_column_tracker[z] >= OFMWidth - PADDING_WIDTH + STRIDE - 1 && kw >= KERNEL_WIDTH - PADDING_WIDTH);
+   assign zeropad[z] = (ofm_row_tracker[z] < PADDING_HEIGHT && kh < PADDING_HEIGHT) || (ofm_row_tracker[z] >= OFMHeight - PADDING_HEIGHT && kh >= KERNEL_HEIGHT - PADDING_HEIGHT) || (ofm_column_tracker[z] < PADDING_WIDTH && kw < PADDING_WIDTH) || (ofm_column_tracker[z] >= OFMWidth - PADDING_WIDTH && kw >= KERNEL_WIDTH - PADDING_WIDTH);
    end
 end
 endgenerate
@@ -302,13 +295,13 @@ if(STRIDE ==2) begin
         crtcl_rd_cntr[0]<=0;
         crtcl_rd_cntr[1]<= 0;     
     end else if(!s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT))) begin
-        crtcl_rd_cntr[1] <= pending_rd_cntr + extra_row * IFMWidth/MMV_IN;
+        crtcl_rd_cntr[1] <= pending_rd_cntr +  IFMWidth/MMV_IN;
         crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];
     end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT)) && crtcl_rd_cntr[1] == 0) begin
-        crtcl_rd_cntr[1] <= pending_rd_cntr + extra_row * IFMWidth/MMV_IN - 1;
+        crtcl_rd_cntr[1] <= pending_rd_cntr +  IFMWidth/MMV_IN - 1;
         crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];
     end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT)) ) begin
-        crtcl_rd_cntr[1] <= pending_rd_cntr + extra_row * IFMWidth/MMV_IN;
+        crtcl_rd_cntr[1] <= pending_rd_cntr + IFMWidth/MMV_IN;
         crtcl_rd_cntr[0] <= crtcl_rd_cntr[1] - 1;        
     end else if(s_axis_hs && crtcl_rd_cntr[0]>0) begin
         crtcl_rd_cntr[0] <= crtcl_rd_cntr[0] - 1;
