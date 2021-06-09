@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mmv_swu_ip_mmvin_stride11 #(
+module mmv_swu_ip_mmvin_stride12 #(
     parameter SIMD = 32,
     parameter STRIDE = 1,
     parameter IFMChannels = 128,
@@ -126,7 +126,7 @@ assign enaB_r = buffer_full & !buffer_empty_i & (op_axis_tready | ~r_valid);
 
 
 wire[MMV_OUT - 1 : 0] zeropad;
-reg[MMV_OUT - 1 : 0] zeropad_reg;
+reg zeropad_reg[MMV_OUT - 1 : 0] ;
 genvar mi;
 generate
   for (mi = 0; mi < MMV_OUT; mi = mi + 1) begin : MI_SLOT
@@ -150,7 +150,7 @@ generate
    .enaB(enaB),
    .enaB_q(enaB_q),
    .weA(weA),
-   .zeropad(zeropad_reg)
+   .zeropad(zeropad_reg[mi])
 );
   end
 endgenerate
@@ -224,7 +224,7 @@ end else if (STRIDE == 1 || PADDING_WIDTH == 0) begin : no_immv1
 end else if (MMV_IN == 1 && STRIDE > 1 && PADDING_WIDTH > 0) begin : stride_and_padding_no_immv
    assign inc_pending_rd_last = ofm_column_tracker[0] <= PADDING_WIDTH && enaB_reg && (kh == 0 && kw == KERNEL_WIDTH - 1) && ofm_row_tracker[0] >= PADDING_HEIGHT && ofm_row_tracker[0] < OFMHeight - 1 - PADDING_HEIGHT;
 end else if(STRIDE > 1 && MMV_IN > 1 && PADDING_WIDTH > 0) begin : stride_and_padding_and_mmv
-   assign inc_pending_rd_last = ofm_column_tracker[0] == OFMWidth - MMV_OUT && ofm_row_tracker[0] < OFMHeight - 1 - PADDING_HEIGHT && enaB_reg && kh == KERNEL_HEIGHT - 1 && kw == KERNEL_WIDTH - 2 && O_MOD_MMVI && ch_ptr == EFF_CHANNELS - 1;   
+   assign inc_pending_rd_last = ofm_column_tracker[0] == OFMWidth - MMV_OUT && ofm_row_tracker[0] < OFMHeight - 1 - PADDING_HEIGHT && enaB_reg && kh == KERNEL_HEIGHT - 1 && kw == KERNEL_WIDTH - 2 && (mmv_col_tracker[0] + STRIDE*MMV_OUT < MMV_IN) && ch_ptr == EFF_CHANNELS - 1;   
 end else if (STRIDE > 1 && MMV_IN > 1) begin : stride_and_padding_and_mmv
    assign inc_pending_rd_last = ofm_column_tracker[0] == OFMWidth - MMV_OUT && kh == KERNEL_HEIGHT - 1 && kw == 0  && ofm_row_tracker[0] >= PADDING_HEIGHT && ofm_row_tracker[0] < OFMHeight - 1 - PADDING_HEIGHT;
 end
@@ -280,11 +280,11 @@ always @(posedge clk)
         pending_rd_cntr <= BUFFER_SIZE/MMV_IN;
     else if (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] >= PADDING_HEIGHT)) 
          pending_rd_cntr <= 0;
-    else if(s_axis_hs & !inc_pending_rd_gen & !inc_pending_rd_last & pending_rd_cntr > 0 & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1] == 0)
+    else if(s_axis_hs & !inc_pending_rd_gen & !inc_pending_rd_last & pending_rd_cntr > 0 & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1]==0)
         pending_rd_cntr <= pending_rd_cntr - 1;
     else if( !(s_axis_hs) & inc_pending_rd_gen)  
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt;  
-    else if (s_axis_hs & inc_pending_rd_gen & (crtcl_rd_cntr[0] != 0 || crtcl_rd_cntr[1] != 0)) 
+    else if (s_axis_hs & inc_pending_rd_gen & (crtcl_rd_cntr[0] != 0 || crtcl_rd_cntr[1] != 0) ) 
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt;  
     else if (s_axis_hs & inc_pending_rd_gen & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1] == 0)  
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt - 1;   
@@ -337,12 +337,17 @@ else begin
   end
 end
 
-always @(posedge clk)
+always @(posedge clk) begin : zeropad_reg_blk
+   reg [MMV_OUT - 1: 0] i;
    if(~resetn | restart)
-      zeropad_reg <= 0;
-   else
-      zeropad_reg <= zeropad;
-
+     for( i = 0; i < MMV_OUT; i = i + 1) begin
+       zeropad_reg[i] <= 0;
+     end
+   else if(valid_ptr_vals)
+     for( i = 0; i < MMV_OUT;i = i + 1) begin
+       zeropad_reg[i] <= (ofm_row_tracker[i] < PADDING_HEIGHT && kh < PADDING_HEIGHT) || (ofm_row_tracker[i] >= OFMHeight - PADDING_HEIGHT && kh >= KERNEL_HEIGHT - PADDING_HEIGHT) || (ofm_column_tracker[z] < PADDING_WIDTH && kw < PADDING_WIDTH) || (ofm_column_tracker[i] >= OFMWidth - PADDING_WIDTH && kw >= KERNEL_WIDTH - PADDING_WIDTH);
+     end
+   end
 //8
 
 
