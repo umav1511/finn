@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mmv_swu_ip_mmvin_stride9 #(
+module mmv_swu_ip_mmvin_stride11 #(
     parameter SIMD = 32,
     parameter STRIDE = 1,
     parameter IFMChannels = 128,
@@ -280,13 +280,13 @@ always @(posedge clk)
         pending_rd_cntr <= BUFFER_SIZE/MMV_IN;
     else if (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] >= PADDING_HEIGHT)) 
          pending_rd_cntr <= 0;
-    else if(s_axis_hs & !inc_pending_rd_gen & !inc_pending_rd_last & pending_rd_cntr > 0 & crtcl_rd_cntr[0] == 0)
+    else if(s_axis_hs & !inc_pending_rd_gen & !inc_pending_rd_last & pending_rd_cntr > 0 & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1] == 0)
         pending_rd_cntr <= pending_rd_cntr - 1;
     else if( !(s_axis_hs) & inc_pending_rd_gen)  
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt;  
-    else if (s_axis_hs & inc_pending_rd_gen & crtcl_rd_cntr[0] != 0) 
+    else if (s_axis_hs & inc_pending_rd_gen & (crtcl_rd_cntr[0] != 0 || crtcl_rd_cntr[1] != 0)) 
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt;  
-    else if (s_axis_hs & inc_pending_rd_gen & crtcl_rd_cntr[0] == 0)  
+    else if (s_axis_hs & inc_pending_rd_gen & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1] == 0)  
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt - 1;   
     else if ( !(s_axis_hs) & inc_pending_rd_last)
         pending_rd_cntr <=  pending_rd_cntr + EFF_CHANNELS;
