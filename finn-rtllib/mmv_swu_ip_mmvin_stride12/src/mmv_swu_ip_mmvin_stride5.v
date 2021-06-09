@@ -345,7 +345,7 @@ always @(posedge clk) begin : zeropad_reg_blk
      end
    else if(valid_ptr_vals)
      for( i = 0; i < MMV_OUT;i = i + 1) begin
-       zeropad_reg[i] <= (ofm_row_tracker[i] < PADDING_HEIGHT && kh < PADDING_HEIGHT) || (ofm_row_tracker[i] >= OFMHeight - PADDING_HEIGHT && kh >= KERNEL_HEIGHT - PADDING_HEIGHT) || (ofm_column_tracker[z] < PADDING_WIDTH && kw < PADDING_WIDTH) || (ofm_column_tracker[i] >= OFMWidth - PADDING_WIDTH && kw >= KERNEL_WIDTH - PADDING_WIDTH);
+       zeropad_reg[i] <= (ofm_row_tracker[i] < PADDING_HEIGHT && kh < PADDING_HEIGHT) || (ofm_row_tracker[i] >= OFMHeight - PADDING_HEIGHT && kh >= KERNEL_HEIGHT - PADDING_HEIGHT) || (ofm_column_tracker[i] < PADDING_WIDTH && kw < PADDING_WIDTH) || (ofm_column_tracker[i] >= OFMWidth - PADDING_WIDTH && kw >= KERNEL_WIDTH - PADDING_WIDTH);
      end
    end
 //8
