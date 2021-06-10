@@ -123,8 +123,8 @@ assign ram_enq = op_axis_tready | ~q_valid;
 assign op_axis_tvalid = q_valid;
 assign enaB = buffer_full & !buffer_empty_i 
             & (enaB_q | ~r_valid) 
-            & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] > 0 && kh == KERNEL_HEIGHT - 1 && kw == KERNEL_WIDTH - 1 && ch_ptr == 0) || (crtcl_rd_cntr_del * MMV_IN <= (IFMWidth * EFF_CHANNELS - KERNEL_WIDTH * EFF_CHANNELS - (ofm_column_tracker[0]*EFF_CHANNELS * STRIDE))))
-            & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] == 0 && kh == KERNEL_HEIGHT - 1  && ch_ptr == 0) || (crtcl_rd_cntr_del * MMV_IN < (IFMWidth * EFF_CHANNELS - kw * EFF_CHANNELS - ofm_column_tracker[0])));
+            & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] > 0 && kh == KERNEL_HEIGHT - 2 && kw == KERNEL_WIDTH - 1 && ch_ptr == 0) || (crtcl_rd_cntr[0] * MMV_IN <= (IFMWidth * EFF_CHANNELS - KERNEL_WIDTH * EFF_CHANNELS - (ofm_column_tracker[0]*EFF_CHANNELS * STRIDE))))
+            & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] == 0 && kh == KERNEL_HEIGHT - 1  && ch_ptr == 0) || (crtcl_rd_cntr[0] * MMV_IN < (IFMWidth * EFF_CHANNELS - kw * EFF_CHANNELS - ofm_column_tracker[0])));
 assign enaB_q = (op_axis_tready | ~q_valid);
 assign enaB_r = buffer_full & !buffer_empty_i & (op_axis_tready | ~r_valid);
 
