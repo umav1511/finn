@@ -225,7 +225,7 @@ assign inc_pending_rd_last =  ofm_column_tracker[0] == OFMWidth - MMV_OUT
                            && enaB_reg
                            && kh == KERNEL_HEIGHT - 1
                            && kw == 0
-                           && (mmv_col_tracker[0] + STRIDE*MMV_OUT < MMV_IN)
+                           && ((mmv_col_tracker[0] + STRIDE*MMV_OUT < MMV_IN) || MMV_OUT > 1)
                            && ch_ptr == EFF_CHANNELS - 1;
 end else begin : no_immv1
 assign inc_pending_rd_last = ofm_column_tracker[0] == OFMWidth - MMV_OUT 
@@ -533,10 +533,18 @@ always @(posedge clk) begin : column_trackers
    integer t;
    if(~resetn | restart) begin
        for(t = 0; t < MMV_OUT; t = t + 1) begin
-         mmv_col_tracker[t] <= mmv_add_idx[(t+1) * $clog2(MMV_OUT) - 1 -: $clog2(MMV_OUT)];
          ofm_column_tracker[t] <= t;
          ofm_row_tracker[t] <= 0;
       end
+            if(MMV_IN == 1 || EFF_CHANNELS == 1)
+         for(t= 0 ; t < MMV_OUT; t = t + 1) 
+            if(t <= PADDING_WIDTH)
+            mmv_col_tracker[t] <= 0;
+            else
+            mmv_col_tracker[t] <= (t-PADDING_WIDTH) * EFF_CHANNELS;
+      else
+         for(t = 0 ; t < MMV_OUT; t = t + 1) 
+           mmv_col_tracker[t] <= mmv_add_idx[(t+1) * $clog2(MMV_OUT)- 1 -: $clog2(MMV_OUT)];
    end else begin
    if (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1)) begin
    for(t = 0; t < MMV_OUT; t = t + 1) begin
@@ -585,9 +593,15 @@ end
 always @(posedge clk) begin : col_tracker_adv
    integer i;
    if(~resetn | restart) begin
-      for (i = 0; i < MMV_OUT; i = i + 1) begin
-      mmv_col_tracker_advance[i] <=  mmv_add_idx[(i+1) * $clog2(MMV_OUT)- 1 -: $clog2(MMV_OUT)];
-      end
+      if(MMV_IN == 1 || EFF_CHANNELS == 1)
+         for(i = 0 ; i < MMV_OUT; i = i + 1) 
+            if(i <= PADDING_WIDTH)
+            mmv_col_tracker_advance[i] <= 0;
+            else
+            mmv_col_tracker_advance[i] <= (i-PADDING_WIDTH) * EFF_CHANNELS;
+      else
+         for(i = 0 ; i < MMV_OUT; i = i + 1) 
+           mmv_col_tracker_advance[i] <= mmv_add_idx[(i+1) * $clog2(MMV_OUT)- 1 -: $clog2(MMV_OUT)];
    end else begin
        if (valid_ptr_vals && adv_inc == KERNEL_WIDTH * KERNEL_HEIGHT * EFF_CHANNELS - 3) begin
        
@@ -596,12 +610,14 @@ always @(posedge clk) begin : col_tracker_adv
              for (i = 0; i < MMV_OUT; i = i + 1) begin 
                 if (STRIDE == 1) begin
                    if(ofm_column_tracker[i] >= PADDING_WIDTH) begin
-                      if (mmv_col_tracker[i] + MMV_OUT > MMV_IN * floor_O_BY_I && mmv_col_tracker[i] + MMV_OUT < MMV_IN * (floor_O_BY_I + 1))
+                      if (mmv_col_tracker_advance[i] + MMV_OUT >= MMV_IN * floor_O_BY_I && mmv_col_tracker_advance[i] + MMV_OUT < MMV_IN * (floor_O_BY_I + 1))
                         mmv_col_tracker_advance[i] <= mmv_col_tracker_advance[i] + MMV_OUT - MMV_IN * floor_O_BY_I;
                       else if (mmv_col_tracker_advance[i] + MMV_OUT >= MMV_IN * (floor_O_BY_I + 1))
                          mmv_col_tracker_advance[i] <= mmv_col_tracker_advance[i] + MMV_OUT - MMV_IN * (floor_O_BY_I + 1);
                    end else begin
-                      if (mmv_col_tracker[i] + MMV_OUT > MMV_IN * floor_O_BY_I && mmv_col_tracker[i] + MMV_OUT < MMV_IN * (floor_O_BY_I + 1))
+                      if (mmv_col_tracker_advance[i] + MMV_OUT <= MMV_IN * floor_O_BY_I)
+                         mmv_col_tracker_advance[i] <= mmv_col_tracker_advance[i] + MMV_OUT - PADDING_WIDTH;
+                      else if (mmv_col_tracker_advance[i] + MMV_OUT > MMV_IN * floor_O_BY_I && mmv_col_tracker_advance[i] + MMV_OUT < MMV_IN * (floor_O_BY_I + 1))
                          mmv_col_tracker_advance[i] <= mmv_col_tracker_advance[i] + MMV_OUT - MMV_IN * floor_O_BY_I - PADDING_WIDTH;
                       else if (mmv_col_tracker_advance[i] + MMV_OUT >= MMV_IN * (floor_O_BY_I + 1))
                          mmv_col_tracker_advance[i] <= mmv_col_tracker_advance[i] + MMV_OUT - MMV_IN * (floor_O_BY_I + 1) - PADDING_WIDTH;                  
@@ -621,10 +637,15 @@ always @(posedge clk) begin : col_tracker_adv
                 end 
              end
          else 
-            for (i = 0; i < MMV_OUT; i = i + 1) begin 
-               //mmv_col_tracker_advance[i] <= 1;
-               mmv_col_tracker_advance[i] <= mmv_add_idx[(i+1) * $clog2(MMV_OUT)-1 -: $clog2(MMV_OUT)];         
-            end
+      if(MMV_IN == 1 || EFF_CHANNELS == 1)
+         for(i = 0 ; i < MMV_OUT; i = i + 1) 
+            if(i <= PADDING_WIDTH)
+            mmv_col_tracker_advance[i] <= 0;
+            else
+            mmv_col_tracker_advance[i] <= (i-PADDING_WIDTH) * EFF_CHANNELS;
+      else
+         for(i = 0 ; i < MMV_OUT; i = i + 1) 
+           mmv_col_tracker_advance[i] <= mmv_add_idx[(i+1) * $clog2(MMV_OUT)- 1 -: $clog2(MMV_OUT)];
       end
    end
 end          
