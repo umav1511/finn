@@ -103,6 +103,8 @@ reg mmvshift[MMV_OUT - 1 : 0];
 reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] total_pending_rds = BUFFER_SIZE/MMV_IN;
 
 reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] crtcl_rd_cntr[STRIDE - 1: 0];
+reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] crtcl_rd_cntr_del;
+
 reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] pending_rd_cntr;
 
 wire m_axis_hs;
@@ -119,8 +121,10 @@ assign ip_axis_tready = !buffer_full || (total_pending_rds > 0);
 assign weA = s_axis_hs & ( (input_pixel * BUFFER_SIZE + counter) < (IFMHeight * IFMWidth * EFF_CHANNELS));
 assign ram_enq = op_axis_tready | ~q_valid;
 assign op_axis_tvalid = q_valid;
-assign enaB = buffer_full & !buffer_empty_i & (enaB_q | ~r_valid) & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] > 0 && kh == KERNEL_HEIGHT - 1 && kw == KERNEL_WIDTH - 1 && ch_ptr == 0) || (crtcl_rd_cntr[0] * MMV_IN <= (IFMWidth * EFF_CHANNELS - KERNEL_WIDTH * EFF_CHANNELS - (ofm_column_tracker[0]*EFF_CHANNELS * STRIDE)))) &
-(!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] == 0 && kh == KERNEL_HEIGHT - 1  && ch_ptr == 0) || (crtcl_rd_cntr[0] * MMV_IN < (IFMWidth * EFF_CHANNELS - kw * EFF_CHANNELS - ofm_column_tracker[0])));
+assign enaB = buffer_full & !buffer_empty_i 
+            & (enaB_q | ~r_valid) 
+            & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] > 0 && kh == KERNEL_HEIGHT - 1 && kw == KERNEL_WIDTH - 1 && ch_ptr == 0) || (crtcl_rd_cntr_del * MMV_IN <= (IFMWidth * EFF_CHANNELS - KERNEL_WIDTH * EFF_CHANNELS - (ofm_column_tracker[0]*EFF_CHANNELS * STRIDE))))
+            & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] == 0 && kh == KERNEL_HEIGHT - 1  && ch_ptr == 0) || (crtcl_rd_cntr_del * MMV_IN < (IFMWidth * EFF_CHANNELS - kw * EFF_CHANNELS - ofm_column_tracker[0])));
 assign enaB_q = (op_axis_tready | ~q_valid);
 assign enaB_r = buffer_full & !buffer_empty_i & (op_axis_tready | ~r_valid);
 
@@ -167,6 +171,7 @@ wire inc_ch_ptr;
 wire valid_ptr_vals;
 wire inc_kw;
 wire inc_pending_rd_stride;
+reg s_axis_hs_reg;
 assign valid_ptr_vals = buffer_full & enaB;
 
 
@@ -370,7 +375,13 @@ always @(posedge clk) begin : zeropad_reg_blk
    end
 //8
 
-
+always @(posedge clk) begin : crtclrdcntr_reg_blk
+   if(~resetn | restart)
+       crtcl_rd_cntr_del <= 0;
+   else 
+       crtcl_rd_cntr_del <= crtcl_rd_cntr[0];
+end
+   
 
 
 
