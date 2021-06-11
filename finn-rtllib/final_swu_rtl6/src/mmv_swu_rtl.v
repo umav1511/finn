@@ -702,7 +702,7 @@ always @(posedge clk) begin : start_pos_i_blk
             if(i <= PADDING_WIDTH)
             starting_pos_i[i] <= 0;
             else
-            starting_pos_i[i] <= (i-PADDING_WIDTH) * EFF_CHANNELS;
+            starting_pos_i[i] <= (i-PADDING_WIDTH) * EFF_CHANNELS + (i-PADDING_WIDTH) * STRIDE * EFF_CHANNELS;
       else
          for(i = 0 ; i < MMV_OUT; i = i + 1) 
            starting_pos_i[i] <= mmv_mul_idx[(i+1) * $clog2(ceil_O_BY_I)- 1 -: $clog2(ceil_O_BY_I)] * MMV_IN * EFF_CHANNELS + mmv_add_idx[(i+1) * $clog2(MMV_OUT)- 1 -: $clog2(MMV_OUT)];
@@ -712,7 +712,7 @@ always @(posedge clk) begin : start_pos_i_blk
             if (MMV_IN == 1 || EFF_CHANNELS == 1) begin  
                for(i = 0; i < MMV_OUT; i= i + 1) begin
                   if(ofm_column_tracker[i] < PADDING_WIDTH)
-                     starting_pos_i[i] = starting_pos[i] + (STRIDE*MMV_OUT) * EFF_CHANNELS - PADDING_WIDTH; 
+                     starting_pos_i[i] = starting_pos[i] + (STRIDE*MMV_OUT) * EFF_CHANNELS - PADDING_WIDTH + i * STRIDE * EFF_CHANNELS; 
                   else
                      starting_pos_i[i] = starting_pos[i] + (STRIDE*MMV_OUT) * EFF_CHANNELS + i * STRIDE * EFF_CHANNELS; 
                 end
@@ -739,9 +739,9 @@ always @(posedge clk) begin : start_pos_i_blk
                if(MMV_IN == 1 || EFF_CHANNELS == 1) begin          
                   for(i = 0; i < MMV_OUT; i = i + 1) begin
                      if(i < PADDING_WIDTH)
-                        starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS;
+                        starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + i * STRIDE * EFF_CHANNELS;
                      else 
-                        starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + (i-PADDING_WIDTH) * EFF_CHANNELS;                        
+                        starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + (i-PADDING_WIDTH) * EFF_CHANNELS + i * STRIDE * EFF_CHANNELS;                        
                   end
                end else begin
                   for(i = 0 ; i < MMV_OUT; i = i + 1) begin
@@ -752,9 +752,9 @@ always @(posedge clk) begin : start_pos_i_blk
                if(MMV_IN == 1 || EFF_CHANNELS == 1) begin
                   for(i = 0 ; i < MMV_OUT; i = i + 1) begin
                      if(i <= PADDING_WIDTH)
-                     starting_pos_i[i] <=  (kernel_row_tracker) * IFMWidth * EFF_CHANNELS;
+                     starting_pos_i[i] <=  (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + i * STRIDE * EFF_CHANNELS;
                      else
-                     starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + (i-PADDING_WIDTH) * EFF_CHANNELS; 
+                     starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + (i-PADDING_WIDTH) * EFF_CHANNELS +(i-PADDING_WIDTH) * STRIDE * EFF_CHANNELS; 
                   end
                end else begin
                   for(i = 0 ; i < MMV_OUT; i = i + 1) begin
