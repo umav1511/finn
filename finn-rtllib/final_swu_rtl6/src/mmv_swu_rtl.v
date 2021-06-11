@@ -275,7 +275,7 @@ genvar posvar;
 wire [$clog2(BUFFER_SIZE+EFF_CHANNELS*(KERNEL_WIDTH+((KERNEL_HEIGHT-1)*IFMWidth)) + EFF_CHANNELS)-1 : 0] first_pos[MMV_OUT - 1:0];
 generate if (MMV_IN == 1 || EFF_CHANNELS == 1) begin : mmvo_0_pos
    for(posvar = 0; posvar < MMV_OUT; posvar = posvar + 1) begin
-   assign first_pos[posvar] =  starting_pos[posvar] + kw_tracker[posvar] * EFF_CHANNELS + kh_tracker[posvar]*(IFMWidth * EFF_CHANNELS) + ch_ptr + STRIDE * posvar; 
+   assign first_pos[posvar] =  starting_pos[posvar] + kw_tracker[posvar] * EFF_CHANNELS + kh_tracker[posvar]*(IFMWidth * EFF_CHANNELS) + ch_ptr ; 
    end
 end else begin : mmvo_0_pos_mod
    for(posvar = 0; posvar < MMV_OUT; posvar = posvar + 1) begin
@@ -714,7 +714,7 @@ always @(posedge clk) begin : start_pos_i_blk
                   if(ofm_column_tracker[i] < PADDING_WIDTH)
                      starting_pos_i[i] = starting_pos[i] + (STRIDE*MMV_OUT) * EFF_CHANNELS - PADDING_WIDTH; 
                   else
-                     starting_pos_i[i] = starting_pos[i] + (STRIDE*MMV_OUT) * EFF_CHANNELS; 
+                     starting_pos_i[i] = starting_pos[i] + (STRIDE*MMV_OUT) * EFF_CHANNELS + i * STRIDE * EFF_CHANNELS; 
                 end
             end else begin 
                for(i = 0; i < MMV_OUT; i= i + 1) begin
