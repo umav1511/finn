@@ -167,6 +167,8 @@ assign restart = op_axis_tready && op_axis_tvalid && buffer_empty;
 wire inc_pending_rd_gen;
 wire inc_pending_rd_last;
 wire [$clog2(MMV_OUT * STRIDE + 1) - 1 : 0] inc_rd_amt;
+wire [$clog2(EFF_CHANNELS + (IFMWidth - OFMWidth*STRIDE)+1)-1:0] inc_rd_amt_last;
+
 wire inc_ch_ptr;
 wire valid_ptr_vals;
 wire inc_kw;
@@ -179,6 +181,14 @@ generate if (MMV_IN > 1) begin : inc_immv
    assign inc_rd_amt = 1;
 end else begin : inc_noimmv
    assign inc_rd_amt = MMV_OUT * STRIDE;
+end
+endgenerate
+
+
+generate if (EFF_CHANNELS == 1 && PADDING_WIDTH == 0 && STRIDE > 1) begin : inc_mmv_out
+   assign inc_rd_amt_last = IFMWidth - OFMWidth*STRIDE;
+end else begin : inc_eff_channels
+   assign inc_rd_amt_last = EFF_CHANNELS;
 end
 endgenerate
 
@@ -294,7 +304,9 @@ always @(posedge clk)
     else if (s_axis_hs & inc_pending_rd_gen)  
         total_pending_rds <= total_pending_rds + inc_rd_amt - 1;   
     else if ( !(s_axis_hs) & inc_pending_rd_last)
-        total_pending_rds <=  total_pending_rds + EFF_CHANNELS;
+        total_pending_rds <=  total_pending_rds + inc_rd_amt_last;
+    else if ( (s_axis_hs) & inc_pending_rd_last)
+        total_pending_rds <=  total_pending_rds + inc_rd_amt_last - 1;        
     else if(!(s_axis_hs) & inc_pending_rd_stride)
         total_pending_rds <= total_pending_rds + IFMWidth/MMV_IN * EFF_CHANNELS;
     else if((s_axis_hs) & inc_pending_rd_stride)
@@ -314,8 +326,11 @@ always @(posedge clk)
     else if (s_axis_hs & inc_pending_rd_gen & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1] == 0)  
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt - 1;   
     else if ( !(s_axis_hs) & inc_pending_rd_last)
-        pending_rd_cntr <=  pending_rd_cntr + EFF_CHANNELS;
-
+        pending_rd_cntr <=  pending_rd_cntr + inc_rd_amt_last;
+    else if (s_axis_hs & inc_pending_rd_last & (crtcl_rd_cntr[0] != 0 || crtcl_rd_cntr[1] != 0) ) 
+        pending_rd_cntr <= pending_rd_cntr + inc_rd_amt_last;  
+    else if (s_axis_hs & inc_pending_rd_last & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1] == 0)  
+        pending_rd_cntr <= pending_rd_cntr + inc_rd_amt_last - 1; 
 if(STRIDE ==2) begin
   always @(posedge clk)
     if(~resetn | (restart)) begin
