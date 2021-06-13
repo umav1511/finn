@@ -317,7 +317,7 @@ always @(posedge clk)
 always @(posedge clk)
     if(~resetn | input_counter == IFMHeight * IFMWidth * EFF_CHANNELS-1) 
          finish_rds <= 0;
-    else if(buffer_empty)
+    else if(buffer_empty & input_counter !=0)
          finish_rds <= 1;
 
 always @(posedge clk)
