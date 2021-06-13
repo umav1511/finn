@@ -106,7 +106,9 @@ reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] crtcl_rd_cntr[STRIDE - 1: 0];
 reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] crtcl_rd_cntr_del;
 
 reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] pending_rd_cntr;
-
+reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] new_rd_cntr;
+reg [$clog2(IFMWidth * IFMHeight * EFF_CHANNELS)-1:0] input_counter;
+reg finish_rds;
 wire m_axis_hs;
 wire s_axis_hs;
 wire restart;
@@ -305,7 +307,39 @@ end
 endgenerate
 
 always @(posedge clk)
-    if(~resetn | (restart)) 
+    if(~resetn) 
+         input_counter <= 0;
+    else if(input_counter == IFMHeight * IFMWidth * EFF_CHANNELS-1)
+         input_counter <= 0;
+    else if(s_axis_hs)
+         input_counter <= input_counter + 1;
+         
+always @(posedge clk)
+    if(~resetn | input_counter == IFMHeight * IFMWidth * EFF_CHANNELS-1) 
+         finish_rds <= 0;
+    else if(buffer_empty)
+         finish_rds <= 1;
+
+always @(posedge clk)
+    if(~resetn | (restart) | finish_rds ) 
+         new_rd_cntr <= 0;
+    else if(s_axis_hs & pending_rd_cntr == 0 & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1] == 0 & buffer_full & !inc_pending_rd_gen & !inc_pending_rd_last)
+         new_rd_cntr <= new_rd_cntr + 1;
+    else if(valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] > PADDING_HEIGHT) 
+            & (new_rd_cntr > pending_rd_cntr + IFMWidth/MMV_IN * EFF_CHANNELS))
+                     new_rd_cntr <= new_rd_cntr - (pending_rd_cntr + IFMWidth/MMV_IN * EFF_CHANNELS) ;
+    else if(valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] > PADDING_HEIGHT) 
+         & (new_rd_cntr <= pending_rd_cntr + IFMWidth/MMV_IN * EFF_CHANNELS))
+                     new_rd_cntr <= 0;
+    else if(valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] == PADDING_HEIGHT) 
+            & (new_rd_cntr > pending_rd_cntr ))
+                     new_rd_cntr <= new_rd_cntr - (pending_rd_cntr) ;
+    else if(valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] == PADDING_HEIGHT) 
+         & (new_rd_cntr <= pending_rd_cntr))
+                     new_rd_cntr <= 0;
+    
+always @(posedge clk)
+    if(~resetn | (restart) | finish_rds) 
         total_pending_rds <= BUFFER_SIZE/MMV_IN;
     else if(s_axis_hs & !inc_pending_rd_gen & !inc_pending_rd_last & !inc_pending_rd_stride)
         total_pending_rds <= total_pending_rds - 1;
@@ -323,7 +357,7 @@ always @(posedge clk)
         total_pending_rds <= total_pending_rds + IFMWidth/MMV_IN *EFF_CHANNELS - 1;
  
 always @(posedge clk)
-    if(~resetn | (restart)) 
+    if(~resetn | (restart) | finish_rds) 
         pending_rd_cntr <= BUFFER_SIZE/MMV_IN;
     else if (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] >= PADDING_HEIGHT)) 
          pending_rd_cntr <= 0;
@@ -343,27 +377,45 @@ always @(posedge clk)
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt_last - 1; 
 if(STRIDE ==2) begin
   always @(posedge clk)
-    if(~resetn | (restart)) begin
+    if(~resetn | (restart) | finish_rds) begin
         crtcl_rd_cntr[0]<=0;
         crtcl_rd_cntr[1]<= 0; 
     end else if(!s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] > PADDING_HEIGHT))) begin
-        crtcl_rd_cntr[1] <= pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS;
-        crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];
+       if(new_rd_cntr < pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS)
+          crtcl_rd_cntr[1] <= pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS - new_rd_cntr;
+       else 
+          crtcl_rd_cntr[1] <= 0;
+       crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];
     end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] > PADDING_HEIGHT)) && crtcl_rd_cntr[1] > 0) begin
-        crtcl_rd_cntr[1] <= pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS;
-        crtcl_rd_cntr[0] <= crtcl_rd_cntr[1] - 1;
+       if(new_rd_cntr < pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS)
+          crtcl_rd_cntr[1] <= pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS - new_rd_cntr;
+       else 
+          crtcl_rd_cntr[1] <= 0;
+       crtcl_rd_cntr[0] <= crtcl_rd_cntr[1] - 1;
     end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] > PADDING_HEIGHT)) && crtcl_rd_cntr[1] == 0 ) begin
-        crtcl_rd_cntr[1] <= pending_rd_cntr + IFMWidth/MMV_IN * EFF_CHANNELS - 1;
-        crtcl_rd_cntr[0] <= crtcl_rd_cntr[1]; 
+       if(new_rd_cntr < pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS - 1)
+          crtcl_rd_cntr[1] <= pending_rd_cntr + IFMWidth/MMV_IN * EFF_CHANNELS - 1 - new_rd_cntr;
+       else
+          crtcl_rd_cntr[1] <=  0;
+       crtcl_rd_cntr[0] <= crtcl_rd_cntr[1]; 
     end else if(!s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] == PADDING_HEIGHT))) begin
-        crtcl_rd_cntr[1] <= pending_rd_cntr ;
-        crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];
+       if(new_rd_cntr < pending_rd_cntr)
+          crtcl_rd_cntr[1] <= pending_rd_cntr- new_rd_cntr;
+       else
+          crtcl_rd_cntr[1] <=  0;        
+       crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];
     end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] == PADDING_HEIGHT)) && crtcl_rd_cntr[1] > 0) begin
-        crtcl_rd_cntr[1] <= pending_rd_cntr ;
-        crtcl_rd_cntr[0] <= crtcl_rd_cntr[1] - 1;
+       if(new_rd_cntr < pending_rd_cntr)
+          crtcl_rd_cntr[1] <= pending_rd_cntr- new_rd_cntr;
+       else
+          crtcl_rd_cntr[1] <=  0; 
+       crtcl_rd_cntr[0] <= crtcl_rd_cntr[1] - 1;
     end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] == PADDING_HEIGHT)) && crtcl_rd_cntr[1] == 0 ) begin
-        crtcl_rd_cntr[1] <= pending_rd_cntr  - 1;
-        crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];        
+       if(new_rd_cntr < pending_rd_cntr - 1)
+          crtcl_rd_cntr[1] <= pending_rd_cntr- 1 - new_rd_cntr;
+       else
+          crtcl_rd_cntr[1] <=  0; 
+       crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];        
     end else if(s_axis_hs && crtcl_rd_cntr[0]>0) begin
         crtcl_rd_cntr[0] <= crtcl_rd_cntr[0] - 1;
     end else if(s_axis_hs && crtcl_rd_cntr[1] > 0) begin
@@ -373,7 +425,7 @@ end
 //8
 else begin
   always @(posedge clk) begin : crtcl_cntr
-    if(~resetn | restart) begin
+    if(~resetn | restart | finish_rds) begin
        crtcl_rd_cntr[0] <= 0;
     end else begin
       if (buffer_full && enaB && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && ofm_column_tracker[0] >= (OFMWidth - MMV_OUT) && !(s_axis_hs)) begin
@@ -389,7 +441,7 @@ end
 
 always @(posedge clk) begin : zeropad_reg_blk
    reg [MMV_OUT - 1: 0] i;
-   if(~resetn | restart)
+   if(~resetn | restart | finish_rds)
      for( i = 0; i < MMV_OUT; i = i + 1) begin
        zeropad_reg[i] <= 0;
      end
@@ -401,7 +453,7 @@ always @(posedge clk) begin : zeropad_reg_blk
 //8
 
 always @(posedge clk) begin : crtclrdcntr_reg_blk
-   if(~resetn | restart)
+   if(~resetn | restart |finish_rds)
        crtcl_rd_cntr_del <= 0;
    else 
        crtcl_rd_cntr_del <= crtcl_rd_cntr[0];
@@ -412,26 +464,26 @@ end
 
 
 always @(posedge clk)
-    if(~resetn)
+    if(~resetn | finish_rds)
         q_valid <= 0;
     else if(enaB_q)
         q_valid <= r_valid & ~buffer_empty_i;
         
 always @(posedge clk)
-    if(~resetn)
+    if(~resetn | finish_rds)
         r_valid <= 0;
     else if(enaB_q | ~r_valid)
         r_valid <=  enaB;
         
 always @(posedge clk)
-    if(~resetn)
+    if(~resetn | finish_rds)
         enaB_reg <= 0;
     else 
         enaB_reg <=  enaB;        
 //1
 //assign op_axis_tvalid = buffer_full_i && !buffer_empty_i;
 always @(posedge clk) begin
-if (~resetn) begin
+if (~resetn | finish_rds) begin
   buffer_empty_i <= 0;
   buffer_empty_ii <= 0;
   end else begin
@@ -443,7 +495,7 @@ if (~resetn) begin
   
 //2
 always @(posedge clk) begin
-if (~resetn | restart) begin
+if (~resetn | restart | finish_rds) begin
   buffer_empty <= 0;
   end
 else if (kh==KERNEL_HEIGHT-1 && kw==KERNEL_WIDTH-1 && ofm_row_tracker[0] == OFMHeight - 1 && ofm_column_tracker[0] == OFMWidth-MMV_OUT && ch_ptr == EFF_CHANNELS -1) begin 
@@ -454,7 +506,7 @@ end
 // process to read data
 //3
 always @(*) begin : assign_pos
-   if (~resetn | restart) begin
+   if (~resetn | restart | finish_rds) begin
      for (m = 0; m < MMV_OUT; m = m + 1) begin
         pos[m] = 0;
      end
@@ -471,7 +523,7 @@ end
 
 //4
 always @(posedge clk) begin
-   if (~resetn | restart) begin
+   if (~resetn | restart | finish_rds) begin
       buffer_full_i <= 0;
    end else begin
       buffer_full_i <= buffer_full;
@@ -481,7 +533,7 @@ end
 //5
 // process to write data
 always @(posedge clk) begin
-   if (~resetn | restart) begin
+   if (~resetn | restart | finish_rds) begin
       counter <= 0;
       buffer_full <= 0;
       input_pixel <= 0;  
@@ -499,7 +551,7 @@ always @(posedge clk) begin
 end
 //6
 always @(posedge clk) begin
-   if (~resetn | restart) begin
+   if (~resetn | restart | finish_rds) begin
       ch_ptr <= 0;  
    end else begin
       if (inc_ch_ptr) begin
@@ -514,7 +566,7 @@ end
 
 always @(posedge clk) begin : kh_kw_tracker
    integer s;
-   if (~resetn | restart) begin
+   if (~resetn | restart |  finish_rds) begin
       for(s = 0; s < MMV_OUT; s = s + 1) begin
       kw_tracker[s] <= 0;
       kh_tracker[s] <= 0;
@@ -542,7 +594,7 @@ end
 //7
 always @(posedge clk) begin : kh_kw
    integer s;
-   if (~resetn | restart) begin
+   if (~resetn | restart | finish_rds) begin
       kw <= 0;
       kh <= 0;
       for(s = 0; s < MMV_OUT; s = s + 1)
@@ -567,7 +619,7 @@ end
 always @(posedge clk) begin : column_trackers
    //reg [$clog2(MMV_OUT) - 1:0] i;
    integer t;
-   if(~resetn | restart) begin
+   if(~resetn | restart | finish_rds) begin
        for(t = 0; t < MMV_OUT; t = t + 1) begin
          ofm_column_tracker[t] <= t;
          ofm_row_tracker[t] <= 0;
@@ -604,7 +656,7 @@ end
 always @(posedge clk) begin : kernel_row_trackers
    //reg [$clog2(MMV_OUT) - 1:0] i;
    integer t;
-   if(~resetn | restart) begin
+   if(~resetn | restart | finish_rds) begin
       kernel_row_tracker <= 0;
    end else begin
    if (valid_ptr_vals && inc_start_pos == KERNEL_WIDTH*KERNEL_HEIGHT*EFF_CHANNELS - 2) begin
@@ -628,7 +680,7 @@ end
 //DWS CAREFUL)
 always @(posedge clk) begin : col_tracker_adv
    integer i;
-   if(~resetn | restart) begin
+   if(~resetn | restart | finish_rds) begin
       if(MMV_IN == 1 || EFF_CHANNELS == 1)
          for(i = 0 ; i < MMV_OUT; i = i + 1) 
             if(i <= PADDING_WIDTH)
@@ -693,7 +745,7 @@ always @(posedge clk) begin : starting_pos_blk
 integer r;
 
    //reg [$clog2(MMV_OUT) - 1:0] i;
-   if (~resetn | restart) begin
+   if (~resetn | restart | finish_rds) begin
       for (r = 0; r < MMV_OUT; r = r + 1) begin
          starting_pos[r] <= 0;
       end
@@ -721,7 +773,7 @@ endgenerate
 //11
 always @(posedge clk) begin : start_pos_i_blk
    integer i;
-   if (~resetn |restart) begin
+   if (~resetn |restart | finish_rds) begin
       if(MMV_IN == 1 || EFF_CHANNELS == 1)
          for(i = 0 ; i < MMV_OUT; i = i + 1) 
             if(i <= PADDING_WIDTH)
@@ -797,7 +849,7 @@ end
 //12
 always @(posedge clk) begin : mmvshift_blk
    integer n;
-   if (~resetn | restart) begin 
+   if (~resetn | restart | finish_rds) begin 
       for(n = 0; n < MMV_OUT; n = n + 1) begin 
       mmvshift[n] <= 0;
       end
@@ -812,6 +864,7 @@ always @(posedge clk) begin : mmvshift_blk
       end
    end
 end
+
 
 function integer log2;
 input integer value;
