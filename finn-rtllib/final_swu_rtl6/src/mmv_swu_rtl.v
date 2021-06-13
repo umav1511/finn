@@ -123,8 +123,11 @@ assign ram_enq = op_axis_tready | ~q_valid;
 assign op_axis_tvalid = q_valid;
 assign enaB = buffer_full & !buffer_empty_i 
             & (enaB_q | ~r_valid) 
-            & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] > 0 && kh == KERNEL_HEIGHT - 2 && kw == KERNEL_WIDTH - 1 && ch_ptr == 0) || (crtcl_rd_cntr[0] * MMV_IN <= (IFMWidth * EFF_CHANNELS - KERNEL_WIDTH * EFF_CHANNELS - (ofm_column_tracker[MMV_OUT-1]*EFF_CHANNELS * STRIDE))))
-            & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] == 0 && kh == KERNEL_HEIGHT - 2  && ch_ptr == 0) || (crtcl_rd_cntr[0] * MMV_IN < (IFMWidth * EFF_CHANNELS - kw * EFF_CHANNELS - ofm_column_tracker[MMV_OUT - 1])));
+            & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] > 0 && kh == KERNEL_HEIGHT - 2 && kw == KERNEL_WIDTH - 1 && ch_ptr == 0) 
+            ||(crtcl_rd_cntr[0] * MMV_IN <= (IFMWidth * EFF_CHANNELS - KERNEL_WIDTH * EFF_CHANNELS - (ofm_column_tracker[MMV_OUT-1]*EFF_CHANNELS * STRIDE))))
+            & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] == 0 && kh == KERNEL_HEIGHT - 2  && ch_ptr == 0) 
+            || (crtcl_rd_cntr[0] * MMV_IN < (IFMWidth * EFF_CHANNELS - kw * EFF_CHANNELS - ofm_column_tracker[MMV_OUT - 1])));
+
 assign enaB_q = (op_axis_tready | ~q_valid);
 assign enaB_r = buffer_full & !buffer_empty_i & (op_axis_tready | ~r_valid);
 
@@ -184,9 +187,8 @@ end else begin : inc_noimmv
 end
 endgenerate
 
-
-generate if (EFF_CHANNELS == 1 && PADDING_WIDTH == 0 && STRIDE > 1) begin : inc_mmv_out
-   assign inc_rd_amt_last = IFMWidth - OFMWidth*STRIDE;
+generate if (MMV_IN == 1) begin: inc_no_immv
+   assign inc_rd_amt_last = IFMWidth - (OFMWidth - PADDING_WIDTH) * STRIDE * EFF_CHANNELS;
 end else begin : inc_eff_channels
    assign inc_rd_amt_last = EFF_CHANNELS;
 end
@@ -225,9 +227,17 @@ endgenerate
 
 // this does not depend on padding yet
 generate if (MMV_IN > 1) begin : use_immv
-   assign inc_pending_rd_gen = ((ofm_column_tracker[0] >= PADDING_WIDTH && ofm_row_tracker[0] < OFMHeight - STRIDE - PADDING_HEIGHT) && enaB_reg && (ofm_row_tracker[0] >= PADDING_HEIGHT || (STRIDE > PADDING_HEIGHT))) && (mmv_col_tracker[0] + STRIDE*MMV_OUT >= MMV_IN && kh == 1 && kw == KERNEL_WIDTH - 1) ;
+   assign inc_pending_rd_gen = ((ofm_column_tracker[0] >= PADDING_WIDTH
+                              && ofm_row_tracker[0] < OFMHeight - STRIDE - PADDING_HEIGHT) 
+                              && enaB_reg 
+                              && (ofm_row_tracker[0] >= PADDING_HEIGHT || (STRIDE > PADDING_HEIGHT))) 
+                              && (mmv_col_tracker[0] + STRIDE * MMV_OUT >= MMV_IN && kh == 1 && kw == KERNEL_WIDTH - 1) ;
 end else begin : no_immv
-   assign inc_pending_rd_gen = ((ofm_column_tracker[0] >= PADDING_WIDTH && ofm_row_tracker[0] < OFMHeight - STRIDE - PADDING_HEIGHT) && enaB_reg && ((ofm_row_tracker[0] >= PADDING_HEIGHT) || (STRIDE > PADDING_HEIGHT))) && (kh == 0 && kw == KERNEL_WIDTH - 1) ;
+   assign inc_pending_rd_gen = ((ofm_column_tracker[0] >= PADDING_WIDTH 
+                              && ofm_row_tracker[0] < OFMHeight - STRIDE - PADDING_HEIGHT) 
+                              && enaB_reg 
+                              && ((ofm_row_tracker[0] >= PADDING_HEIGHT) || (STRIDE > PADDING_HEIGHT))) 
+                              && (kh == 0 && kw == KERNEL_WIDTH - 1) ;
 end 
 endgenerate
 
