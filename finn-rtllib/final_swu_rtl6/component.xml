@@ -132,7 +132,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>a4c57357</spirit:value>
+            <spirit:value>04ee2e23</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -148,7 +148,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>a4c57357</spirit:value>
+            <spirit:value>04ee2e23</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -423,7 +423,7 @@
       <spirit:file>
         <spirit:name>src/mmv_swu_rtl.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_737711b9</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_daad99c2</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -605,19 +605,19 @@
       <xilinx:displayName>mmv_swu_rtl_v1_0</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
       <xilinx:coreRevision>2</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-06-13T12:59:58Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2021-06-13T18:28:45Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@322c91ae_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/final_swu_rtl6</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@28b29d56_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/final_swu_rtl6</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5f0a4c7b_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/final_swu_rtl6</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@360dfe15_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/final_swu_rtl6</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1f80c4a5_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/final_swu_rtl6</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@8c94765_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/final_swu_rtl6</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6a669e4a_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/final_swu_rtl6</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@36508860_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/final_swu_rtl6</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@11db4c88_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/final_swu_rtl6</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2d90748d_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/final_swu_rtl6</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="2fedc2b3"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="4f1352ec"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="b11895da"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="ce6d1a80"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="98028990"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="d15bd703"/>
