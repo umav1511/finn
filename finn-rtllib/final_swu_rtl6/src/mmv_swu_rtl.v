@@ -22,7 +22,8 @@
 
 module mmv_swu_rtl #(
     parameter SIMD = 32,
-    parameter STRIDE = 1,
+    parameter STRIDE_HT = 1,
+    parameter STRIDE_WT = 1,
     parameter IFMChannels = 128,
     parameter KERNEL_HEIGHT = 3,
     parameter KERNEL_WIDTH = 3,
@@ -90,7 +91,7 @@ reg [$clog2(OFMHeight) - 1: 0]ofm_row_tracker[MMV_OUT - 1 :0];
 reg [$clog2(EFF_CHANNELS) : 0] ch_ptr = 0;
 wire weA;
 reg [$clog2(MMV_IN) - 1: 0] mmv_col_tracker[MMV_OUT - 1 :0];
-reg [$clog2(KERNEL_HEIGHT*STRIDE) - 1: 0] kernel_row_tracker = 0;
+reg [$clog2(KERNEL_HEIGHT*STRIDE_HT) - 1: 0] kernel_row_tracker = 0;
 
 reg [$clog2(MMV_IN) - 1: 0] mmv_col_tracker_advance[MMV_OUT - 1 : 0] ;
 reg [$clog2(MMV_IN) - 1: 0] mmv_row_tracker_advance ;
@@ -102,7 +103,7 @@ reg [$clog2(BUFFER_SIZE+EFF_CHANNELS*(KERNEL_WIDTH+((KERNEL_HEIGHT-1)*IFMWidth))
 reg mmvshift[MMV_OUT - 1 : 0];
 reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] total_pending_rds = BUFFER_SIZE/MMV_IN;
 
-reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] crtcl_rd_cntr[STRIDE - 1: 0];
+reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] crtcl_rd_cntr[STRIDE_HT - 1: 0];
 reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] crtcl_rd_cntr_del;
 
 reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] pending_rd_cntr;
@@ -126,7 +127,7 @@ assign op_axis_tvalid = q_valid;
 assign enaB = buffer_full & !buffer_empty_i 
             & (enaB_q | ~r_valid) 
             & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] > 0 && kh == KERNEL_HEIGHT - 2 && kw == KERNEL_WIDTH - 1 && ch_ptr == 0) 
-            ||(crtcl_rd_cntr[0] * MMV_IN <= (IFMWidth * EFF_CHANNELS - KERNEL_WIDTH * EFF_CHANNELS - (ofm_column_tracker[MMV_OUT-1]*EFF_CHANNELS * STRIDE))))
+            ||(crtcl_rd_cntr[0] * MMV_IN <= (IFMWidth * EFF_CHANNELS - KERNEL_WIDTH * EFF_CHANNELS - (ofm_column_tracker[MMV_OUT-1]*EFF_CHANNELS * STRIDE_WT))))
             & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] == 0 && kh == KERNEL_HEIGHT - 2  && ch_ptr == 0) 
             || (crtcl_rd_cntr[0] * MMV_IN < (IFMWidth * EFF_CHANNELS - kw * EFF_CHANNELS - ofm_column_tracker[MMV_OUT - 1])));
 
@@ -171,8 +172,8 @@ assign restart = op_axis_tready && op_axis_tvalid && buffer_empty;
 
 wire inc_pending_rd_gen;
 wire inc_pending_rd_last;
-wire [$clog2(MMV_OUT * STRIDE + 1) - 1 : 0] inc_rd_amt;
-wire [$clog2(EFF_CHANNELS + (IFMWidth - OFMWidth*STRIDE)+1)-1:0] inc_rd_amt_last;
+wire [$clog2(MMV_OUT * STRIDE_WT + 1) - 1 : 0] inc_rd_amt;
+wire [$clog2(EFF_CHANNELS + (IFMWidth - OFMWidth*STRIDE_WT)+1)-1:0] inc_rd_amt_last;
 
 wire inc_ch_ptr;
 wire valid_ptr_vals;
@@ -185,19 +186,19 @@ assign valid_ptr_vals = buffer_full & enaB;
 generate if (MMV_IN > 1) begin : inc_immv
    assign inc_rd_amt = 1;
 end else begin : inc_noimmv
-   assign inc_rd_amt = MMV_OUT * STRIDE;
+   assign inc_rd_amt = MMV_OUT * STRIDE_WT;
 end
 endgenerate
 
 generate if (MMV_IN == 1) begin: inc_no_immv
-   assign inc_rd_amt_last = IFMWidth - (OFMWidth - PADDING_WIDTH) * STRIDE * EFF_CHANNELS;
+   assign inc_rd_amt_last = IFMWidth - (OFMWidth - PADDING_WIDTH) * STRIDE_WT * EFF_CHANNELS;
 end else begin : inc_eff_channels
    assign inc_rd_amt_last = EFF_CHANNELS;
 end
 endgenerate
 
-generate if (STRIDE > 1) begin : inc_stride
-   assign inc_pending_rd_stride = ofm_column_tracker[0] == OFMWidth - MMV_OUT && kh == KERNEL_HEIGHT - 1 && kw == KERNEL_HEIGHT - 1  && ch_ptr == EFF_CHANNELS - 1 &&  ofm_row_tracker[0] >= PADDING_HEIGHT && ofm_row_tracker[0] < OFMHeight - 1 - STRIDE;
+generate if (STRIDE_HT > 1) begin : inc_stride
+   assign inc_pending_rd_stride = ofm_column_tracker[0] == OFMWidth - MMV_OUT && kh == KERNEL_HEIGHT - 1 && kw == KERNEL_HEIGHT - 1  && ch_ptr == EFF_CHANNELS - 1 &&  ofm_row_tracker[0] >= PADDING_HEIGHT && ofm_row_tracker[0] < OFMHeight - 1 - STRIDE_HT;
 end else begin : inc_nostride
    assign inc_pending_rd_stride = 0;
 end
@@ -230,15 +231,15 @@ endgenerate
 // this does not depend on padding yet
 generate if (MMV_IN > 1) begin : use_immv
    assign inc_pending_rd_gen = ((ofm_column_tracker[0] >= PADDING_WIDTH
-                              && ofm_row_tracker[0] < OFMHeight - STRIDE - PADDING_HEIGHT) 
+                              && ofm_row_tracker[0] < OFMHeight - STRIDE_HT - PADDING_HEIGHT) 
                               && enaB_reg 
-                              && (ofm_row_tracker[0] >= PADDING_HEIGHT || (STRIDE > PADDING_HEIGHT))) 
-                              && (mmv_col_tracker[0] + STRIDE * MMV_OUT >= MMV_IN && kh == 1 && kw == KERNEL_WIDTH - 1) ;
+                              && (ofm_row_tracker[0] >= PADDING_HEIGHT || (STRIDE_HT > PADDING_HEIGHT))) 
+                              && (mmv_col_tracker[0] + STRIDE_WT * MMV_OUT >= MMV_IN && kh == 1 && kw == KERNEL_WIDTH - 1) ;
 end else begin : no_immv
    assign inc_pending_rd_gen = ((ofm_column_tracker[0] >= PADDING_WIDTH 
-                              && ofm_row_tracker[0] < OFMHeight - STRIDE - PADDING_HEIGHT) 
+                              && ofm_row_tracker[0] < OFMHeight - STRIDE_HT - PADDING_HEIGHT) 
                               && enaB_reg 
-                              && ((ofm_row_tracker[0] >= PADDING_HEIGHT) || (STRIDE > PADDING_HEIGHT))) 
+                              && ((ofm_row_tracker[0] >= PADDING_HEIGHT) || (STRIDE_HT > PADDING_HEIGHT))) 
                               && (kh == 0 && kw == KERNEL_WIDTH - 1) ;
 end 
 endgenerate
@@ -247,17 +248,17 @@ endgenerate
 // according to my intuition. for no immv, this is what must be done, but i will leave it for now
 generate if(MMV_IN > 1) begin: use_immv1
 assign inc_pending_rd_last =  ofm_column_tracker[0] == OFMWidth - MMV_OUT 
-                           && ofm_row_tracker[0] < OFMHeight - STRIDE - PADDING_HEIGHT 
-                           && (ofm_row_tracker[0] >= PADDING_HEIGHT || (STRIDE > PADDING_HEIGHT))
+                           && ofm_row_tracker[0] < OFMHeight - STRIDE_HT - PADDING_HEIGHT 
+                           && (ofm_row_tracker[0] >= PADDING_HEIGHT || (STRIDE_HT > PADDING_HEIGHT))
                            && enaB_reg
                            && kh == KERNEL_HEIGHT - 1
                            && kw == 0
-                           && ((mmv_col_tracker[0] + STRIDE*MMV_OUT < MMV_IN) || MMV_OUT > 1)
+                           && ((mmv_col_tracker[0] + STRIDE_WT*MMV_OUT < MMV_IN) || MMV_OUT > 1)
                            && ch_ptr == EFF_CHANNELS - 1;
 end else begin : no_immv1
 assign inc_pending_rd_last = ofm_column_tracker[0] == OFMWidth - MMV_OUT 
-                           && ofm_row_tracker[0] < OFMHeight - STRIDE - PADDING_HEIGHT 
-                           && (ofm_row_tracker[0] >= PADDING_HEIGHT || (STRIDE > PADDING_HEIGHT))
+                           && ofm_row_tracker[0] < OFMHeight - STRIDE_HT - PADDING_HEIGHT 
+                           && (ofm_row_tracker[0] >= PADDING_HEIGHT || (STRIDE_HT > PADDING_HEIGHT))
                            && enaB_reg
                            && kh == KERNEL_HEIGHT - 1
                            && kw == 0
@@ -309,13 +310,13 @@ endgenerate
 always @(posedge clk)
     if(~resetn) 
          input_counter <= 0;
-    else if(input_counter == IFMHeight * IFMWidth * EFF_CHANNELS-1)
+    else if(input_counter == (IFMHeight * IFMWidth/MMV_IN * EFF_CHANNELS)-1)
          input_counter <= 0;
     else if(s_axis_hs)
          input_counter <= input_counter + 1;
          
 always @(posedge clk)
-    if(~resetn | input_counter == IFMHeight * IFMWidth * EFF_CHANNELS-1) 
+    if(~resetn | input_counter == IFMHeight * IFMWidth/MMV_IN * EFF_CHANNELS-1) 
          finish_rds <= 0;
     else if(buffer_empty & input_counter !=0)
          finish_rds <= 1;
@@ -375,7 +376,7 @@ always @(posedge clk)
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt_last;  
     else if (s_axis_hs & inc_pending_rd_last & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1] == 0)  
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt_last - 1; 
-if(STRIDE ==2) begin
+if( STRIDE_HT == 2 ) begin
   always @(posedge clk)
     if(~resetn | (restart) | finish_rds) begin
         crtcl_rd_cntr[0]<=0;
@@ -663,11 +664,11 @@ always @(posedge clk) begin : kernel_row_trackers
        if(ofm_column_tracker[0] >= OFMWidth - MMV_OUT) begin
           if (ofm_row_tracker[MMV_OUT - 1] < (OFMHeight - 1)) begin
                   if(ofm_row_tracker[0] < PADDING_HEIGHT)
-                      kernel_row_tracker <= kernel_row_tracker + STRIDE - PADDING_HEIGHT;
-                  else if(kernel_row_tracker + STRIDE > KERNEL_HEIGHT * STRIDE - 1) 
-                      kernel_row_tracker <= kernel_row_tracker + STRIDE - KERNEL_HEIGHT*STRIDE;
-                  else if (kernel_row_tracker + STRIDE <= KERNEL_HEIGHT * STRIDE - 1) 
-                      kernel_row_tracker <= kernel_row_tracker + STRIDE;
+                      kernel_row_tracker <= kernel_row_tracker + STRIDE_HT - PADDING_HEIGHT;
+                  else if(kernel_row_tracker + STRIDE_HT > KERNEL_HEIGHT * STRIDE_HT - 1) 
+                      kernel_row_tracker <= kernel_row_tracker + STRIDE_HT - KERNEL_HEIGHT*STRIDE_HT;
+                  else if (kernel_row_tracker + STRIDE_HT <= KERNEL_HEIGHT * STRIDE_HT - 1) 
+                      kernel_row_tracker <= kernel_row_tracker + STRIDE_HT;
           end else begin
              kernel_row_tracker <= 0;
           end
@@ -696,7 +697,7 @@ always @(posedge clk) begin : col_tracker_adv
       //if (valid_ptr_vals && ((kw + 1) * EFF_CHANNELS + ch_ptr == KERNEL_WIDTH * EFF_CHANNELS - 1) && (kh == KERNEL_HEIGHT - 1)) begin
           if(ofm_column_tracker[0] < (OFMWidth - MMV_OUT))
              for (i = 0; i < MMV_OUT; i = i + 1) begin 
-                if (STRIDE == 1) begin
+                if (STRIDE_WT == 1) begin
                    if(ofm_column_tracker[i] >= PADDING_WIDTH) begin
                       if (mmv_col_tracker_advance[i] + MMV_OUT >= MMV_IN * floor_O_BY_I && mmv_col_tracker_advance[i] + MMV_OUT < MMV_IN * (floor_O_BY_I + 1))
                         mmv_col_tracker_advance[i] <= mmv_col_tracker_advance[i] + MMV_OUT - MMV_IN * floor_O_BY_I;
@@ -712,15 +713,15 @@ always @(posedge clk) begin : col_tracker_adv
                    end             
                 end else  begin
                    if(ofm_column_tracker[0] < PADDING_WIDTH) begin
-                       if(mmv_col_tracker[i] + STRIDE - PADDING_WIDTH < MMV_IN)
-                          mmv_col_tracker_advance[i] <= mmv_col_tracker[i] + STRIDE - PADDING_WIDTH;
+                       if(mmv_col_tracker[i] + STRIDE_WT - PADDING_WIDTH < MMV_IN)
+                          mmv_col_tracker_advance[i] <= mmv_col_tracker[i] + STRIDE_WT - PADDING_WIDTH;
                        else
-                          mmv_col_tracker_advance[i] <= mmv_col_tracker[i] + STRIDE - PADDING_WIDTH- MMV_IN;                  
+                          mmv_col_tracker_advance[i] <= mmv_col_tracker[i] + STRIDE_WT - PADDING_WIDTH- MMV_IN;                  
                    end else begin                
-                       if(mmv_col_tracker[i] + STRIDE < MMV_IN)
-                          mmv_col_tracker_advance[i] <= mmv_col_tracker[i] + STRIDE;
+                       if(mmv_col_tracker[i] + STRIDE_WT < MMV_IN)
+                          mmv_col_tracker_advance[i] <= mmv_col_tracker[i] + STRIDE_WT;
                        else
-                          mmv_col_tracker_advance[i] <= mmv_col_tracker[i] + STRIDE - MMV_IN;
+                          mmv_col_tracker_advance[i] <= mmv_col_tracker[i] + STRIDE_WT - MMV_IN;
                    end 
                 end 
              end
@@ -759,15 +760,6 @@ integer r;
    end
 end
 
-wire [$clog2(STRIDE*MMV_OUT*EFF_CHANNELS+MMV_IN*S_BY_M)-1:0]inc_start_pos_amt;
-generate if (MMV_IN == 1) begin : no_mmv_in
-   assign inc_start_pos_amt = (STRIDE*MMV_OUT) * EFF_CHANNELS ;
-end else if (STRIDE > 1) begin
-   assign inc_start_pos_amt = (STRIDE*MMV_OUT)+MMV_IN * S_BY_M;
-end else if (MMV_IN > 1 && STRIDE == 1 && EFF_CHANNELS == 1) begin : w_mmv_in_stride_eff_ch_1
-   assign inc_start_pos_amt = MMV_OUT;
-end
-endgenerate
 
 
 //11
@@ -779,7 +771,7 @@ always @(posedge clk) begin : start_pos_i_blk
             if(i <= PADDING_WIDTH)
             starting_pos_i[i] <= 0;
             else
-            starting_pos_i[i] <= (i-PADDING_WIDTH) * EFF_CHANNELS * STRIDE ;
+            starting_pos_i[i] <= (i-PADDING_WIDTH) * EFF_CHANNELS * STRIDE_WT ;
       else
          for(i = 0 ; i < MMV_OUT; i = i + 1) 
            starting_pos_i[i] <= mmv_mul_idx[(i+1) * $clog2(ceil_O_BY_I)- 1 -: $clog2(ceil_O_BY_I)] * MMV_IN * EFF_CHANNELS + mmv_add_idx[(i+1) * $clog2(MMV_OUT)- 1 -: $clog2(MMV_OUT)];
@@ -789,23 +781,23 @@ always @(posedge clk) begin : start_pos_i_blk
             if (MMV_IN == 1 || EFF_CHANNELS == 1) begin  
                for(i = 0; i < MMV_OUT; i= i + 1) begin
                   if(ofm_column_tracker[i] < PADDING_WIDTH)
-                     starting_pos_i[i] = starting_pos[i] + (STRIDE*MMV_OUT) * EFF_CHANNELS - PADDING_WIDTH ; 
+                     starting_pos_i[i] = starting_pos[i] + (STRIDE_WT*MMV_OUT) * EFF_CHANNELS - PADDING_WIDTH ; 
                   else
-                     starting_pos_i[i] = starting_pos[i] + (STRIDE*MMV_OUT) * EFF_CHANNELS; 
+                     starting_pos_i[i] = starting_pos[i] + (STRIDE_WT*MMV_OUT) * EFF_CHANNELS; 
                 end
             end else begin 
                for(i = 0; i < MMV_OUT; i= i + 1) begin
                   if (ofm_column_tracker[i] < PADDING_WIDTH) begin
-                  if (mmv_col_tracker[i] + MMV_OUT * STRIDE > MMV_IN * floor_O_BY_I && mmv_col_tracker[i] + MMV_OUT * STRIDE < MMV_IN * (floor_O_BY_I + 1)) begin
-                     starting_pos_i[i] <= starting_pos[i] + MMV_OUT*STRIDE + (MMV_IN * floor_O_BY_I) - PADDING_WIDTH;
-                  end else if (mmv_col_tracker[i] + MMV_OUT * STRIDE >= MMV_IN * (floor_O_BY_I + 1)) begin
-                     starting_pos_i[i] <= starting_pos[i] + MMV_OUT*STRIDE + MMV_IN * (floor_O_BY_I + 1) - PADDING_WIDTH; 
+                  if (mmv_col_tracker[i] + MMV_OUT * STRIDE_WT > MMV_IN * floor_O_BY_I && mmv_col_tracker[i] + MMV_OUT * STRIDE_WT < MMV_IN * (floor_O_BY_I + 1)) begin
+                     starting_pos_i[i] <= starting_pos[i] + MMV_OUT*STRIDE_WT + (MMV_IN * floor_O_BY_I) - PADDING_WIDTH;
+                  end else if (mmv_col_tracker[i] + MMV_OUT * STRIDE_WT >= MMV_IN * (floor_O_BY_I + 1)) begin
+                     starting_pos_i[i] <= starting_pos[i] + MMV_OUT*STRIDE_WT + MMV_IN * (floor_O_BY_I + 1) - PADDING_WIDTH; 
                   end
                   end else begin
-                  if (mmv_col_tracker[i] + MMV_OUT * STRIDE > MMV_IN * floor_O_BY_I && mmv_col_tracker[i] + MMV_OUT * STRIDE < MMV_IN * (floor_O_BY_I + 1)) begin
-                     starting_pos_i[i] <= starting_pos[i] + MMV_OUT*STRIDE + (MMV_IN * floor_O_BY_I);
-                  end else if (mmv_col_tracker[i] + MMV_OUT * STRIDE >= MMV_IN * (floor_O_BY_I + 1)) begin
-                     starting_pos_i[i] <= starting_pos[i] + MMV_OUT*STRIDE + MMV_IN * (floor_O_BY_I + 1); 
+                  if (mmv_col_tracker[i] + MMV_OUT * STRIDE_WT > MMV_IN * floor_O_BY_I && mmv_col_tracker[i] + MMV_OUT * STRIDE_WT < MMV_IN * (floor_O_BY_I + 1)) begin
+                     starting_pos_i[i] <= starting_pos[i] + MMV_OUT*STRIDE_WT + (MMV_IN * floor_O_BY_I);
+                  end else if (mmv_col_tracker[i] + MMV_OUT * STRIDE_WT >= MMV_IN * (floor_O_BY_I + 1)) begin
+                     starting_pos_i[i] <= starting_pos[i] + MMV_OUT*STRIDE_WT + MMV_IN * (floor_O_BY_I + 1); 
                   end                  
                   end
                   
@@ -815,9 +807,9 @@ always @(posedge clk) begin : start_pos_i_blk
             if(MMV_IN == 1 || EFF_CHANNELS == 1) begin          
                for(i = 0; i < MMV_OUT; i = i + 1) begin
                    if(i < PADDING_WIDTH)
-                       starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + i * STRIDE * EFF_CHANNELS;
+                       starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + i * STRIDE_WT * EFF_CHANNELS;
                    else 
-                       starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + (i-PADDING_WIDTH) * EFF_CHANNELS *STRIDE ;                        
+                       starting_pos_i[i] <= (kernel_row_tracker) * IFMWidth * EFF_CHANNELS + (i-PADDING_WIDTH) * EFF_CHANNELS *STRIDE_WT ;                        
                end
             end else begin
                for(i = 0 ; i < MMV_OUT; i = i + 1) begin
