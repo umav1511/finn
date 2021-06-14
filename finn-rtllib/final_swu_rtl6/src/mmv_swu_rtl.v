@@ -310,13 +310,13 @@ endgenerate
 always @(posedge clk)
     if(~resetn) 
          input_counter <= 0;
-    else if(input_counter == (IFMHeight * IFMWidth/MMV_IN * EFF_CHANNELS)-1)
+    else if(input_counter == (IFMHeight * IFMWidth/MMV_IN * EFF_CHANNELS))
          input_counter <= 0;
     else if(s_axis_hs)
          input_counter <= input_counter + 1;
          
 always @(posedge clk)
-    if(~resetn | input_counter == IFMHeight * IFMWidth/MMV_IN * EFF_CHANNELS-1) 
+    if(~resetn | input_counter == IFMHeight * IFMWidth/MMV_IN * EFF_CHANNELS) 
          finish_rds <= 0;
     else if(buffer_empty & input_counter !=0)
          finish_rds <= 1;
