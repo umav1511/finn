@@ -21,30 +21,28 @@
 
 
 module mmv_swu_rtl #(
-    parameter SIMD = 32,
-    parameter STRIDE_HT = 1,
-    parameter STRIDE_WT = 1,
-    parameter IFMChannels = 128,
+    parameter SIMD = 3,
+    parameter STRIDE_HT = 2,
+    parameter STRIDE_WT = 2,
+    parameter IFMChannels = 3,
     parameter KERNEL_HEIGHT = 3,
     parameter KERNEL_WIDTH = 3,
     parameter RAM_STYLE = "distributed",
 
-	parameter IFMWidth = 5,
-	parameter IFMHeight = 5,
+	parameter IFMWidth = 224,
+	parameter IFMHeight = 224,
 	parameter PADDING_WIDTH = 0,
 	parameter PADDING_HEIGHT =0,
-	parameter OFMWidth = 3,
-	parameter OFMHeight = 3,
+	parameter OFMWidth = 111,
+	parameter OFMHeight = 111,
 
 	//depths per stream
-	parameter IP_PRECISION = 1,
+	parameter IP_PRECISION = 8,
 	parameter MMV_IN = 1,
 	parameter MMV_OUT = 1,
-	parameter BUFFER_SIZE = 15,
-	parameter OFMDIM_MOD_MMV = 0,
 	parameter S_BY_M = 0,
 	parameter DWS = 0,
-	parameter floor_O_BY_I = 0,
+	parameter floor_O_BY_I = 1,
 	parameter ceil_O_BY_I = 1,
 	parameter ZEROPAD = 0,
 	parameter O_MOD_MMVI = 0)
@@ -60,7 +58,7 @@ output [MMV_OUT * SIMD * IP_PRECISION - 1 : 0] op_axis_tdata,
 input op_axis_tready,
 output op_axis_tvalid
     );
-    
+ localparam   BUFFER_SIZE = (STRIDE_HT+ KERNEL_HEIGHT) * IFMWidth * IFMChannels/SIMD ;
 localparam EFF_CHANNELS = IFMChannels/SIMD;
 localparam SIZEA = BUFFER_SIZE/MMV_IN;
 localparam SIZEB = BUFFER_SIZE;
@@ -379,13 +377,13 @@ if( STRIDE_HT == 2 ) begin
     if(~resetn | (restart) | finish_rds) begin
         crtcl_rd_cntr[0]<=0;
         crtcl_rd_cntr[1]<= 0; 
-    end else if(!s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] > PADDING_HEIGHT))) begin
+    end else if(!s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] >= PADDING_HEIGHT))) begin
        if(new_rd_cntr < pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS)
           crtcl_rd_cntr[1] <= pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS - new_rd_cntr;
        else 
           crtcl_rd_cntr[1] <= 0;
        crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];
-    end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] > PADDING_HEIGHT)) && crtcl_rd_cntr[1] > 0) begin
+    end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] >= PADDING_HEIGHT)) && crtcl_rd_cntr[1] > 0) begin
        if(new_rd_cntr < pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS)
           crtcl_rd_cntr[1] <= pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS - new_rd_cntr;
        else 
@@ -397,13 +395,13 @@ if( STRIDE_HT == 2 ) begin
        else
           crtcl_rd_cntr[1] <=  0;
        crtcl_rd_cntr[0] <= crtcl_rd_cntr[1]; 
-    end else if(!s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] == PADDING_HEIGHT))) begin
+    end else if(!s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] < PADDING_HEIGHT))) begin
        if(new_rd_cntr < pending_rd_cntr)
           crtcl_rd_cntr[1] <= pending_rd_cntr- new_rd_cntr;
        else
           crtcl_rd_cntr[1] <=  0;        
        crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];
-    end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] == PADDING_HEIGHT)) && crtcl_rd_cntr[1] > 0) begin
+    end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] < PADDING_HEIGHT)) && crtcl_rd_cntr[1] > 0) begin
        if(new_rd_cntr < pending_rd_cntr)
           crtcl_rd_cntr[1] <= pending_rd_cntr- new_rd_cntr;
        else

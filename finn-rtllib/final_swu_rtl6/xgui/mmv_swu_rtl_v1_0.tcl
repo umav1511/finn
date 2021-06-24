@@ -3,7 +3,6 @@ proc init_gui { IPINST } {
   ipgui::add_param $IPINST -name "Component_Name"
   #Adding Page
   set Page_0 [ipgui::add_page $IPINST -name "Page 0"]
-  ipgui::add_param $IPINST -name "BUFFER_SIZE" -parent ${Page_0}
   ipgui::add_param $IPINST -name "DWS" -parent ${Page_0}
   ipgui::add_param $IPINST -name "IFMChannels" -parent ${Page_0}
   ipgui::add_param $IPINST -name "IFMHeight" -parent ${Page_0}
@@ -13,7 +12,6 @@ proc init_gui { IPINST } {
   ipgui::add_param $IPINST -name "KERNEL_WIDTH" -parent ${Page_0}
   ipgui::add_param $IPINST -name "MMV_IN" -parent ${Page_0}
   ipgui::add_param $IPINST -name "MMV_OUT" -parent ${Page_0}
-  ipgui::add_param $IPINST -name "OFMDIM_MOD_MMV" -parent ${Page_0}
   ipgui::add_param $IPINST -name "OFMHeight" -parent ${Page_0}
   ipgui::add_param $IPINST -name "OFMWidth" -parent ${Page_0}
   ipgui::add_param $IPINST -name "O_MOD_MMVI" -parent ${Page_0}
@@ -29,15 +27,6 @@ proc init_gui { IPINST } {
   ipgui::add_param $IPINST -name "floor_O_BY_I" -parent ${Page_0}
 
 
-}
-
-proc update_PARAM_VALUE.BUFFER_SIZE { PARAM_VALUE.BUFFER_SIZE } {
-	# Procedure called to update BUFFER_SIZE when any of the dependent parameters in the arguments change
-}
-
-proc validate_PARAM_VALUE.BUFFER_SIZE { PARAM_VALUE.BUFFER_SIZE } {
-	# Procedure called to validate BUFFER_SIZE
-	return true
 }
 
 proc update_PARAM_VALUE.DWS { PARAM_VALUE.DWS } {
@@ -118,15 +107,6 @@ proc update_PARAM_VALUE.MMV_OUT { PARAM_VALUE.MMV_OUT } {
 
 proc validate_PARAM_VALUE.MMV_OUT { PARAM_VALUE.MMV_OUT } {
 	# Procedure called to validate MMV_OUT
-	return true
-}
-
-proc update_PARAM_VALUE.OFMDIM_MOD_MMV { PARAM_VALUE.OFMDIM_MOD_MMV } {
-	# Procedure called to update OFMDIM_MOD_MMV when any of the dependent parameters in the arguments change
-}
-
-proc validate_PARAM_VALUE.OFMDIM_MOD_MMV { PARAM_VALUE.OFMDIM_MOD_MMV } {
-	# Procedure called to validate OFMDIM_MOD_MMV
 	return true
 }
 
@@ -326,16 +306,6 @@ proc update_MODELPARAM_VALUE.MMV_IN { MODELPARAM_VALUE.MMV_IN PARAM_VALUE.MMV_IN
 proc update_MODELPARAM_VALUE.MMV_OUT { MODELPARAM_VALUE.MMV_OUT PARAM_VALUE.MMV_OUT } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
 	set_property value [get_property value ${PARAM_VALUE.MMV_OUT}] ${MODELPARAM_VALUE.MMV_OUT}
-}
-
-proc update_MODELPARAM_VALUE.BUFFER_SIZE { MODELPARAM_VALUE.BUFFER_SIZE PARAM_VALUE.BUFFER_SIZE } {
-	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
-	set_property value [get_property value ${PARAM_VALUE.BUFFER_SIZE}] ${MODELPARAM_VALUE.BUFFER_SIZE}
-}
-
-proc update_MODELPARAM_VALUE.OFMDIM_MOD_MMV { MODELPARAM_VALUE.OFMDIM_MOD_MMV PARAM_VALUE.OFMDIM_MOD_MMV } {
-	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
-	set_property value [get_property value ${PARAM_VALUE.OFMDIM_MOD_MMV}] ${MODELPARAM_VALUE.OFMDIM_MOD_MMV}
 }
 
 proc update_MODELPARAM_VALUE.S_BY_M { MODELPARAM_VALUE.S_BY_M PARAM_VALUE.S_BY_M } {
