@@ -58,7 +58,7 @@ output [MMV_OUT * SIMD * IP_PRECISION - 1 : 0] op_axis_tdata,
 input op_axis_tready,
 output op_axis_tvalid
     );
- localparam   BUFFER_SIZE = (STRIDE_HT+ KERNEL_HEIGHT) * IFMWidth * IFMChannels/SIMD ;
+ localparam   BUFFER_SIZE = (STRIDE_HT - 1 + KERNEL_HEIGHT) * IFMWidth * IFMChannels/SIMD ;
 localparam EFF_CHANNELS = IFMChannels/SIMD;
 localparam SIZEA = BUFFER_SIZE/MMV_IN;
 localparam SIZEB = BUFFER_SIZE;
@@ -320,7 +320,7 @@ always @(posedge clk)
 always @(posedge clk)
     if(~resetn | (restart) | finish_rds ) 
          new_rd_cntr <= 0;
-    else if(s_axis_hs & pending_rd_cntr == 0 & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1] == 0 & buffer_full & !inc_pending_rd_gen & !inc_pending_rd_last)
+    else if(s_axis_hs & pending_rd_cntr == 0 & crtcl_rd_cntr[0] == 0 & buffer_full & !inc_pending_rd_gen & !inc_pending_rd_last)
          new_rd_cntr <= new_rd_cntr + 1;
     else if(valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] > PADDING_HEIGHT) 
             & (new_rd_cntr > pending_rd_cntr + IFMWidth/MMV_IN * EFF_CHANNELS))
@@ -358,67 +358,71 @@ always @(posedge clk)
         pending_rd_cntr <= BUFFER_SIZE/MMV_IN;
     else if (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] >= PADDING_HEIGHT)) 
          pending_rd_cntr <= 0;
-    else if(s_axis_hs & !inc_pending_rd_gen & !inc_pending_rd_last & pending_rd_cntr > 0 & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1]==0)
+    else if(s_axis_hs & !inc_pending_rd_gen & !inc_pending_rd_last & pending_rd_cntr > 0 & crtcl_rd_cntr[0] == 0)
         pending_rd_cntr <= pending_rd_cntr - 1;
     else if( !(s_axis_hs) & inc_pending_rd_gen)  
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt;  
-    else if (s_axis_hs & inc_pending_rd_gen & (crtcl_rd_cntr[0] != 0 || crtcl_rd_cntr[1] != 0) ) 
+    else if (s_axis_hs & inc_pending_rd_gen & (crtcl_rd_cntr[0] != 0 ) )
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt;  
-    else if (s_axis_hs & inc_pending_rd_gen & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1] == 0)  
+    else if (s_axis_hs & inc_pending_rd_gen & crtcl_rd_cntr[0] == 0)  
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt - 1;   
     else if ( !(s_axis_hs) & inc_pending_rd_last)
         pending_rd_cntr <=  pending_rd_cntr + inc_rd_amt_last;
-    else if (s_axis_hs & inc_pending_rd_last & (crtcl_rd_cntr[0] != 0 || crtcl_rd_cntr[1] != 0) ) 
+    else if (s_axis_hs & inc_pending_rd_last & (crtcl_rd_cntr[0] != 0 ) )
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt_last;  
-    else if (s_axis_hs & inc_pending_rd_last & crtcl_rd_cntr[0] == 0 & crtcl_rd_cntr[1] == 0)  
+    else if (s_axis_hs & inc_pending_rd_last & crtcl_rd_cntr[0] == 0)  
         pending_rd_cntr <= pending_rd_cntr + inc_rd_amt_last - 1; 
 if( STRIDE_HT == 2 ) begin
-  always @(posedge clk)
+  always @(posedge clk) begin
     if(~resetn | (restart) | finish_rds) begin
         crtcl_rd_cntr[0]<=0;
-        crtcl_rd_cntr[1]<= 0; 
-    end else if(!s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] >= PADDING_HEIGHT))) begin
+    end else if(!s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] == 0))) begin
+       if(new_rd_cntr < pending_rd_cntr + crtcl_rd_cntr[1])
+          crtcl_rd_cntr[0] <= pending_rd_cntr + crtcl_rd_cntr[1] - new_rd_cntr;
+       else
+          crtcl_rd_cntr[0] <=  0;        
+    end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] == 0 ))) begin
+       if(new_rd_cntr < pending_rd_cntr + crtcl_rd_cntr[1])
+          crtcl_rd_cntr[0] <= pending_rd_cntr + crtcl_rd_cntr[1] - new_rd_cntr - 1;
+       else
+          crtcl_rd_cntr[0] <=  0; 
+
+    end else if(!s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] > PADDING_HEIGHT))) begin
        if(new_rd_cntr < pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS)
-          crtcl_rd_cntr[1] <= pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS - new_rd_cntr;
+          crtcl_rd_cntr[0] <= pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS - new_rd_cntr;
        else 
-          crtcl_rd_cntr[1] <= 0;
-       crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];
-    end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] >= PADDING_HEIGHT)) && crtcl_rd_cntr[1] > 0) begin
+          crtcl_rd_cntr[0] <= 0;
+    end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] > PADDING_HEIGHT))) begin
        if(new_rd_cntr < pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS)
-          crtcl_rd_cntr[1] <= pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS - new_rd_cntr;
+          crtcl_rd_cntr[0] <= pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS - new_rd_cntr - 1;
        else 
-          crtcl_rd_cntr[1] <= 0;
-       crtcl_rd_cntr[0] <= crtcl_rd_cntr[1] - 1;
-    end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] > PADDING_HEIGHT)) && crtcl_rd_cntr[1] == 0 ) begin
-       if(new_rd_cntr < pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS - 1)
-          crtcl_rd_cntr[1] <= pending_rd_cntr + IFMWidth/MMV_IN * EFF_CHANNELS - 1 - new_rd_cntr;
-       else
-          crtcl_rd_cntr[1] <=  0;
-       crtcl_rd_cntr[0] <= crtcl_rd_cntr[1]; 
-    end else if(!s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] < PADDING_HEIGHT))) begin
+          crtcl_rd_cntr[0] <= 0;
+    end else if(!s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] <= PADDING_HEIGHT))) begin
        if(new_rd_cntr < pending_rd_cntr)
-          crtcl_rd_cntr[1] <= pending_rd_cntr- new_rd_cntr;
+          crtcl_rd_cntr[0] <= pending_rd_cntr- new_rd_cntr;
        else
-          crtcl_rd_cntr[1] <=  0;        
-       crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];
-    end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] < PADDING_HEIGHT)) && crtcl_rd_cntr[1] > 0) begin
+          crtcl_rd_cntr[0] <=  0;        
+    end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] <= PADDING_HEIGHT))) begin
        if(new_rd_cntr < pending_rd_cntr)
-          crtcl_rd_cntr[1] <= pending_rd_cntr- new_rd_cntr;
+          crtcl_rd_cntr[0] <= pending_rd_cntr- new_rd_cntr - 1;
        else
-          crtcl_rd_cntr[1] <=  0; 
-       crtcl_rd_cntr[0] <= crtcl_rd_cntr[1] - 1;
-    end else if(s_axis_hs && (valid_ptr_vals && (ch_ptr == EFF_CHANNELS - 1 ) && (kw==KERNEL_WIDTH-1 && kh==KERNEL_HEIGHT-1) && (ofm_column_tracker[0] >= OFMWidth - MMV_OUT) && (ofm_row_tracker[0] == PADDING_HEIGHT)) && crtcl_rd_cntr[1] == 0 ) begin
-       if(new_rd_cntr < pending_rd_cntr - 1)
-          crtcl_rd_cntr[1] <= pending_rd_cntr- 1 - new_rd_cntr;
-       else
-          crtcl_rd_cntr[1] <=  0; 
-       crtcl_rd_cntr[0] <= crtcl_rd_cntr[1];        
+          crtcl_rd_cntr[0] <=  0; 
     end else if(s_axis_hs && crtcl_rd_cntr[0]>0) begin
         crtcl_rd_cntr[0] <= crtcl_rd_cntr[0] - 1;
-    end else if(s_axis_hs && crtcl_rd_cntr[1] > 0) begin
-        crtcl_rd_cntr[1] <= crtcl_rd_cntr[1] - 1;
-    end 
+    end
+    end
+      always @(posedge clk) begin
+    if(~resetn | (restart) | !buffer_full) begin
+        crtcl_rd_cntr[1]<= IFMWidth/MMV_IN;
+    end else if(s_axis_hs && (valid_ptr_vals & ofm_row_tracker[0] == 0) &  crtcl_rd_cntr[1] > 0) begin
+        crtcl_rd_cntr[1]<= crtcl_rd_cntr[1] - 1;
+    end  
+    end
 end
+
+
+
+
 //8
 else begin
   always @(posedge clk) begin : crtcl_cntr
@@ -540,9 +544,11 @@ always @(posedge clk) begin
             counter <=counter + 1;
          end else begin
             counter <= 0;
-            buffer_full <= 1;
+            //buffer_full <= 1;
             input_pixel <= input_pixel + 1;
-         end         
+         end 
+         if (counter == KERNEL_HEIGHT * IFMWidth/MMV_IN * EFF_CHANNELS - 1) 
+            buffer_full <= 1;      
       end
    end
 end
