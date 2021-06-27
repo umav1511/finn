@@ -67,7 +67,7 @@ localparam ADDRWIDTHB = $clog2(SIZEB);
 localparam WIDTHA = MMV_IN * SIMD * IP_PRECISION ;
 localparam WIDTHB = SIMD * IP_PRECISION;
 localparam ALLOW_WRITES = ((KERNEL_HEIGHT - PADDING_HEIGHT - 1) * IFMWidth/MMV_IN + KERNEL_WIDTH + ((MMV_OUT - 1) * STRIDE_WT)) * EFF_CHANNELS;
-localparam EXTRA_ROW = ((IFMWidth%2 == 0) & PADDING_HEIGHT == 0) ? 1 : 0;
+localparam EXTRA_ROW = (((IFMWidth%2 == 0) & PADDING_HEIGHT == 0)) || ((IFMWidth%2 != 0) & (PADDING_HEIGHT != 0)) ? 1 : 0;
 //(* ram_style = RAM_STYLE *) reg [SIMD*IP_PRECISION-1:0] mem[BUFFER_SIZE - 1:0];  
 integer counter=0;   
 reg buffer_full=0;
