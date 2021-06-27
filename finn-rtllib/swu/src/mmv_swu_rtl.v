@@ -66,8 +66,8 @@ localparam ADDRWIDTHA = $clog2(SIZEA);
 localparam ADDRWIDTHB = $clog2(SIZEB);
 localparam WIDTHA = MMV_IN * SIMD * IP_PRECISION ;
 localparam WIDTHB = SIMD * IP_PRECISION;
-localparam ALLOW_WRITES = ((KERNEL_HEIGHT - 1) * IFMWidth/MMV_IN + KERNEL_WIDTH + ((MMV_OUT - 1) * STRIDE_WT)) * EFF_CHANNELS;
-
+localparam ALLOW_WRITES = ((KERNEL_HEIGHT - PADDING_HEIGHT - 1) * IFMWidth/MMV_IN + KERNEL_WIDTH + ((MMV_OUT - 1) * STRIDE_WT)) * EFF_CHANNELS;
+localparam EXTRA_ROW = ((IFMWidth%2 == 0) & PADDING_HEIGHT == 0) ? 1 : 0;
 //(* ram_style = RAM_STYLE *) reg [SIMD*IP_PRECISION-1:0] mem[BUFFER_SIZE - 1:0];  
 integer counter=0;   
 reg buffer_full=0;
@@ -101,7 +101,7 @@ reg [$clog2(OFMHeight *  IFMWidth * EFF_CHANNELS) : 0] starting_pos_i [MMV_OUT  
 reg [$clog2(BUFFER_SIZE) - 1 : 0] starting_pos[MMV_OUT  - 1 :0];
 reg [$clog2(BUFFER_SIZE+EFF_CHANNELS*(KERNEL_WIDTH+((KERNEL_HEIGHT-1)*IFMWidth)) + EFF_CHANNELS)-1 : 0] pos [MMV_OUT - 1:0];
 reg mmvshift[MMV_OUT - 1 : 0];
-reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] total_pending_rds = BUFFER_SIZE/MMV_IN;
+reg [$clog2(BUFFER_SIZE/MMV_IN) : 0] total_pending_rds;
 
 reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] crtcl_rd_cntr[STRIDE_HT - 1: 0];
 reg [$clog2(BUFFER_SIZE/MMV_IN) - 1 : 0] crtcl_rd_cntr_del;
@@ -124,8 +124,8 @@ assign ram_enq = op_axis_tready | ~q_valid;
 assign op_axis_tvalid = q_valid;
 assign enaB = start_write & !buffer_empty_i 
             & (enaB_q | ~r_valid) 
-            & ((!ofm_row_tracker[0] == 0 && ofm_column_tracker[0] > 0 && kh == KERNEL_HEIGHT - 2 && kw == KERNEL_WIDTH - 1 && ch_ptr == 0) 
-            || (buffer_full || counter >= ALLOW_WRITES + (ofm_column_tracker[MMV_OUT - 1] * EFF_CHANNELS) * STRIDE_WT))
+            & ((!ofm_row_tracker[0] <= PADDING_HEIGHT && ofm_column_tracker[0] > 0 && kh == KERNEL_HEIGHT - 2 && kw == KERNEL_WIDTH - 1 && ch_ptr == 0) 
+            || (buffer_full || counter >= ALLOW_WRITES + (ofm_row_tracker[0]*IFMWidth/MMV_IN) + (ofm_column_tracker[MMV_OUT - 1] * EFF_CHANNELS) * STRIDE_WT))
             & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] > 0 && kh == KERNEL_HEIGHT - 2 && kw == KERNEL_WIDTH - 1 && ch_ptr == 0) 
             ||(crtcl_rd_cntr[0] * MMV_IN <= (IFMWidth * EFF_CHANNELS - KERNEL_WIDTH * EFF_CHANNELS - (ofm_column_tracker[MMV_OUT-1]*EFF_CHANNELS * STRIDE_WT))) & buffer_full)
             & (!(ofm_row_tracker[0] != 0 && ofm_column_tracker[0] == 0 && kh == KERNEL_HEIGHT - 2  && ch_ptr == 0) 
@@ -173,7 +173,7 @@ assign restart = op_axis_tready && op_axis_tvalid && buffer_empty;
 wire inc_pending_rd_gen;
 wire inc_pending_rd_last;
 wire [$clog2(MMV_OUT * STRIDE_WT + 1) - 1 : 0] inc_rd_amt;
-wire [$clog2(EFF_CHANNELS * (IFMWidth - OFMWidth*STRIDE_WT + 1))-1:0] inc_rd_amt_last;
+wire [$clog2(EFF_CHANNELS * ((IFMWidth - (OFMWidth - PADDING_WIDTH)*STRIDE_WT) + 1))-1:0] inc_rd_amt_last;
 
 wire inc_ch_ptr;
 wire valid_ptr_vals;
@@ -200,7 +200,7 @@ end
 endgenerate
 
 generate if (STRIDE_HT > 1) begin : inc_stride
-   assign inc_pending_rd_stride = ofm_column_tracker[0] == OFMWidth - MMV_OUT && kh == KERNEL_HEIGHT - 1 && kw == KERNEL_HEIGHT - 1  && ch_ptr == EFF_CHANNELS - 1 &&  ofm_row_tracker[0] >= PADDING_HEIGHT && ofm_row_tracker[0] < OFMHeight - 1 - STRIDE_HT;
+   assign inc_pending_rd_stride = ofm_column_tracker[0] == OFMWidth - MMV_OUT && kh == KERNEL_HEIGHT - 1 && kw == KERNEL_HEIGHT - 1  && ch_ptr == EFF_CHANNELS - 1 &&  ofm_row_tracker[0] >= PADDING_HEIGHT && ofm_row_tracker[0] < OFMHeight - 1 - PADDING_HEIGHT - 1 + EXTRA_ROW ;
 end else begin : inc_nostride
    assign inc_pending_rd_stride = 0;
 end
@@ -233,13 +233,13 @@ endgenerate
 // this does not depend on padding yet
 generate if (MMV_IN > 1) begin : use_immv
    assign inc_pending_rd_gen = ((ofm_column_tracker[0] >= PADDING_WIDTH
-                              && ofm_row_tracker[0] < OFMHeight - STRIDE_HT - PADDING_HEIGHT) 
+                              && ofm_row_tracker[0] < OFMHeight - 1 - PADDING_HEIGHT) 
                               && enaB_reg 
                               && (ofm_row_tracker[0] >= PADDING_HEIGHT || (STRIDE_HT > PADDING_HEIGHT))) 
                               && (mmv_col_tracker[0] + STRIDE_WT * MMV_OUT >= MMV_IN && kh == 1 && kw == KERNEL_WIDTH - 1) ;
 end else begin : no_immv
    assign inc_pending_rd_gen = ((ofm_column_tracker[0] >= PADDING_WIDTH 
-                              && ofm_row_tracker[0] < OFMHeight - STRIDE_HT - PADDING_HEIGHT) 
+                              && ofm_row_tracker[0] < OFMHeight - 1 - PADDING_HEIGHT) 
                               && enaB_reg 
                               && ((ofm_row_tracker[0] >= PADDING_HEIGHT) || (STRIDE_HT > PADDING_HEIGHT))) 
                               && (kh == 0 && kw == KERNEL_WIDTH - 1) ;
@@ -250,7 +250,7 @@ endgenerate
 // according to my intuition. for no immv, this is what must be done, but i will leave it for now
 generate if(MMV_IN > 1) begin: use_immv1
 assign inc_pending_rd_last =  ofm_column_tracker[0] == OFMWidth - MMV_OUT 
-                           && ofm_row_tracker[0] < OFMHeight - STRIDE_HT - PADDING_HEIGHT 
+                           && ofm_row_tracker[0] < OFMHeight - 1 - PADDING_HEIGHT 
                            && (ofm_row_tracker[0] >= PADDING_HEIGHT || (STRIDE_HT > PADDING_HEIGHT))
                            && enaB_reg
                            && kh == KERNEL_HEIGHT - 1
@@ -259,7 +259,7 @@ assign inc_pending_rd_last =  ofm_column_tracker[0] == OFMWidth - MMV_OUT
                            && ch_ptr == EFF_CHANNELS - 1;
 end else begin : no_immv1
 assign inc_pending_rd_last = ofm_column_tracker[0] == OFMWidth - MMV_OUT 
-                           && ofm_row_tracker[0] < OFMHeight - STRIDE_HT - PADDING_HEIGHT 
+                           && ofm_row_tracker[0] < OFMHeight - 1 - PADDING_HEIGHT 
                            && (ofm_row_tracker[0] >= PADDING_HEIGHT || (STRIDE_HT > PADDING_HEIGHT))
                            && enaB_reg
                            && kh == KERNEL_HEIGHT - 1
@@ -339,9 +339,9 @@ always @(posedge clk)
     
 always @(posedge clk)
     if(~resetn | (restart) | finish_rds) 
-        total_pending_rds <= BUFFER_SIZE/MMV_IN;
+        total_pending_rds <= BUFFER_SIZE/MMV_IN; //initial values
     else if(s_axis_hs & !inc_pending_rd_gen & !inc_pending_rd_last & !inc_pending_rd_stride)
-        total_pending_rds <= total_pending_rds - 1;
+        total_pending_rds <= total_pending_rds - 1; // whenever you get a new read
     else if( !(s_axis_hs) & inc_pending_rd_gen)  
         total_pending_rds <= total_pending_rds + inc_rd_amt;  
     else if (s_axis_hs & inc_pending_rd_gen)  
@@ -389,12 +389,12 @@ if( STRIDE_HT == 2 ) begin
           crtcl_rd_cntr[0] <= pending_rd_cntr +  IFMWidth/MMV_IN * EFF_CHANNELS - new_rd_cntr - 1;
        else 
           crtcl_rd_cntr[0] <= 0;
-    end else if(!s_axis_hs && start_new_row && (ofm_row_tracker[0] <= PADDING_HEIGHT)) begin
+    end else if(!s_axis_hs && start_new_row && (ofm_row_tracker[0] == PADDING_HEIGHT)) begin
        if(new_rd_cntr < pending_rd_cntr)
           crtcl_rd_cntr[0] <= pending_rd_cntr- new_rd_cntr;
        else
           crtcl_rd_cntr[0] <=  0;        
-    end else if(s_axis_hs && start_new_row && (ofm_row_tracker[0] <= PADDING_HEIGHT)) begin
+    end else if(s_axis_hs && start_new_row && (ofm_row_tracker[0] == PADDING_HEIGHT)) begin
        if(new_rd_cntr < pending_rd_cntr)
           crtcl_rd_cntr[0] <= pending_rd_cntr- new_rd_cntr - 1;
        else
@@ -649,9 +649,9 @@ always @(posedge clk) begin : kernel_row_trackers
           if (ofm_row_tracker[MMV_OUT - 1] < (OFMHeight - 1)) begin
                   if(ofm_row_tracker[0] < PADDING_HEIGHT)
                       kernel_row_tracker <= kernel_row_tracker + STRIDE_HT - PADDING_HEIGHT;
-                  else if(kernel_row_tracker + STRIDE_HT > KERNEL_HEIGHT * STRIDE_HT - 1) 
-                      kernel_row_tracker <= kernel_row_tracker + STRIDE_HT - KERNEL_HEIGHT*STRIDE_HT;
-                  else if (kernel_row_tracker + STRIDE_HT <= KERNEL_HEIGHT * STRIDE_HT - 1) 
+                  else if(kernel_row_tracker + STRIDE_HT > KERNEL_HEIGHT + STRIDE_HT - 1 - 1) 
+                      kernel_row_tracker <= kernel_row_tracker + STRIDE_HT - KERNEL_HEIGHT - (STRIDE_HT - 1);
+                  else if (kernel_row_tracker + STRIDE_HT <= KERNEL_HEIGHT + STRIDE_HT - 1 - 1) 
                       kernel_row_tracker <= kernel_row_tracker + STRIDE_HT;
           end else begin
              kernel_row_tracker <= 0;
