@@ -6,39 +6,7 @@
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
-      <spirit:name>ip_axis</spirit:name>
-      <spirit:busType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="axis" spirit:version="1.0"/>
-      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="axis_rtl" spirit:version="1.0"/>
-      <spirit:slave/>
-      <spirit:portMaps>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>TDATA</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>ip_axis_tdata</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>TVALID</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>ip_axis_tvalid</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>TREADY</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>ip_axis_tready</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-      </spirit:portMaps>
-    </spirit:busInterface>
-    <spirit:busInterface>
-      <spirit:name>op_axis</spirit:name>
+      <spirit:name>m_axis</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="axis" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="axis_rtl" spirit:version="1.0"/>
       <spirit:master/>
@@ -48,7 +16,7 @@
             <spirit:name>TDATA</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>op_axis_tdata</spirit:name>
+            <spirit:name>m_axis_tdata</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -56,7 +24,7 @@
             <spirit:name>TVALID</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>op_axis_tvalid</spirit:name>
+            <spirit:name>m_axis_tvalid</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -64,13 +32,45 @@
             <spirit:name>TREADY</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>op_axis_tready</spirit:name>
+            <spirit:name>m_axis_tready</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
     </spirit:busInterface>
     <spirit:busInterface>
-      <spirit:name>resetn</spirit:name>
+      <spirit:name>s_axis</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="axis" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="axis_rtl" spirit:version="1.0"/>
+      <spirit:slave/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>TDATA</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s_axis_tdata</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>TVALID</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s_axis_tvalid</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>TREADY</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s_axis_tready</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>aresetn</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset_rtl" spirit:version="1.0"/>
       <spirit:slave/>
@@ -80,19 +80,19 @@
             <spirit:name>RST</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>resetn</spirit:name>
+            <spirit:name>aresetn</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
       <spirit:parameters>
         <spirit:parameter>
           <spirit:name>POLARITY</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.RESETN.POLARITY" spirit:choiceRef="choice_list_9d8b0d81">ACTIVE_LOW</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.ARESETN.POLARITY" spirit:choiceRef="choice_list_9d8b0d81">ACTIVE_LOW</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
     <spirit:busInterface>
-      <spirit:name>clk</spirit:name>
+      <spirit:name>aclk</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock_rtl" spirit:version="1.0"/>
       <spirit:slave/>
@@ -102,18 +102,18 @@
             <spirit:name>CLK</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>clk</spirit:name>
+            <spirit:name>aclk</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
       <spirit:parameters>
         <spirit:parameter>
           <spirit:name>ASSOCIATED_BUSIF</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.CLK.ASSOCIATED_BUSIF">ip_axis:op_axis</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.ACLK.ASSOCIATED_BUSIF">m_axis:s_axis</spirit:value>
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>ASSOCIATED_RESET</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.CLK.ASSOCIATED_RESET">resetn</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.ACLK.ASSOCIATED_RESET">aresetn</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -132,7 +132,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>2fe15cbc</spirit:value>
+            <spirit:value>5557aef3</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -148,7 +148,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>2fe15cbc</spirit:value>
+            <spirit:value>5557aef3</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -162,14 +162,14 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ae133bb7</spirit:value>
+            <spirit:value>586a7ada</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
     </spirit:views>
     <spirit:ports>
       <spirit:port>
-        <spirit:name>clk</spirit:name>
+        <spirit:name>aclk</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -182,7 +182,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>resetn</spirit:name>
+        <spirit:name>aresetn</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -195,7 +195,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>ip_axis_tdata</spirit:name>
+        <spirit:name>s_axis_tdata</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -215,7 +215,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>ip_axis_tvalid</spirit:name>
+        <spirit:name>s_axis_tvalid</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -228,7 +228,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>ip_axis_tready</spirit:name>
+        <spirit:name>s_axis_tready</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
@@ -241,7 +241,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>op_axis_tdata</spirit:name>
+        <spirit:name>m_axis_tdata</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
@@ -258,7 +258,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>op_axis_tready</spirit:name>
+        <spirit:name>m_axis_tready</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -274,7 +274,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>op_axis_tvalid</spirit:name>
+        <spirit:name>m_axis_tvalid</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
@@ -369,34 +369,14 @@
         <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.MMV_OUT">1</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
-        <spirit:name>S_BY_M</spirit:name>
-        <spirit:displayName>S By M</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.S_BY_M">0</spirit:value>
-      </spirit:modelParameter>
-      <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>DWS</spirit:name>
         <spirit:displayName>Dws</spirit:displayName>
         <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.DWS">0</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
-        <spirit:name>floor_O_BY_I</spirit:name>
-        <spirit:displayName>Floor O By I</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.floor_O_BY_I">1</spirit:value>
-      </spirit:modelParameter>
-      <spirit:modelParameter spirit:dataType="integer">
-        <spirit:name>ceil_O_BY_I</spirit:name>
-        <spirit:displayName>Ceil O By I</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.ceil_O_BY_I">1</spirit:value>
-      </spirit:modelParameter>
-      <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>ZEROPAD</spirit:name>
         <spirit:displayName>Zeropad</spirit:displayName>
         <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.ZEROPAD">0</spirit:value>
-      </spirit:modelParameter>
-      <spirit:modelParameter spirit:dataType="integer">
-        <spirit:name>O_MOD_MMVI</spirit:name>
-        <spirit:displayName>O Mod Mmvi</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.O_MOD_MMVI">0</spirit:value>
       </spirit:modelParameter>
     </spirit:modelParameters>
   </spirit:model>
@@ -418,7 +398,7 @@
       <spirit:file>
         <spirit:name>src/mmv_swu_rtl.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_b088c331</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_1be3acd8</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -440,7 +420,7 @@
       <spirit:file>
         <spirit:name>xgui/mmv_swu_rtl_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_ae133bb7</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_586a7ada</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -528,34 +508,14 @@
       <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.MMV_OUT">1</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
-      <spirit:name>S_BY_M</spirit:name>
-      <spirit:displayName>S By M</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.S_BY_M">0</spirit:value>
-    </spirit:parameter>
-    <spirit:parameter>
       <spirit:name>DWS</spirit:name>
       <spirit:displayName>Dws</spirit:displayName>
       <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.DWS">0</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
-      <spirit:name>floor_O_BY_I</spirit:name>
-      <spirit:displayName>Floor O By I</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.floor_O_BY_I">1</spirit:value>
-    </spirit:parameter>
-    <spirit:parameter>
-      <spirit:name>ceil_O_BY_I</spirit:name>
-      <spirit:displayName>Ceil O By I</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.ceil_O_BY_I">1</spirit:value>
-    </spirit:parameter>
-    <spirit:parameter>
       <spirit:name>ZEROPAD</spirit:name>
       <spirit:displayName>Zeropad</spirit:displayName>
       <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.ZEROPAD">0</spirit:value>
-    </spirit:parameter>
-    <spirit:parameter>
-      <spirit:name>O_MOD_MMVI</spirit:name>
-      <spirit:displayName>O Mod Mmvi</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.O_MOD_MMVI">0</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
@@ -594,28 +554,23 @@
       </xilinx:taxonomies>
       <xilinx:displayName>mmv_swu_rtl_v1_0</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>3</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-06-27T22:37:46Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-06-28T15:13:37Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@35a4f98_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@47d44a5d_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1677d015_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f8c12bf_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d940d7_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@188cc4a8_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4cc3273e_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@36372cf9_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1dc07eb9_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5757d651_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3ab3f5b1_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3c4640f1_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5731630e_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@36d41045_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@78d70ee0_ARCHIVE_LOCATION">/home/uma/Desktop/Graduation_project/repo/finn/finn-rtllib/swu</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="2fedc2b3"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="bd5f5ac3"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="1556dfd8"/>
-      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="d694a662"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="b3564c2c"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="682b6168"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="d2880dc8"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="8886cb61"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="89889929"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="faa43467"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>
