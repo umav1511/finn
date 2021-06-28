@@ -148,8 +148,8 @@ generate
    .RAM_STYLE(RAM_STYLE)
 )
     ram (
-   .aclkA(aclk),
-   .aclkB(aclk),
+   .clkA(aclk),
+   .clkB(aclk),
    .addrA(counter),
    .addrB(pos[mi]),
    .diA(s_axis_tdata),
